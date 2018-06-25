@@ -113,20 +113,20 @@ onFileRequest(io.HttpRequest request) async {
   */
   if (await targetFile.exists()) {
     print("Serving ${targetFile.path}.");
-    request.response.headers.contentType = io.ContentType.HTML;
+    request.response.headers.contentType = io.ContentType.html;
     try {
       await targetFile.openRead().pipe(request.response);
     } catch (e) {
       print("Couldn't read file: $e");
       // exit(-1);
       request.response
-        ..statusCode = io.HttpStatus.FORBIDDEN
+        ..statusCode = io.HttpStatus.forbidden
         ..close();
     }
   } else {
     print("Can't open ${targetFile.path}.");
     request.response
-      ..statusCode = io.HttpStatus.NOT_FOUND
+      ..statusCode = io.HttpStatus.notFound
       ..close();
   }
 }

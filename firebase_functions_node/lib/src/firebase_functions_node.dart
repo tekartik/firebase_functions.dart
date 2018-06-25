@@ -1,3 +1,4 @@
+import 'package:node_io/node_io.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'package:firebase_functions_interop/firebase_functions_interop.dart'
     as impl;
@@ -39,4 +40,12 @@ class HttpsFunctionNode implements common.HttpsFunction {
   get value => _implCloudFonction;
 
   toString() => _implCloudFonction.toString();
+}
+
+String get firebaseProjectId {
+  return Platform.environment['GCLOUD_PROJECT'];
+}
+
+String get firebaseStorageBucketName {
+  return '$firebaseProjectId.appspot.com';
 }
