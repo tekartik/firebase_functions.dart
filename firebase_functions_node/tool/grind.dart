@@ -18,13 +18,13 @@ clean() => defaultClean();
 @Task()
 build_test() async {
   //await Pub.build(directories: [binDir.path]);
-  await runCmd(pubCmd(
+  await runCmd(PubCmd(
       pubRunArgs(['build_runner', 'build', '--output', 'test:build/test'])));
   //await copy_build();
 }
 
 @Task()
 watch() async {
-  await runCmd(pubCmd(
+  await runCmd(PubCmd(
       pubRunArgs(['build_runner', 'watch', '--output', 'test:build/test'])));
 }
