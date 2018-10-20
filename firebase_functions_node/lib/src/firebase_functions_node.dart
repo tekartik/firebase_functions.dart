@@ -2,6 +2,7 @@ import 'package:node_io/node_io.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'package:firebase_functions_interop/firebase_functions_interop.dart'
     as impl;
+import 'package:tekartik_firebase_functions_node/src/express_http_request_node.dart';
 
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
@@ -26,8 +27,13 @@ class HttpsNode implements common.Https {
 
   @override
   common.HttpsFunction onRequest(common.RequestHandler handler) {
+
+    _handle(impl.ExpressHttpRequest request) {
+      var _request = ExpressHttpRequestNode(request, request.uri);
+      handler(_request);
+    }
     return new HttpsFunctionNode(
-        impl.FirebaseFunctions.https.onRequest(handler));
+        impl.FirebaseFunctions.https.onRequest(_handle));
   }
 }
 

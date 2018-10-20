@@ -1,4 +1,7 @@
-import 'package:tekartik_http/http_server.dart';
+// import 'package:tekartik_http/http_server.dart';
+
+
+import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
 abstract class FirebaseFunctions {
   Https get https;
@@ -6,7 +9,7 @@ abstract class FirebaseFunctions {
   operator []=(String key, dynamic function);
 }
 
-typedef void RequestHandler(HttpRequest request);
+typedef void RequestHandler(ExpressHttpRequest request);
 
 abstract class HttpsFunction {}
 
