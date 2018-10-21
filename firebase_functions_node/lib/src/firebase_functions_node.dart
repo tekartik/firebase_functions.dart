@@ -7,14 +7,14 @@ import 'package:tekartik_firebase_functions_node/src/express_http_request_node.d
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
 common.FirebaseFunctions get firebaseFunctionsNode =>
-    _firebaseFunctionsNode ??= new FirebaseFunctionsNode._();
+    _firebaseFunctionsNode ??= FirebaseFunctionsNode._();
 
 //import 'package:firebase_functions_interop/
 class FirebaseFunctionsNode implements common.FirebaseFunctions {
   FirebaseFunctionsNode._();
 
   @override
-  final common.Https https = new HttpsNode();
+  final common.Https https = HttpsNode();
 
   @override
   operator []=(String key, dynamic function) {
@@ -27,13 +27,12 @@ class HttpsNode implements common.Https {
 
   @override
   common.HttpsFunction onRequest(common.RequestHandler handler) {
-
     _handle(impl.ExpressHttpRequest request) {
       var _request = ExpressHttpRequestNode(request, request.uri);
       handler(_request);
     }
-    return new HttpsFunctionNode(
-        impl.FirebaseFunctions.https.onRequest(_handle));
+
+    return HttpsFunctionNode(impl.FirebaseFunctions.https.onRequest(_handle));
   }
 }
 
