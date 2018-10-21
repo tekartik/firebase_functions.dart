@@ -23,6 +23,7 @@ Map<String, dynamic> requestBodyAsJsonObject(dynamic body) {
   }
   throw 'body $body not json object';
 }
+
 abstract class ExpressHttpRequest {
   // String, List<int>, Map
   dynamic get body;
@@ -30,18 +31,22 @@ abstract class ExpressHttpRequest {
   HttpResponse get response;
   String get method;
   HttpHeaders get headers;
+
+  @deprecated
+  Uri get requestedUri;
 }
 
-abstract class ExpressHttpRequestWrapperBase extends Stream<List<int>> with HttpRequestWrapperMixin {
+abstract class ExpressHttpRequestWrapperBase extends Stream<List<int>>
+    with HttpRequestWrapperMixin {
   final HttpRequest implHttpRequest;
   final Uri _rewrittenUri;
 
   ExpressHttpRequestWrapperBase(this.implHttpRequest, this._rewrittenUri);
 }
+
 abstract class HttpRequestWrapperMixin implements HttpRequest {
   HttpRequest get implHttpRequest;
   Uri get _rewrittenUri;
-
 
   @override
   HttpResponse get response => implHttpRequest.response;
@@ -63,7 +68,7 @@ abstract class HttpRequestWrapperMixin implements HttpRequest {
 
   @override
   StreamSubscription<List<int>> listen(void Function(List<int> event) onData,
-      {Function onError, void Function() onDone, bool cancelOnError}) =>
+          {Function onError, void Function() onDone, bool cancelOnError}) =>
       implHttpRequest.listen(onData,
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
 
