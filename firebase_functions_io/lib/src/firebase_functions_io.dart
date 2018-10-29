@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:path/path.dart';
-import 'package:path/path.dart' as path;
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 
@@ -148,22 +147,22 @@ Future<HttpServer> serve({int port}) async {
   // Launch in background
   Future.sync(() async {
     await for (io.HttpRequest request in requestServer) {
-      //devPrint(request.uri.path);
+      var uri = request.uri;
       // /test
-      List<String> parts = url.split(request.uri.toString());
-      if (parts.length > 1) {
-        String key = parts[1]; // 0 being /
-        var function = firebaseFunctionsIo.functions[key];
-        if (function is HttpsFunctionIo) {
-          Uri rewrittenUri =
-              Uri.parse(path.url.join('/', path.url.joinAll(parts.sublist(2))));
-          //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
-          ExpressHttpRequest httpRequest =
-              await asExpressHttpRequestIo(request, rewrittenUri);
-          function.handler(httpRequest);
-          handled = true;
-        }
+      var functionKey = uri.pathSegments.first;
+      var function = firebaseFunctionsIo.functions[functionKey];
+      if (function is HttpsFunctionIo) {
+        Uri rewrittenUri = Uri(
+            pathSegments: uri.pathSegments.sublist(1),
+            query: uri.query,
+            fragment: uri.fragment);
+        //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
+        ExpressHttpRequest httpRequest =
+            await asExpressHttpRequestIo(request, rewrittenUri);
+        function.handler(httpRequest);
+        handled = true;
       }
+
       if (!handled) {
         await onFileRequest(request);
       }
