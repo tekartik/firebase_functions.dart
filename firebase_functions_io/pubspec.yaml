@@ -1,6 +1,6 @@
 name: tekartik_firebase_functions_io
 description: Firebase functions io simulation
-version: 0.2.0
+version: 0.2.0+1
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
@@ -14,7 +14,7 @@ dependencies:
       url: git://github.com/tekartik/firebase_functions.dart
       path: firebase_functions
       ref: dart2
-    version: 0.2.0
+    version: '>=0.2.0+1'
   tekartik_firebase_sim_io:
     git:
       url: git://github.com/tekartik/firebase.dart
@@ -32,7 +32,15 @@ dev_dependencies:
       url: git://github.com/tekartik/http.dart
       path: http_io
       ref: dart2
+  tekartik_firebase_functions_test:
+    git:
+      url: git://github.com/tekartik/firebase_functions.dart
+      path: firebase_functions_test
+      ref: dart2
+    version: '>=0.2.0+1'
 
 dependency_overrides:
   tekartik_firebase_functions:
     path: ../firebase_functions
+  tekartik_firebase_functions_test:
+    path: ../firebase_functions_test

@@ -1,3 +1,6 @@
+@TestOn('vm')
+library tekartik_firebase_functions_io.test.firebase_functions_io_test;
+
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:test/test.dart';
 import 'package:tekartik_http_io/http_client_io.dart';
@@ -6,20 +9,19 @@ import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 echoHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri}");
-  request.response.write(requestBodyAsText(request.body));
-  request.response.close();
+  //request.response.write(requestBodyAsText(request.body));
+  //request.response.close();
+  request.response.send(requestBodyAsText(request.body));
 }
 
 echoQueryHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.queryParameters}");
-  request.response.write(request.uri.query);
-  request.response.close();
+  request.response.send(request.uri.query);
 }
 
 echoFragmentHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.fragment}");
-  request.response.write(request.uri.fragment);
-  request.response.close();
+  request.response.send(request.uri.fragment);
 }
 
 void main() {

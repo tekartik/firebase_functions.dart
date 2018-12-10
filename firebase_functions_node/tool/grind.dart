@@ -6,10 +6,28 @@ main(List<String> args) => grind(args);
 @Task()
 test() => TestRunner().testAsync();
 
-@DefaultTask()
 @Depends(test)
 build() {
   Pub.build();
+}
+
+String buildFolder =
+    join('.dart_tool', 'tekartik_firebase_function_node', 'build');
+
+String projectIdDev = 'tekartik-free-dev';
+String projectId = projectIdDev;
+
+@DefaultTask()
+firebase_serve() async {
+  await runCmd(PubCmd([
+    'run',
+    'build_runner',
+    'build',
+    '--output',
+    'node_functions:$buildFolder'
+  ]));
+  await copy(File(join(buildFolder, 'index.dart.js')), Directory('functions'));
+  await runCmd(FirebaseCmd(firebaseArgs(serve: true, onlyFunctions: true)));
 }
 
 @Task()
