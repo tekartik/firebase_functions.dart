@@ -6,6 +6,18 @@ class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
   final dynamic body;
   ExpressHttpRequestIo(this.body, HttpRequest httpRequest, Uri rewrittenUri)
       : super(httpRequest, rewrittenUri);
+
+  ExpressHttpResponse _response;
+
+  @override
+  ExpressHttpResponse get response =>
+      _response ??= ExpressHttpResponseIo(implHttpRequest.response);
+}
+
+class ExpressHttpResponseIo extends ExpressHttpResponseWrapperBase
+    implements ExpressHttpResponse {
+  ExpressHttpResponseIo(HttpResponse implHttpResponse)
+      : super(implHttpResponse);
 }
 
 Future<ExpressHttpRequestIo> asExpressHttpRequestIo(

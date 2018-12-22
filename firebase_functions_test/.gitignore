@@ -8,12 +8,3 @@ pubspec.lock
 # Intellij
 .idea/
 *.iml
-
-# node specific
-package-lock.json
-index.dart.js
-node_modules/
-firebase-debug.log
-
-# firebase
-.firebaserc

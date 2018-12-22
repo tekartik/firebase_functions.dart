@@ -27,8 +27,9 @@ Map<String, dynamic> requestBodyAsJsonObject(dynamic body) {
 abstract class ExpressHttpRequest {
   // String, List<int>, Map
   dynamic get body;
+
   Uri get uri;
-  HttpResponse get response;
+  ExpressHttpResponse get response;
   String get method;
   HttpHeaders get headers;
 
@@ -36,7 +37,31 @@ abstract class ExpressHttpRequest {
   Uri get requestedUri;
 }
 
-abstract class ExpressHttpRequestWrapperBase extends Stream<List<int>>
+abstract class ExpressHttpResponse {
+  // send closes too
+  Future send([dynamic body]);
+
+  // redirect
+  Future redirect(Uri location, {int status});
+
+  // Write a string
+  void write(String content);
+  void writeln(String content);
+
+  // Add bytes
+  void add(List<int> bytes);
+
+  // get and set status code
+  int get statusCode;
+  set statusCode(int statusCode);
+
+  // To call if not using call
+  Future close();
+
+  HttpHeaders get headers;
+}
+
+abstract class ExpressHttpRequestWrapperBase extends Object
     with HttpRequestWrapperMixin {
   final HttpRequest implHttpRequest;
   final Uri _rewrittenUri;
@@ -44,48 +69,73 @@ abstract class ExpressHttpRequestWrapperBase extends Stream<List<int>>
   ExpressHttpRequestWrapperBase(this.implHttpRequest, this._rewrittenUri);
 }
 
-abstract class HttpRequestWrapperMixin implements HttpRequest {
+abstract class ExpressHttpResponseWrapperBase extends Object
+    with HttpResponseWrapperMixin {
+  final HttpResponse implHttpResponse;
+
+  ExpressHttpResponseWrapperBase(this.implHttpResponse);
+}
+
+abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
+  HttpResponse implHttpResponse;
+
+  @override
+  Future send([body]) {
+    if (body is List<int>) {
+      implHttpResponse.add(body);
+    } else if (body is String) {
+      implHttpResponse.write(body);
+    } else {
+      throw 'not supported';
+    }
+    return implHttpResponse.close();
+  }
+
+  // status code
+  int get statusCode => implHttpResponse.statusCode;
+  set statusCode(int statusCode) => implHttpResponse.statusCode = statusCode;
+
+  @override
+  HttpHeaders get headers => implHttpResponse.headers;
+
+  @override
+  void add(List<int> bytes) => implHttpResponse.add(bytes);
+
+  @override
+  Future close() => implHttpResponse.close();
+
+  @override
+  void write(String content) => implHttpResponse.write(content);
+
+  @override
+  void writeln(String content) => implHttpResponse.write(content);
+
+  @override
+  Future redirect(Uri location, {int status}) => implHttpResponse
+      .redirect(location, status: status ?? HttpStatus.movedTemporarily);
+
+  /*
+  @override
+  Future redirect(Uri location, {int status}) {
+    statusCode = status;
+    headers.set("location", "$location");
+    return close();
+  }
+   */
+}
+
+abstract class HttpRequestWrapperMixin implements ExpressHttpRequest {
   HttpRequest get implHttpRequest;
   Uri get _rewrittenUri;
-
-  @override
-  HttpResponse get response => implHttpRequest.response;
-
-  @override
-  X509Certificate get certificate => implHttpRequest.certificate;
-
-  @override
-  HttpConnectionInfo get connectionInfo => implHttpRequest.connectionInfo;
-
-  @override
-  int get contentLength => implHttpRequest.contentLength;
-
-  @override
-  List<Cookie> get cookies => implHttpRequest.cookies;
 
   @override
   HttpHeaders get headers => implHttpRequest.headers;
 
   @override
-  StreamSubscription<List<int>> listen(void Function(List<int> event) onData,
-          {Function onError, void Function() onDone, bool cancelOnError}) =>
-      implHttpRequest.listen(onData,
-          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-
-  @override
   String get method => implHttpRequest.method;
 
   @override
-  bool get persistentConnection => implHttpRequest.persistentConnection;
-
-  @override
-  String get protocolVersion => implHttpRequest.protocolVersion;
-
-  @override
   Uri get requestedUri => implHttpRequest.requestedUri;
-
-  @override
-  HttpSession get session => implHttpRequest.session;
 
   // The only one to use
   @override

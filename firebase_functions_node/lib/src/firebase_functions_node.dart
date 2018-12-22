@@ -32,7 +32,7 @@ class HttpsNode implements common.Https {
       handler(_request);
     }
 
-    return HttpsFunctionNode(impl.FirebaseFunctions.https.onRequest(_handle));
+    return HttpsFunctionNode(impl.functions.https.onRequest(_handle));
   }
 }
 
