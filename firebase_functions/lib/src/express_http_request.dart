@@ -41,6 +41,9 @@ abstract class ExpressHttpResponse {
   // send closes too
   Future send([dynamic body]);
 
+  // redirect
+  Future redirect(Uri location, {int status});
+
   // Write a string
   void write(String content);
   void writeln(String content);
@@ -106,6 +109,19 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
 
   @override
   void writeln(String content) => implHttpResponse.write(content);
+
+  @override
+  Future redirect(Uri location, {int status}) => implHttpResponse
+      .redirect(location, status: status ?? HttpStatus.movedTemporarily);
+
+  /*
+  @override
+  Future redirect(Uri location, {int status}) {
+    statusCode = status;
+    headers.set("location", "$location");
+    return close();
+  }
+   */
 }
 
 abstract class HttpRequestWrapperMixin implements ExpressHttpRequest {
