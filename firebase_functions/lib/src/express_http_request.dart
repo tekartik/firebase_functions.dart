@@ -63,7 +63,9 @@ abstract class ExpressHttpResponse {
 
 abstract class ExpressHttpRequestWrapperBase extends Object
     with HttpRequestWrapperMixin {
+  @override
   final HttpRequest implHttpRequest;
+  @override
   final Uri _rewrittenUri;
 
   ExpressHttpRequestWrapperBase(this.implHttpRequest, this._rewrittenUri);
@@ -71,9 +73,9 @@ abstract class ExpressHttpRequestWrapperBase extends Object
 
 abstract class ExpressHttpResponseWrapperBase extends Object
     with HttpResponseWrapperMixin {
-  final HttpResponse implHttpResponse;
-
-  ExpressHttpResponseWrapperBase(this.implHttpResponse);
+  ExpressHttpResponseWrapperBase(HttpResponse implHttpResponse) {
+    this.implHttpResponse = implHttpResponse;
+  }
 }
 
 abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
@@ -92,7 +94,9 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
   }
 
   // status code
+  @override
   int get statusCode => implHttpResponse.statusCode;
+  @override
   set statusCode(int statusCode) => implHttpResponse.statusCode = statusCode;
 
   @override

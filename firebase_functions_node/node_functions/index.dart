@@ -3,7 +3,7 @@ import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart'
     as setup;
 import 'package:tekartik_http_node/http_client_node.dart';
 
-main() {
+void main() {
   var context = setup.TestContext();
 
   context.baseUrl = 'http://localhost:5000/tekartik-free-dev/us-central1';

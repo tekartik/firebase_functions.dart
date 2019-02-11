@@ -3,19 +3,19 @@ import 'package:tekartik_http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
-echoHandler(ExpressHttpRequest request) {
+void echoHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri}");
   //request.response.write(requestBodyAsText(request.body));
   //request.response.close();
   request.response.send(requestBodyAsText(request.body));
 }
 
-echoQueryHandler(ExpressHttpRequest request) {
+void echoQueryHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.queryParameters}");
   request.response.send(request.uri.query);
 }
 
-echoFragmentHandler(ExpressHttpRequest request) {
+void echoFragmentHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.fragment}");
   request.response.send(request.uri.fragment);
 }
@@ -28,7 +28,7 @@ void setup(
     {@required FirebaseFunctions firebaseFunctions,
     @required HttpClientFactory httpClientFactory,
     @required TestContext context}) {
-  redirectFragmentHandler(ExpressHttpRequest request) {
+  void redirectFragmentHandler(ExpressHttpRequest request) {
     // print("request.url ${request.uri} ${request.uri.fragment}");
     request.response.redirect(Uri.parse(url.join(context.baseUrl, 'echo')));
   }

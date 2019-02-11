@@ -1,9 +1,12 @@
-import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'dart:async';
+
+import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
     implements ExpressHttpRequest {
+  @override
   final dynamic body;
+
   ExpressHttpRequestIo(this.body, HttpRequest httpRequest, Uri rewrittenUri)
       : super(httpRequest, rewrittenUri);
 

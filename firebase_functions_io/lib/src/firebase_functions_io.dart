@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:path/path.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 
@@ -11,16 +12,18 @@ class FirebaseFunctionsIo implements FirebaseFunctions {
   FirebaseFunctionsIo._();
 
   HttpsIo _https;
+
   @override
   HttpsIo get https => _https ??= HttpsIo();
 
+  @override
   operator []=(String key, dynamic function) {
     functions[key] = function;
   }
 }
 
 class HttpsIo implements Https {
-  HttpsIo() {}
+  HttpsIo();
 
   @override
   HttpsFunction onRequest(RequestHandler handler) {
@@ -93,7 +96,7 @@ FirebaseFunctionsIo get firebaseFunctionsIo =>
     _firebaseFunctionsIo ??= FirebaseFunctionsIo._();
 
 // TODO: etags, last-modified-since support
-onFileRequest(io.HttpRequest request) async {
+Future onFileRequest(io.HttpRequest request) async {
   String path = rewritePath(request.uri.path);
   io.File targetFile = io.File(path);
   /*
@@ -112,7 +115,7 @@ onFileRequest(io.HttpRequest request) async {
     }
   });
   */
-  if (await targetFile.exists()) {
+  if (targetFile.existsSync()) {
     print("Serving ${targetFile.path}.");
     request.response.headers.contentType = io.ContentType.html;
     try {
@@ -120,15 +123,13 @@ onFileRequest(io.HttpRequest request) async {
     } catch (e) {
       print("Couldn't read file: $e");
       // exit(-1);
-      request.response
-        ..statusCode = io.HttpStatus.forbidden
-        ..close();
+      request.response..statusCode = io.HttpStatus.forbidden;
+      await request.response.close();
     }
   } else {
     print("Can't open ${targetFile.path}.");
-    request.response
-      ..statusCode = io.HttpStatus.notFound
-      ..close();
+    request.response..statusCode = io.HttpStatus.notFound;
+    await request.response.close();
   }
 }
 
@@ -145,7 +146,7 @@ Future<HttpServer> serve({int port}) async {
   print('listening on http://localhost:${requestServer.port}');
   bool handled = false;
   // Launch in background
-  Future.sync(() async {
+  unawaited(Future.sync(() async {
     await for (io.HttpRequest request in requestServer) {
       var uri = request.uri;
       // /test
@@ -167,7 +168,7 @@ Future<HttpServer> serve({int port}) async {
         await onFileRequest(request);
       }
     }
-  });
+  }));
   return requestServer;
 }
 

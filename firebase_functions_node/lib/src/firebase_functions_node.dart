@@ -23,11 +23,11 @@ class FirebaseFunctionsNode implements common.FirebaseFunctions {
 }
 
 class HttpsNode implements common.Https {
-  HttpsNode() {}
+  HttpsNode();
 
   @override
   common.HttpsFunction onRequest(common.RequestHandler handler) {
-    _handle(impl.ExpressHttpRequest request) {
+    void _handle(impl.ExpressHttpRequest request) {
       var _request = ExpressHttpRequestNode(request, request.uri);
       handler(_request);
     }
@@ -42,9 +42,10 @@ class HttpsFunctionNode implements common.HttpsFunction {
 
   HttpsFunctionNode(this._implCloudFonction);
 
-  get value => _implCloudFonction;
+  dynamic get value => _implCloudFonction;
 
-  toString() => _implCloudFonction.toString();
+  @override
+  String toString() => _implCloudFonction.toString();
 }
 
 String get firebaseProjectId {

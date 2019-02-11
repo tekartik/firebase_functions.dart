@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'grind.dart';
 
 // Make sure to deploy storage before
-main() async {
+Future main() async {
   await firebase_serve();
 }

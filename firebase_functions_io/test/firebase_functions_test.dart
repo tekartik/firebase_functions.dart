@@ -1,14 +1,14 @@
 @TestOn('vm')
 library tekartik_firebase_functions_io.test.firebase_functions_test;
 
-import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
-import 'package:test/test.dart';
-import 'package:tekartik_http_io/http_client_io.dart';
+import 'dart:async';
 
+import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
     as common;
-import 'dart:async';
+import 'package:tekartik_http_io/http_client_io.dart';
+import 'package:test/test.dart';
 
 Future main() async {
   var firebaseFunctions = firebaseFunctionsIo;

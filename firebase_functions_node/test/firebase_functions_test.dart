@@ -33,8 +33,8 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
   var completer = Completer<Process>();
   var process = await Process.start(cmd.executable, cmd.arguments);
   process.stdout
-      .transform(Utf8Decoder())
-      .transform(LineSplitter())
+      .transform(const Utf8Decoder())
+      .transform(const LineSplitter())
       .listen((line) {
     // wait for the lines
     // +  functions: echo: http://localhost:5000/tekartik-free-dev/us-central1/echo
@@ -66,7 +66,7 @@ Future main() async {
           httpClientFactory: httpClientFactory, baseUrl: context.baseUrl);
       tearDownAll(() async {
         // await server.close();
-        await process.kill();
+        process.kill();
       });
     });
   });

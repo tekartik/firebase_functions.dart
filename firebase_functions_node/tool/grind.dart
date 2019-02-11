@@ -1,13 +1,14 @@
 import 'package:grinder/grinder.dart';
 import "package:tekartik_build_utils/common_import.dart";
 
-main(List<String> args) => grind(args);
+// ignore_for_file: non_constant_identifier_names
+Future main(List<String> args) => grind(args);
 
 @Task()
-test() => TestRunner().testAsync();
+Future test() => TestRunner().testAsync();
 
 @Depends(test)
-build() {
+void build() {
   Pub.build();
 }
 
@@ -18,7 +19,7 @@ String projectIdDev = 'tekartik-free-dev';
 String projectId = projectIdDev;
 
 @DefaultTask()
-firebase_serve() async {
+Future firebase_serve() async {
   await runCmd(PubCmd([
     'run',
     'build_runner',
@@ -26,15 +27,15 @@ firebase_serve() async {
     '--output',
     'node_functions:$buildFolder'
   ]));
-  await copy(File(join(buildFolder, 'index.dart.js')), Directory('functions'));
+  copy(File(join(buildFolder, 'index.dart.js')), Directory('functions'));
   await runCmd(FirebaseCmd(firebaseArgs(serve: true, onlyFunctions: true)));
 }
 
 @Task()
-clean() => defaultClean();
+void clean() => defaultClean();
 
 @Task()
-build_test() async {
+Future build_test() async {
   //await Pub.build(directories: [binDir.path]);
   await runCmd(PubCmd(
       pubRunArgs(['build_runner', 'build', '--output', 'test:build/test'])));
@@ -42,7 +43,7 @@ build_test() async {
 }
 
 @Task()
-watch() async {
+Future watch() async {
   await runCmd(PubCmd(
       pubRunArgs(['build_runner', 'watch', '--output', 'test:build/test'])));
 }
