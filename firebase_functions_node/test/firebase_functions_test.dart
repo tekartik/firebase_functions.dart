@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:fs_shim/utils/io/copy.dart';
 import 'package:path/path.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
 import 'package:tekartik_build_utils/firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
@@ -29,7 +30,8 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
   ]));
   await copyFile(File(join(buildFolder, 'index.dart.js')),
       File(join('functions', 'index.dart.js')));
-  var cmd = FirebaseCmd(firebaseArgs(serve: true, onlyFunctions: true));
+  var cmd = FirebaseCmd(
+      firebaseArgs(serve: true, onlyFunctions: true, projectId: 'dev'));
   var completer = Completer<Process>();
   var process = await Process.start(cmd.executable, cmd.arguments);
   process.stdout
@@ -40,13 +42,20 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
     // +  functions: echo: http://localhost:5000/tekartik-free-dev/us-central1/echo
     // +  functions: echoFragment: http://localhost:5000/tekartik-free-dev/us-central1/echoFragment
     // +  functions: echoQuery: http://localhost:5000/tekartik-free-dev/us-central1/echoQuery
-    print("$line");
+    print("serve $line");
     if (line.contains(url.join(context.baseUrl, 'echo'))) {
       if (!completer.isCompleted) {
         completer.complete(process);
       }
     }
   });
+  unawaited(process.exitCode.then((exitCode) async {
+    if (!completer.isCompleted) {
+      await stderr.addStream(process.stderr);
+      print('exitCode: ${exitCode}');
+      completer.completeError('exitCode: $exitCode');
+    }
+  }));
   return completer.future;
 }
 
