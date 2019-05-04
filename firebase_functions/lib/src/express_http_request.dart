@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:tekartik_http/http.dart';
 
@@ -128,7 +127,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
 
   @override
   Future redirect(Uri location, {int status}) => implHttpResponse
-      .redirect(location, status: status ?? HttpStatus.movedTemporarily);
+      .redirect(location, status: status ?? httpStatusMovedTemporarily);
 
 /*
   @override

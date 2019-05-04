@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
+import 'package:tekartik_http/http.dart';
+import 'package:tekartik_http_io/http_server_io.dart';
 
 class FirebaseFunctionsIo implements FirebaseFunctions {
   Map<String, dynamic> functions = {};
@@ -96,7 +98,7 @@ FirebaseFunctionsIo get firebaseFunctionsIo =>
     _firebaseFunctionsIo ??= FirebaseFunctionsIo._();
 
 // TODO: etags, last-modified-since support
-Future onFileRequest(io.HttpRequest request) async {
+Future onFileRequest(HttpRequest request) async {
   String path = rewritePath(request.uri.path);
   io.File targetFile = io.File(path);
   /*
@@ -117,7 +119,8 @@ Future onFileRequest(io.HttpRequest request) async {
   */
   if (targetFile.existsSync()) {
     print("Serving ${targetFile.path}.");
-    request.response.headers.contentType = io.ContentType.html;
+    request.response.headers.contentType =
+        ContentType.parse(httpContentTypeHtml); // ContentType.html;
     try {
       await targetFile.openRead().pipe(request.response);
     } catch (e) {
@@ -138,7 +141,7 @@ Future onFileRequest(io.HttpRequest request) async {
 Future<HttpServer> serve({int port}) async {
   port ??= 4999;
   var requestServer =
-      await io.HttpServer.bind(io.InternetAddress.anyIPv4, port);
+      await httpServerFactoryIo.bind(io.InternetAddress.anyIPv4, port);
   for (String key in firebaseFunctionsIo.functions.keys) {
     print("$key http://localhost:${port}/${key}");
   }
@@ -147,7 +150,7 @@ Future<HttpServer> serve({int port}) async {
   bool handled = false;
   // Launch in background
   unawaited(Future.sync(() async {
-    await for (io.HttpRequest request in requestServer) {
+    await for (HttpRequest request in requestServer) {
       var uri = request.uri;
       // /test
       var functionKey = uri.pathSegments.first;
