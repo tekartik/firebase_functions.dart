@@ -10,14 +10,13 @@ import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:process_run/which.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
-import 'package:tekartik_build_utils/travis/travis.dart';
 import 'package:tekartik_build_utils/firebase/firebase.dart';
+import 'package:tekartik_build_utils/travis/travis.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
-import 'package:test/test.dart';
-import 'package:tekartik_http_io/http_client_io.dart';
-
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
     as common;
+import 'package:tekartik_http_io/http_client_io.dart';
+import 'package:test/test.dart';
 
 String buildFolder =
     join('.dart_tool', 'tekartik_firebase_function_node', 'test');
@@ -68,18 +67,19 @@ Future main() async {
 
   context.baseUrl = 'http://localhost:5000/tekartik-free-dev/us-central1';
 
-  var process = await firebaseBuildCopyAndServe(context: context);
-
   bool firebaseInstalled = whichSync('firebase') != null;
   group('firebase_functions_io', () {
     group('echo', () {
-      setUpAll(() async {});
+      Process process;
+      setUpAll(() async {
+        process = await firebaseBuildCopyAndServe(context: context);
+      });
 
       common.main(
           httpClientFactory: httpClientFactory, baseUrl: context.baseUrl);
       tearDownAll(() async {
         // await server.close();
-        process.kill();
+        process?.kill();
       });
     }, skip: !firebaseInstalled || runningInTravis);
   });
