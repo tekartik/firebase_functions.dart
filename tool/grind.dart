@@ -4,7 +4,7 @@ import 'package:tekartik_build_utils/bash/bash.dart';
 
 String extraOptions = '';
 
-main(List<String> args) {
+void main(List<String> args) {
   // Handle extra args after --
   // to specify test names
   for (int i = 0; i < args.length; i++) {
@@ -19,10 +19,10 @@ main(List<String> args) {
 }
 
 @Task()
-test() async {}
+Future test() async {}
 
 @Task()
-fmt() async {
+Future fmt() async {
   await bash('''
 set -xe
 dartfmt . -w
@@ -30,7 +30,7 @@ dartfmt . -w
 }
 
 @DefaultTask()
-help() {
+void help() {
   print('Quick help:');
   print('  fmt: format');
 }

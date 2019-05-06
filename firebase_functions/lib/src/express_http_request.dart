@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:tekartik_http/http.dart';
 
@@ -14,10 +13,16 @@ String requestBodyAsText(dynamic body) {
 }
 
 Map<String, dynamic> requestBodyAsJsonObject(dynamic body) {
-  if (body is Map) {
+  if (body == null) {
+    return null;
+  } else if (body is Map) {
     return body?.cast<String, dynamic>();
   } else if (body is String) {
-    return (json.decode(body) as Map)?.cast<String, dynamic>();
+    try {
+      return (json.decode(body) as Map)?.cast<String, dynamic>();
+    } catch (_) {
+      return null;
+    }
   } else if (body is List) {
     return requestBodyAsJsonObject(requestBodyAsText(body));
   }
@@ -29,8 +34,11 @@ abstract class ExpressHttpRequest {
   dynamic get body;
 
   Uri get uri;
+
   ExpressHttpResponse get response;
+
   String get method;
+
   HttpHeaders get headers;
 
   @deprecated
@@ -46,6 +54,7 @@ abstract class ExpressHttpResponse {
 
   // Write a string
   void write(String content);
+
   void writeln(String content);
 
   // Add bytes
@@ -53,6 +62,7 @@ abstract class ExpressHttpResponse {
 
   // get and set status code
   int get statusCode;
+
   set statusCode(int statusCode);
 
   // To call if not using call
@@ -96,6 +106,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
   // status code
   @override
   int get statusCode => implHttpResponse.statusCode;
+
   @override
   set statusCode(int statusCode) => implHttpResponse.statusCode = statusCode;
 
@@ -116,9 +127,9 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
 
   @override
   Future redirect(Uri location, {int status}) => implHttpResponse
-      .redirect(location, status: status ?? HttpStatus.movedTemporarily);
+      .redirect(location, status: status ?? httpStatusMovedTemporarily);
 
-  /*
+/*
   @override
   Future redirect(Uri location, {int status}) {
     statusCode = status;
@@ -130,6 +141,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
 
 abstract class HttpRequestWrapperMixin implements ExpressHttpRequest {
   HttpRequest get implHttpRequest;
+
   Uri get _rewrittenUri;
 
   @override
