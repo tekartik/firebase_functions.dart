@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:process_run/which.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
+import 'package:tekartik_build_utils/travis/travis.dart';
 import 'package:tekartik_build_utils/firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:test/test.dart';
@@ -80,6 +81,6 @@ Future main() async {
         // await server.close();
         process.kill();
       });
-    }, skip: !firebaseInstalled);
+    }, skip: !firebaseInstalled || runningInTravis);
   });
 }
