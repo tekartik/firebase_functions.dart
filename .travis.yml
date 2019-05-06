@@ -5,71 +5,25 @@ sudo: required
 addons:
   chrome: stable
 
+before_install:
+  - nvm install node
+  - node --version
+
 jobs:
   include:
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_sim_io"
+    - stage: test
+      script: dart ./tool/travis.dart
       dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_sembast"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_browser"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_node"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_sim"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_sim_io"
-      dart: dev
-    - stage: analyzer_and_format
-      script: ./tool/travis.sh dartfmt dartanalyzer
-      env: PKG="firebase_sim_browser"
-      dart: dev
-    - stage: test_vm
-      script: ./tool/travis.sh test_vm
-      env: PKG="firebase"
-      dart: dev
-    - stage: test_vm
-      script: ./tool/travis.sh test_vm
-      env: PKG="firebase_sembast"
-      dart: dev
-    - stage: test_vm
-      script: ./tool/travis.sh test_vm
-      env: PKG="firebase_sim"
-      dart: dev
-    - stage: test_vm
-      script: ./tool/travis.sh test_vm
-      env: PKG="firebase_sim_io"
-      dart: dev
-    - stage: test_browser
-      script: ./tool/travis.sh test_browser
-      env: PKG="firebase_sim"
-      dart: dev
-    - stage: test_browser
-      script: ./tool/travis.sh test_browser
-      env: PKG="firebase_sim_io"
-      dart: dev
+    - stage: test
+      script: dart ./tool/travis.dart
+      dart: stable
+
 stages:
-  - analyzer_and_format
-  - test_vm
+  - test
 
 # Only building master means that we don't run two builds for each pull request.
-branches:
-  only: [master]
+# branches:
+#  only: [master]
 
 cache:
   directories:
