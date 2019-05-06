@@ -1,6 +1,8 @@
 import 'package:grinder/grinder.dart';
 import "package:tekartik_build_utils/common_import.dart";
 
+import '../test/firebase_functions_test.dart';
+
 // ignore_for_file: non_constant_identifier_names
 Future main(List<String> args) => grind(args);
 
@@ -11,9 +13,6 @@ Future test() => TestRunner().testAsync();
 void build() {
   Pub.build();
 }
-
-String buildFolder =
-    join('.dart_tool', 'tekartik_firebase_function_node', 'build');
 
 String projectIdDev = 'tekartik-free-dev';
 String projectId = projectIdDev;

@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:fs_shim/utils/io/copy.dart';
 import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:process_run/which.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
 import 'package:tekartik_build_utils/firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
@@ -67,6 +68,8 @@ Future main() async {
   context.baseUrl = 'http://localhost:5000/tekartik-free-dev/us-central1';
 
   var process = await firebaseBuildCopyAndServe(context: context);
+
+  bool firebaseInstalled = whichSync('firebase') != null;
   group('firebase_functions_io', () {
     group('echo', () {
       setUpAll(() async {});
@@ -77,6 +80,6 @@ Future main() async {
         // await server.close();
         process.kill();
       });
-    });
+    }, skip: !firebaseInstalled);
   });
 }
