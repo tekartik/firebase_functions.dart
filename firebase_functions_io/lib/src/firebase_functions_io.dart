@@ -122,7 +122,7 @@ Future onFileRequest(HttpRequest request) async {
     request.response.headers.contentType =
         ContentType.parse(httpContentTypeHtml); // ContentType.html;
     try {
-      await targetFile.openRead().pipe(request.response);
+      await targetFile.openRead().cast<List<int>>().pipe(request.response);
     } catch (e) {
       print("Couldn't read file: $e");
       // exit(-1);
