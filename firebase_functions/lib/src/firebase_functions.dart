@@ -8,7 +8,7 @@ abstract class FirebaseFunctions {
   operator []=(String key, dynamic function);
 }
 
-typedef void RequestHandler(ExpressHttpRequest request);
+typedef RequestHandler = void Function(ExpressHttpRequest request);
 
 abstract class HttpsFunction {}
 

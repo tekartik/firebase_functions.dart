@@ -43,7 +43,7 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
     // +  functions: echo: http://localhost:5000/tekartik-free-dev/us-central1/echo
     // +  functions: echoFragment: http://localhost:5000/tekartik-free-dev/us-central1/echoFragment
     // +  functions: echoQuery: http://localhost:5000/tekartik-free-dev/us-central1/echoQuery
-    print("serve $line");
+    print('serve $line');
     if (line.contains(url.join(context.baseUrl, 'echo'))) {
       if (!completer.isCompleted) {
         completer.complete(process);
@@ -67,7 +67,7 @@ Future main() async {
 
   context.baseUrl = 'http://localhost:5000/tekartik-free-dev/us-central1';
 
-  bool firebaseInstalled = whichSync('firebase') != null;
+  final firebaseInstalled = whichSync('firebase') != null;
   group('firebase_functions_io', () {
     group('echo', () {
       Process process;

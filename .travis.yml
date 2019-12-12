@@ -13,13 +13,18 @@ jobs:
   include:
     - stage: test
       script: dart ./tool/travis.dart
-      dart: dev
-    - stage: test
-      script: dart ./tool/travis.dart
       dart: stable
+    - stage: min
+      script: dart ./tool/travis.dart
+      dart: 2.6.1
+    - stage: dev
+      script: dart ./tool/travis.dart
+      dart: dev
 
 stages:
-  - test
+  - stable
+  - min
+  - dev
 
 # Only building master means that we don't run two builds for each pull request.
 # branches:

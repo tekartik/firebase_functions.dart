@@ -1,5 +1,5 @@
 import 'package:grinder/grinder.dart';
-import "package:tekartik_build_utils/common_import.dart";
+import 'package:tekartik_build_utils/common_import.dart';
 
 import '../test/firebase_functions_test.dart';
 
