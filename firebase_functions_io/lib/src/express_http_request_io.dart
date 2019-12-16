@@ -25,7 +25,7 @@ class ExpressHttpResponseIo extends ExpressHttpResponseWrapperBase
 
 Future<ExpressHttpRequestIo> asExpressHttpRequestIo(
     HttpRequest httpRequest, Uri rewrittenUri) async {
-  List<int> body = [];
+  final body = <int>[];
   if (httpRequest.contentLength != 0) {
     for (var data in await httpRequest.toList()) {
       body.addAll(data);

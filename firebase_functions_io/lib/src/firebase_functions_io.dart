@@ -99,8 +99,8 @@ FirebaseFunctionsIo get firebaseFunctionsIo =>
 
 // TODO: etags, last-modified-since support
 Future onFileRequest(HttpRequest request) async {
-  String path = rewritePath(request.uri.path);
-  io.File targetFile = io.File(path);
+  final path = rewritePath(request.uri.path);
+  final targetFile = io.File(path);
   /*
   final io.File file = new io.File('${path}');
   file.exists().then((found) {
@@ -118,7 +118,7 @@ Future onFileRequest(HttpRequest request) async {
   });
   */
   if (targetFile.existsSync()) {
-    print("Serving ${targetFile.path}.");
+    print('Serving ${targetFile.path}.');
     request.response.headers.contentType =
         ContentType.parse(httpContentTypeHtml); // ContentType.html;
     try {
@@ -142,12 +142,12 @@ Future<HttpServer> serve({int port}) async {
   port ??= 4999;
   var requestServer =
       await httpServerFactoryIo.bind(io.InternetAddress.anyIPv4, port);
-  for (String key in firebaseFunctionsIo.functions.keys) {
-    print("$key http://localhost:${port}/${key}");
+  for (final key in firebaseFunctionsIo.functions.keys) {
+    print('$key http://localhost:${port}/${key}');
   }
 
   print('listening on http://localhost:${requestServer.port}');
-  bool handled = false;
+  var handled = false;
   // Launch in background
   unawaited(Future.sync(() async {
     await for (HttpRequest request in requestServer) {
@@ -156,7 +156,7 @@ Future<HttpServer> serve({int port}) async {
       var functionKey = uri.pathSegments.first;
       var function = firebaseFunctionsIo.functions[functionKey];
       if (function is HttpsFunctionIo) {
-        Uri rewrittenUri = Uri(
+        final rewrittenUri = Uri(
             pathSegments: uri.pathSegments.sublist(1),
             query: uri.query,
             fragment: uri.fragment);
@@ -176,7 +176,7 @@ Future<HttpServer> serve({int port}) async {
 }
 
 String rewritePath(String path) {
-  String newPath = path;
+  var newPath = path;
 
   if (path == '/') {
     newPath = url.join('public', 'index.html');
