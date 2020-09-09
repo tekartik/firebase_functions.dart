@@ -22,9 +22,12 @@ class FirebaseFunctionsIo implements FirebaseFunctions {
   operator []=(String key, dynamic function) {
     functions[key] = function;
   }
+
+  @override
+  FirestoreFunctions get firestore => throw UnimplementedError();
 }
 
-class HttpsIo implements Https {
+class HttpsIo implements HttpsFunctions {
   HttpsIo();
 
   @override
