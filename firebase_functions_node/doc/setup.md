@@ -10,3 +10,4 @@
       ref: dart2
     version: '>=0.2.1'
   ```
+- Run `fun init -o deploy/`, choose `http-trigger-nodejs12`

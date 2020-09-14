@@ -10,7 +10,12 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         EventContext,
         ChangeEventHandler,
         Change,
-        DocumentBuilder;
+        DocumentBuilder,
+        ScheduleBuilder,
+        ScheduleContext,
+        ScheduleEventHandler,
+        PubsubFunctions,
+        PubsubFunction;
 
 export 'package:tekartik_http/http_server.dart';
 

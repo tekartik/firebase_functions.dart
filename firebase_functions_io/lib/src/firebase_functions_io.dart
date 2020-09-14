@@ -25,6 +25,9 @@ class FirebaseFunctionsIo implements FirebaseFunctions {
 
   @override
   FirestoreFunctions get firestore => throw UnimplementedError();
+
+  @override
+  PubsubFunctions get pubsub => throw UnimplementedError();
 }
 
 class HttpsIo implements HttpsFunctions {

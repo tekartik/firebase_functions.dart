@@ -10,6 +10,7 @@ export 'package:tekartik_firebase_firestore/firestore.dart'
 abstract class FirebaseFunctions {
   HttpsFunctions get https;
   FirestoreFunctions get firestore;
+  PubsubFunctions get pubsub;
 
   operator []=(String key, FirebaseFunction function);
 }
@@ -23,6 +24,9 @@ abstract class HttpsFunction implements FirebaseFunction {}
 
 /// Firestore function.
 abstract class FirestoreFunction implements FirebaseFunction {}
+
+/// Pubsub function
+abstract class PubsubFunction implements FirebaseFunction {}
 
 abstract class FirestoreFunctions {
   DocumentBuilder document(String path);
@@ -60,4 +64,21 @@ class Change<T> {
 
   /// The state prior to the event.
   final T before;
+}
+
+//
+// Pubsub
+//
+
+abstract class ScheduleContext {}
+
+typedef ScheduleEventHandler = FutureOr<void> Function(ScheduleContext context);
+
+abstract class ScheduleBuilder {
+  /// Event handler that fires every time a schedule occurs.
+  PubsubFunction onRun(ScheduleEventHandler handler);
+}
+
+abstract class PubsubFunctions {
+  ScheduleBuilder schedule(String expression);
 }
