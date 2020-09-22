@@ -10,12 +10,10 @@ import 'firebase_functions_https_node.dart';
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
 common.FirebaseFunctions get firebaseFunctionsNode =>
-    _firebaseFunctionsNode ??= FirebaseFunctionsNode._();
+    _firebaseFunctionsNode ??= FirebaseFunctionsNode();
 
 //import 'package:firebase_functions_interop/
 class FirebaseFunctionsNode implements common.FirebaseFunctions {
-  FirebaseFunctionsNode._();
-
   @override
   final common.HttpsFunctions https = HttpsFunctionsNode();
 

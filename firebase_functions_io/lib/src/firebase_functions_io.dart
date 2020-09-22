@@ -1,33 +1,16 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
 
-class FirebaseFunctionsIo implements FirebaseFunctions {
-  Map<String, dynamic> functions = {};
+import 'firebase_functions_http.dart';
 
-  FirebaseFunctionsIo._();
-
-  HttpsIo _https;
-
-  @override
-  HttpsIo get https => _https ??= HttpsIo();
-
-  @override
-  operator []=(String key, dynamic function) {
-    functions[key] = function;
-  }
-
-  @override
-  FirestoreFunctions get firestore => throw UnimplementedError();
-
-  @override
-  PubsubFunctions get pubsub => throw UnimplementedError();
+class FirebaseFunctionsIo extends FirebaseFunctionsHttp {
+  FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 
 class HttpsIo implements HttpsFunctions {
@@ -179,29 +162,4 @@ Future<HttpServer> serve({int port}) async {
     }
   }));
   return requestServer;
-}
-
-String rewritePath(String path) {
-  var newPath = path;
-
-  if (path == '/') {
-    newPath = url.join('public', 'index.html');
-  } else if (path.endsWith('/')) {
-    newPath = url.join('public', path, 'index.html');
-  } else if (!path.endsWith('.html')) {
-    /*
-    if (path.contains('.')) {
-      newPath = '/web${path}';
-    } else {
-      newPath = '/web${path}.html';
-    }
-    */
-  } else {
-    newPath = url.join('public', path);
-  }
-
-  //peek into how it's rewriting the paths
-  print('$path -> $newPath');
-
-  return newPath;
 }

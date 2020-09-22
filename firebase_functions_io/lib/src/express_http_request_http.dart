@@ -2,29 +2,28 @@ import 'dart:async';
 
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
-// Check if needed
-class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
+class ExpressHttpRequestHttp extends ExpressHttpRequestWrapperBase
     implements ExpressHttpRequest {
   @override
   final dynamic body;
 
-  ExpressHttpRequestIo(this.body, HttpRequest httpRequest, Uri rewrittenUri)
+  ExpressHttpRequestHttp(this.body, HttpRequest httpRequest, Uri rewrittenUri)
       : super(httpRequest, rewrittenUri);
 
   ExpressHttpResponse _response;
 
   @override
   ExpressHttpResponse get response =>
-      _response ??= ExpressHttpResponseIo(implHttpRequest.response);
+      _response ??= ExpressHttpResponseHttp(implHttpRequest.response);
 }
 
-class ExpressHttpResponseIo extends ExpressHttpResponseWrapperBase
+class ExpressHttpResponseHttp extends ExpressHttpResponseWrapperBase
     implements ExpressHttpResponse {
-  ExpressHttpResponseIo(HttpResponse implHttpResponse)
+  ExpressHttpResponseHttp(HttpResponse implHttpResponse)
       : super(implHttpResponse);
 }
 
-Future<ExpressHttpRequestIo> asExpressHttpRequestIo(
+Future<ExpressHttpRequestHttp> asExpressHttpRequestHttp(
     HttpRequest httpRequest, Uri rewrittenUri) async {
   final body = <int>[];
   if (httpRequest.contentLength != 0) {
@@ -32,5 +31,5 @@ Future<ExpressHttpRequestIo> asExpressHttpRequestIo(
       body.addAll(data);
     }
   }
-  return ExpressHttpRequestIo(body, httpRequest, rewrittenUri);
+  return ExpressHttpRequestHttp(body, httpRequest, rewrittenUri);
 }

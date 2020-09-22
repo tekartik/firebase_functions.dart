@@ -1,6 +1,6 @@
 name: tekartik_firebase_functions_node
 description: Firebase functions node
-version: 0.3.2
+version: 0.3.3
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
@@ -14,13 +14,13 @@ dependencies:
       url: git://github.com/tekartik/firebase_functions.dart
       path: firebase_functions
       ref: dart2
-    version: '>=0.3.0'
+    version: '>=0.3.3'
   tekartik_firebase_functions_io:
     git:
       url: git://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_io
       ref: dart2
-    version: '>=0.2.1'
+    version: '>=0.3.3'
   tekartik_firebase_firestore_node:
     git:
       url: git://github.com/tekartik/firebase_firestore.dart
@@ -69,5 +69,7 @@ dev_dependencies:
 dependency_overrides:
   tekartik_firebase_functions:
     path: ../firebase_functions
+  tekartik_firebase_functions_io:
+    path: ../firebase_functions_io
   tekartik_firebase_functions_test:
     path: ../firebase_functions_test
