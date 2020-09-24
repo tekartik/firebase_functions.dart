@@ -22,7 +22,9 @@ class DocumentBuilderNode implements common.DocumentBuilder {
   common.FirestoreFunction onWrite(
       common.ChangeEventHandler<common.DocumentSnapshot> handler) {
     return FirestoreFunctionNode(implBuilder.onWrite((data, context) {
-      handler(DocumentSnapshotChangeNode(data), EventContextNode(context));
+      /// Important to return the handler content here so that the function does not end
+      return handler(
+          DocumentSnapshotChangeNode(data), EventContextNode(context));
     }));
   }
 }
