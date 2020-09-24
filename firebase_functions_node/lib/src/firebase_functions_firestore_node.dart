@@ -47,6 +47,11 @@ abstract class ChangeNode<T> implements common.Change<T> {
 
   @override
   T get before => throw UnimplementedError('ChangeNode.before');
+
+  @override
+  String toString() {
+    return {'after': after, 'before': before}.toString();
+  }
 }
 
 class DocumentSnapshotChangeNode
@@ -66,4 +71,22 @@ class EventContextNode implements common.EventContext {
   final impl.EventContext implEventContext;
 
   EventContextNode(this.implEventContext);
+
+  @override
+  String get eventType => implEventContext.eventType;
+
+  @override
+  Map<String, String> get params => implEventContext.params;
+
+  /// Timestamp for the event.
+  @override
+  firestore.Timestamp get timestamp => implEventContext.timestamp == null
+      ? null
+      : firestore.Timestamp.fromDateTime(implEventContext.timestamp);
+
+  @override
+  String toString() {
+    return {'eventType': eventType, 'params': params, 'timestamp': timestamp}
+        .toString();
+  }
 }

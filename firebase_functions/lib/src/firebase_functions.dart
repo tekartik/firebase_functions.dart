@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 export 'package:tekartik_firebase_firestore/firestore.dart'
-    show DocumentSnapshot;
+    show DocumentSnapshot, Timestamp;
 
 abstract class FirebaseFunctions {
   HttpsFunctions get https;
@@ -52,7 +52,17 @@ typedef ChangeEventHandler<T> = FutureOr<void> Function(
 ///   * The resource on which the event occurred, if applicable.
 ///   * Authorization of the request that triggered the event, if applicable
 ///     and available.
-abstract class EventContext {}
+abstract class EventContext {
+  /// An object containing the values of the wildcards in the path parameter
+  /// provided to the ref() method for a firestore/realtime database trigger.
+  Map<String, String> get params;
+
+  /// Type of event.
+  String get eventType;
+
+  /// Timestamp for the event.
+  Timestamp get timestamp;
+}
 
 /// Container for events that change state, such as Realtime Database or
 /// Cloud Firestore `onWrite` and `onUpdate`.
