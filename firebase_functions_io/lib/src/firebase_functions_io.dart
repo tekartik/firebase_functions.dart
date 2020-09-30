@@ -13,77 +13,6 @@ class FirebaseFunctionsIo extends FirebaseFunctionsHttp {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 
-/*
-class HttpsIo implements HttpsFunctions {
-  HttpsIo();
-
-  @override
-  HttpsFunction onRequest(RequestHandler handler) {
-    return HttpsFunctionIo(handler);
-  }
-}
-
- */
-/*
-class HttpsFunctionIo implements HttpsFunction {
-  // ignore: unused_field
-  final RequestHandler handler;
-
-  HttpsFunctionIo(this.handler);
-}
-*/
-/*
-class IoHttpRequest extends Stream<List<int>> implements io.HttpRequest {
-  final io.HttpRequest implHttpRequest;
-
-  final Uri rewrittenUri;
-
-  IoHttpRequest(this.implHttpRequest, this.rewrittenUri);
-
-  @override
-  io.HttpResponse get response => implHttpRequest.response;
-
-  @override
-  io.X509Certificate get certificate => implHttpRequest.certificate;
-
-  @override
-  io.HttpConnectionInfo get connectionInfo => implHttpRequest.connectionInfo;
-
-  @override
-  int get contentLength => implHttpRequest.contentLength;
-
-  @override
-  List<io.Cookie> get cookies => implHttpRequest.cookies;
-
-  @override
-  io.HttpHeaders get headers => implHttpRequest.headers;
-
-  @override
-  StreamSubscription<List<int>> listen(void Function(List<int> event) onData,
-          {Function onError, void Function() onDone, bool cancelOnError}) =>
-      implHttpRequest.listen(onData,
-          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-
-  @override
-  String get method => implHttpRequest.method;
-
-  @override
-  bool get persistentConnection => implHttpRequest.persistentConnection;
-
-  @override
-  String get protocolVersion => implHttpRequest.protocolVersion;
-
-  @override
-  Uri get requestedUri => implHttpRequest.requestedUri;
-
-  @override
-  io.HttpSession get session => implHttpRequest.session;
-
-  // The only one to use
-  @override
-  Uri get uri => rewrittenUri;
-}
-*/
 FirebaseFunctionsIo _firebaseFunctionsIo;
 
 FirebaseFunctionsIo get firebaseFunctionsIo =>
@@ -93,22 +22,7 @@ FirebaseFunctionsIo get firebaseFunctionsIo =>
 Future onFileRequest(HttpRequest request) async {
   final path = rewritePath(request.uri.path);
   final targetFile = io.File(path);
-  /*
-  final io.File file = new io.File('${path}');
-  file.exists().then((found) {
-    if (found) {
-      file.fullPath().then((String fullPath) {
-        if (!fullPath.startsWith(basePath)) {
-          _send404(response);
-        } else {
-          file.openInputStream().pipe(response.outputStream);
-        }
-      });
-    } else {
-      _send404(response);
-    }
-  });
-  */
+
   if (targetFile.existsSync()) {
     print('Serving ${targetFile.path}.');
     request.response.headers.contentType =
