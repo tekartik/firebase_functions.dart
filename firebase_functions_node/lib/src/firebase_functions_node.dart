@@ -10,22 +10,44 @@ import 'firebase_functions_https_node.dart';
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
 common.FirebaseFunctions get firebaseFunctionsNode =>
-    _firebaseFunctionsNode ??= FirebaseFunctionsNode();
+    _firebaseFunctionsNode ??= FirebaseFunctionsNode(impl.functions);
 
 //import 'package:firebase_functions_interop/
 class FirebaseFunctionsNode implements common.FirebaseFunctions {
-  @override
-  final common.HttpsFunctions https = HttpsFunctionsNode();
+  final impl.FirebaseFunctions implFunctions;
+
+  common.HttpsFunctions _https;
 
   @override
-  final common.FirestoreFunctions firestore = FirestoreFunctionsNode();
+  common.HttpsFunctions get https => _https ??= HttpsFunctionsNode(this);
+
+  common.FirestoreFunctions _firestore;
 
   @override
-  final common.PubsubFunctions pubsub = PubsubFunctionsNode();
+  common.FirestoreFunctions get firestore =>
+      _firestore ??= FirestoreFunctionsNode(this);
+
+  common.PubsubFunctions _pubsub;
+
+  @override
+  common.PubsubFunctions get pubsub => _pubsub ??= PubsubFunctionsNode(this);
+
+  FirebaseFunctionsNode(this.implFunctions);
 
   @override
   operator []=(String key, common.FirebaseFunction function) {
-    impl.functions[key] = (function as FirebaseFunctionNode).value;
+    implFunctions[key] = (function as FirebaseFunctionNode).value;
+  }
+
+  @override
+  common.FirebaseFunctions region(String region) {
+    return FirebaseFunctionsNode(implFunctions.region(region));
+  }
+
+  @override
+  common.FirebaseFunctions runWith(common.RuntimeOptions options) {
+    return FirebaseFunctionsNode(implFunctions.runWith(impl.RuntimeOptions(
+        timeoutSeconds: options.timeoutSeconds, memory: options.memory)));
   }
 }
 

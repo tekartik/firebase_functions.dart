@@ -1,11 +1,11 @@
 name: tekartik_firebase_functions_node
 description: Firebase functions node
-version: 0.3.4
+version: 0.3.5
 #homepage: https://www.example.com
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.6.0 <3.0.0'
+  sdk: '>=2.9.0 <3.0.0'
 
 dependencies:
   js: any
@@ -14,7 +14,7 @@ dependencies:
       url: git://github.com/tekartik/firebase_functions.dart
       path: firebase_functions
       ref: dart2
-    version: '>=0.3.3'
+    version: '>=0.3.5'
   tekartik_firebase_functions_io:
     git:
       url: git://github.com/tekartik/firebase_functions.dart

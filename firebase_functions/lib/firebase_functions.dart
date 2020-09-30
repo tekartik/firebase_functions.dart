@@ -15,7 +15,14 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         ScheduleContext,
         ScheduleEventHandler,
         PubsubFunctions,
-        PubsubFunction;
+        PubsubFunction,
+        RuntimeOptions,
+        regionBelgium,
+        runtimeOptionsMemory128MB,
+        runtimeOptionsMemory256MB,
+        runtimeOptionsMemory512MB,
+        runtimeOptionsMemory1GB,
+        runtimeOptionsMemory2GB;
 
 export 'package:tekartik_http/http_server.dart';
 

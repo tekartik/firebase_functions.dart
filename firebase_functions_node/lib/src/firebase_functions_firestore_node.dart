@@ -8,9 +8,12 @@ import 'package:firebase_admin_interop/firebase_admin_interop.dart' as node;
 import 'firebase_functions_node.dart';
 
 class FirestoreFunctionsNode implements common.FirestoreFunctions {
+  final FirebaseFunctionsNode functions;
+
+  FirestoreFunctionsNode(this.functions);
   @override
   common.DocumentBuilder document(String path) =>
-      DocumentBuilderNode(impl.functions.firestore.document(path));
+      DocumentBuilderNode(functions.implFunctions.firestore.document(path));
 }
 
 class DocumentBuilderNode implements common.DocumentBuilder {

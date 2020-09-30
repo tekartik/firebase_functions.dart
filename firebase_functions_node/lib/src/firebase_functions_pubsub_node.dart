@@ -7,11 +7,13 @@ import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'firebase_functions_node.dart';
 
 class PubsubFunctionsNode implements common.PubsubFunctions {
-  PubsubFunctionsNode();
+  final FirebaseFunctionsNode functions;
+  PubsubFunctionsNode(this.functions);
 
   @override
   common.ScheduleBuilder schedule(String expression) {
-    return ScheduleBuilderNode(impl.functions.pubsub.schedule(expression));
+    return ScheduleBuilderNode(
+        functions.implFunctions.pubsub.schedule(expression));
   }
 }
 

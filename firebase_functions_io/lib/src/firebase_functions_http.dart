@@ -76,6 +76,14 @@ class FirebaseFunctionsHttp implements FirebaseFunctions {
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');
   }
+
+  /// No-op.
+  @override
+  FirebaseFunctions region(String region) => this;
+
+  /// No-op.
+  @override
+  FirebaseFunctions runWith(RuntimeOptions options) => this;
 }
 
 class HttpsHttp implements HttpsFunctions {

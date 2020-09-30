@@ -6,7 +6,8 @@ import 'package:tekartik_firebase_functions_node/src/express_http_request_node.d
 import 'firebase_functions_node.dart';
 
 class HttpsFunctionsNode implements common.HttpsFunctions {
-  HttpsFunctionsNode();
+  final FirebaseFunctionsNode functions;
+  HttpsFunctionsNode(this.functions);
 
   @override
   common.HttpsFunction onRequest(common.RequestHandler handler) {
@@ -15,7 +16,7 @@ class HttpsFunctionsNode implements common.HttpsFunctions {
       handler(_request);
     }
 
-    return HttpsFunctionNode(impl.functions.https.onRequest(_handle));
+    return HttpsFunctionNode(functions.implFunctions.https.onRequest(_handle));
   }
 }
 
