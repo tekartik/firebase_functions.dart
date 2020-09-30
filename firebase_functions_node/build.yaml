@@ -1,6 +1,7 @@
 targets:
   $default:
     sources:
+      - "bin/**"
       - "example/**"
       - "lib/**"
       - "test/**"
@@ -8,6 +9,7 @@ targets:
     builders:
       build_node_compilers|entrypoint:
         generate_for:
+          - bin/**
           - node/**
           - node_functions/**
           - test/**

@@ -1,22 +1,15 @@
-## Test setup
+# Setup
 
-    User dart2 and set env variable
-    
-    dartsdkdev ; fbfree
-    
-    npm install
-    
-## Test
+```yaml
+dependencies:
+  tekartik_firebase_functions_node:
+    git:
+      url: git://github.com/tekartik/firebase_functions.dart
+      path: firebase_functions_node
+      ref: dart2
+    version: '>=0.2.1'
+```
 
-    pub run test -p vm,node
-    
-    nodetest test/admin_node_test.dart -v
-    nodetest test/firestore_node_test.dart -v
-    nodetest test/storage_node_test.dart -v
+## Firebase functions
 
-## Firebase setup
-
-    firebase use
-    
-    # Choose a project and set the alias to 'dev'
-    firebase use --add
+- [setup](doc/setup.md)

@@ -1,51 +1,58 @@
-import 'package:node_io/node_io.dart';
-import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'package:firebase_functions_interop/firebase_functions_interop.dart'
     as impl;
-import 'package:tekartik_firebase_functions_node/src/express_http_request_node.dart';
+import 'package:node_io/node_io.dart';
+import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
+import 'package:tekartik_firebase_functions_node/src/firebase_functions_firestore_node.dart';
+import 'package:tekartik_firebase_functions_node/src/firebase_functions_pubsub_node.dart';
+
+import 'firebase_functions_https_node.dart';
 
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
 common.FirebaseFunctions get firebaseFunctionsNode =>
-    _firebaseFunctionsNode ??= FirebaseFunctionsNode._();
+    _firebaseFunctionsNode ??= FirebaseFunctionsNode(impl.functions);
 
 //import 'package:firebase_functions_interop/
 class FirebaseFunctionsNode implements common.FirebaseFunctions {
-  FirebaseFunctionsNode._();
+  final impl.FirebaseFunctions implFunctions;
+
+  common.HttpsFunctions _https;
 
   @override
-  final common.Https https = HttpsNode();
+  common.HttpsFunctions get https => _https ??= HttpsFunctionsNode(this);
+
+  common.FirestoreFunctions _firestore;
 
   @override
-  operator []=(String key, dynamic function) {
-    impl.functions[key] = (function as HttpsFunctionNode).value;
+  common.FirestoreFunctions get firestore =>
+      _firestore ??= FirestoreFunctionsNode(this);
+
+  common.PubsubFunctions _pubsub;
+
+  @override
+  common.PubsubFunctions get pubsub => _pubsub ??= PubsubFunctionsNode(this);
+
+  FirebaseFunctionsNode(this.implFunctions);
+
+  @override
+  operator []=(String key, common.FirebaseFunction function) {
+    implFunctions[key] = (function as FirebaseFunctionNode).value;
+  }
+
+  @override
+  common.FirebaseFunctions region(String region) {
+    return FirebaseFunctionsNode(implFunctions.region(region));
+  }
+
+  @override
+  common.FirebaseFunctions runWith(common.RuntimeOptions options) {
+    return FirebaseFunctionsNode(implFunctions.runWith(impl.RuntimeOptions(
+        timeoutSeconds: options.timeoutSeconds, memory: options.memory)));
   }
 }
 
-class HttpsNode implements common.Https {
-  HttpsNode();
-
-  @override
-  common.HttpsFunction onRequest(common.RequestHandler handler) {
-    void _handle(impl.ExpressHttpRequest request) {
-      var _request = ExpressHttpRequestNode(request, request.uri);
-      handler(_request);
-    }
-
-    return HttpsFunctionNode(impl.functions.https.onRequest(_handle));
-  }
-}
-
-class HttpsFunctionNode implements common.HttpsFunction {
-  // ignore: unused_field
-  final _implCloudFonction;
-
-  HttpsFunctionNode(this._implCloudFonction);
-
-  dynamic get value => _implCloudFonction;
-
-  @override
-  String toString() => _implCloudFonction.toString();
+abstract class FirebaseFunctionNode implements common.FirebaseFunction {
+  dynamic get value;
 }
 
 String get firebaseProjectId {
