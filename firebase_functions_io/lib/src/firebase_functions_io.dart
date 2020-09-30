@@ -13,6 +13,7 @@ class FirebaseFunctionsIo extends FirebaseFunctionsHttp {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 
+/*
 class HttpsIo implements HttpsFunctions {
   HttpsIo();
 
@@ -22,13 +23,15 @@ class HttpsIo implements HttpsFunctions {
   }
 }
 
+ */
+/*
 class HttpsFunctionIo implements HttpsFunction {
   // ignore: unused_field
   final RequestHandler handler;
 
   HttpsFunctionIo(this.handler);
 }
-
+*/
 /*
 class IoHttpRequest extends Stream<List<int>> implements io.HttpRequest {
   final io.HttpRequest implHttpRequest;
@@ -144,7 +147,7 @@ Future<HttpServer> serve({int port}) async {
       // /test
       var functionKey = uri.pathSegments.first;
       var function = firebaseFunctionsIo.functions[functionKey];
-      if (function is HttpsFunctionIo) {
+      if (function is HttpsFunctionHttp) {
         final rewrittenUri = Uri(
             pathSegments: uri.pathSegments.sublist(1),
             query: uri.query,

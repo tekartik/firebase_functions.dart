@@ -11,7 +11,7 @@ before_install:
 
 jobs:
   include:
-    - stage: test
+    - stage: stable
       script: dart ./tool/travis.dart
       dart: stable
     - stage: beta
