@@ -1,9 +1,11 @@
-import 'package:tekartik_firebase_functions/firebase_functions.dart';
-
 import 'package:tekartik_firebase_functions_io/src/firebase_functions_io.dart'
     as io;
+
+import 'firebase_functions_http.dart';
 
 export 'package:tekartik_firebase_functions_io/src/firebase_functions_io.dart'
     show serve;
 
-FirebaseFunctions get firebaseFunctionsIo => io.firebaseFunctionsIo;
+export 'firebase_functions_http.dart';
+
+FirebaseFunctionsHttp get firebaseFunctionsIo => io.firebaseFunctionsIo;
