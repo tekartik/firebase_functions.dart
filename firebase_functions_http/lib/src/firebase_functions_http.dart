@@ -13,10 +13,10 @@ class FirebaseFunctionsHttp implements FirebaseFunctions {
 
   FirebaseFunctionsHttp(this.httpServerFactory);
 
-  HttpsHttp _https;
+  HttpsFunctions _https;
 
   @override
-  HttpsHttp get https => _https ??= HttpsHttp();
+  HttpsFunctions get https => _https ??= HttpsHttp();
 
   @override
   operator []=(String key, dynamic function) {

@@ -71,5 +71,7 @@ dependency_overrides:
     path: ../firebase_functions
   tekartik_firebase_functions_io:
     path: ../firebase_functions_io
+  tekartik_firebase_functions_http:
+    path: ../firebase_functions_http
   tekartik_firebase_functions_test:
     path: ../firebase_functions_test

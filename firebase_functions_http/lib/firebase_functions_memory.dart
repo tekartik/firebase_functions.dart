@@ -1,4 +1,4 @@
-import 'package:tekartik_firebase_functions_io/src/firebase_functions_memory.dart'
+import 'package:tekartik_firebase_functions_http/src/firebase_functions_memory.dart'
     as memory;
 
 import 'firebase_functions_http.dart';

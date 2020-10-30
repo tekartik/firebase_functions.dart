@@ -1,5 +1,4 @@
-@TestOn('vm')
-import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -7,7 +6,6 @@ void main() {
     test('export', () {
       // ignore: unnecessary_statements
       FirebaseFunctionsHttp;
-      firebaseFunctionsIo;
     });
   });
 }

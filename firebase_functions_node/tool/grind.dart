@@ -1,7 +1,7 @@
 import 'package:grinder/grinder.dart';
 import 'package:tekartik_build_utils/common_import.dart';
 
-import '../test/firebase_functions_test.dart';
+import '../test/firebase_functions_node_test.dart';
 
 // ignore_for_file: non_constant_identifier_names
 Future main(List<String> args) => grind(args);

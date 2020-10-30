@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
+import 'package:tekartik_http/http.dart';
 
 class ExpressHttpRequestHttp extends ExpressHttpRequestWrapperBase
     implements ExpressHttpRequest {
@@ -25,11 +27,9 @@ class ExpressHttpResponseHttp extends ExpressHttpResponseWrapperBase
 
 Future<ExpressHttpRequestHttp> asExpressHttpRequestHttp(
     HttpRequest httpRequest, Uri rewrittenUri) async {
-  final body = <int>[];
+  var body = Uint8List(0);
   if (httpRequest.contentLength != 0) {
-    for (var data in await httpRequest.toList()) {
-      body.addAll(data);
-    }
+    body = await httpStreamGetBytes(httpRequest);
   }
   return ExpressHttpRequestHttp(body, httpRequest, rewrittenUri);
 }

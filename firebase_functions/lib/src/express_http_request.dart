@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:tekartik_http/http.dart';
+import 'package:tekartik_http/src/utils.dart'; // ignore: implementation_imports
 
 String requestBodyAsText(dynamic body) {
   if (body is String) {
@@ -58,7 +60,7 @@ abstract class ExpressHttpResponse {
   void writeln(String content);
 
   // Add bytes
-  void add(List<int> bytes);
+  void add(Uint8List bytes);
 
   // get and set status code
   int get statusCode;
@@ -93,10 +95,12 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
 
   @override
   Future send([body]) {
-    if (body is List<int>) {
+    if (body is Uint8List) {
       implHttpResponse.add(body);
     } else if (body is String) {
       implHttpResponse.write(body);
+    } else if (body is List<int>) {
+      implHttpResponse.add(asUint8List(body));
     } else {
       throw 'not supported';
     }
@@ -114,7 +118,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
   HttpHeaders get headers => implHttpResponse.headers;
 
   @override
-  void add(List<int> bytes) => implHttpResponse.add(bytes);
+  void add(Uint8List bytes) => implHttpResponse.add(bytes);
 
   @override
   Future close() => implHttpResponse.close();

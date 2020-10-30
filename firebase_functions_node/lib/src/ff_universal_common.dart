@@ -1,30 +1,14 @@
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
-import 'package:tekartik_firebase_functions_io/src/firebase_functions_http.dart'; // ignore: implementation_imports
-
-abstract class FfServer {
-  Uri get uri;
-
-  Future<void> close();
-}
+import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
+import 'package:tekartik_firebase_functions_http/ff_server.dart';
 
 /// Allow running a main as a node or io app
-abstract class FirebaseFunctionsUniversal extends FirebaseFunctions {
+abstract class FirebaseFunctionsUniversal extends FirebaseFunctionsHttp {
+  FirebaseFunctionsUniversal(HttpServerFactory httpServerFactory)
+      : super(httpServerFactory);
+
   /// No effect on node
   Future<FfServer> serve({int port});
-}
-
-class FfServerHttp implements FfServer {
-  final HttpServer httpServer;
-
-  FfServerHttp(this.httpServer);
-
-  @override
-  Future<void> close() async {
-    await httpServer.close(force: true);
-  }
-
-  @override
-  Uri get uri => httpServerGetUri(httpServer);
 }
 
 class FirebaseFunctionsHttpUniversal extends FirebaseFunctionsHttp

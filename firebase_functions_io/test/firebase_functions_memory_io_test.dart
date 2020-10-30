@@ -27,7 +27,7 @@ Future main() async {
   var server = await context.serve();
   //server.baseUrl = 'http://localhost:${server.port}';
 
-  group('firebase_functions_io', () {
+  group('firebase_functions_memory_io', () {
     group('echo', () {
       setUpAll(() async {});
 

@@ -3,11 +3,11 @@ import 'dart:io' as io;
 
 import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
-
-import 'firebase_functions_http.dart';
+import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 
 class FirebaseFunctionsIo extends FirebaseFunctionsHttp {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);

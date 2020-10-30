@@ -13,9 +13,6 @@ import 'package:tekartik_build_utils/cmd_run.dart';
 import 'package:tekartik_build_utils/firebase/firebase.dart';
 import 'package:tekartik_build_utils/travis/travis.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
-    as common;
-import 'package:tekartik_http_io/http_client_io.dart';
 import 'package:test/test.dart';
 
 String buildFolder =
@@ -50,6 +47,12 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
       }
     }
   });
+  process.stdout
+      .transform(const Utf8Decoder())
+      .transform(const LineSplitter())
+      .listen((line) {
+    print('error: $line');
+  });
   unawaited(process.exitCode.then((exitCode) async {
     if (!completer.isCompleted) {
       await stderr.addStream(process.stderr);
@@ -61,7 +64,7 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
 }
 
 Future main() async {
-  var httpClientFactory = httpClientFactoryIo;
+  //var httpClientFactory = httpClientFactoryIo;
 
   var context = TestContext();
 
@@ -75,8 +78,14 @@ Future main() async {
         process = await firebaseBuildCopyAndServe(context: context);
       });
 
+      /*TODO temp excluded
       common.main(
-          httpClientFactory: httpClientFactory, baseUrl: context.baseUrl);
+          testContext: FirebaseFunctionsTestContext(
+              httpClientFactory: httpClientFactory),
+          httpClientFactory: httpClientFactory,
+          baseUrl: context.baseUrl);
+
+       */
       tearDownAll(() async {
         // await server.close();
         process?.kill();
