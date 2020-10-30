@@ -7,6 +7,7 @@ Future main() async {
   firebaseFunctionsUniversal['helloWorld'] =
       firebaseFunctions.https.onRequest(helloWorld);
   await firebaseFunctionsUniversal.serve();
+  print('serving...');
 }
 
 Future helloWorld(ExpressHttpRequest request) async {

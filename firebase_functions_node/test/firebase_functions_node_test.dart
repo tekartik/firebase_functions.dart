@@ -2,36 +2,33 @@
 library tekartik_firebase_functions_node.test.firebase_functions_test;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:fs_shim/utils/io/copy.dart';
 import 'package:path/path.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:process_run/which.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
-import 'package:tekartik_build_utils/firebase/firebase.dart';
 import 'package:tekartik_build_utils/travis/travis.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:test/test.dart';
 
-String buildFolder =
-    join('.dart_tool', 'tekartik_firebase_function_node', 'test');
+String buildFolder = join('build', 'tekartik_firebase_function_node');
 
 Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
-  await runCmd(PubCmd([
-    'run',
-    'build_runner',
-    'build',
-    '--output',
-    'node_functions:$buildFolder'
-  ]));
-  await copyFile(File(join(buildFolder, 'index.dart.js')),
-      File(join('functions', 'index.dart.js')));
-  var cmd = FirebaseCmd(
-      firebaseArgs(serve: true, onlyFunctions: true, projectId: 'dev'));
-  var completer = Completer<Process>();
-  var process = await Process.start(cmd.executable, cmd.arguments);
+  await runCmd(
+      PubCmd(['run', 'build_runner', 'build', '--output', 'bin:$buildFolder']));
+  await copyFile(File(join(buildFolder, 'main.dart.js')),
+      File(join('deploy', 'functions', 'index.js')));
+  //var cmd = FirebaseCmd(
+  //    firebaseArgs(serve: true, onlyFunctions: true, projectId: 'dev'));
+  //var completer = Completer<Process>();
+  //print('firebase serve 1');
+  //await Shell().cd('deploy').run('firebase serve');
+  print('firebase serve');
+  // await Shell().cd('deploy').run('firebase serve');
+  /*
+  var process = await Process.start(await which('firebase'), ['serve'],
+      workingDirectory: 'deploy');
   process.stdout
       .transform(const Utf8Decoder())
       .transform(const LineSplitter())
@@ -47,7 +44,7 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
       }
     }
   });
-  process.stdout
+  process.stderr
       .transform(const Utf8Decoder())
       .transform(const LineSplitter())
       .listen((line) {
@@ -55,12 +52,15 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
   });
   unawaited(process.exitCode.then((exitCode) async {
     if (!completer.isCompleted) {
-      await stderr.addStream(process.stderr);
+      //await stderr.addStream(process.stderr);
       print('exitCode: ${exitCode}');
       completer.completeError('exitCode: $exitCode');
     }
   }));
-  return completer.future;
+
+   */
+  //return completer.future;
+  return null;
 }
 
 Future main() async {

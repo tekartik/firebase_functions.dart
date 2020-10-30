@@ -19,3 +19,4 @@ doc/api/
 # VS code
 .vscode
 
+/firebase_functions_node/deploy/functions/

@@ -19,7 +19,7 @@ class FirebaseFunctionsNodeUniversal extends FirebaseFunctionsNode
   FirebaseFunctionsNodeUniversal(impl.FirebaseFunctions implFunctions)
       : super(implFunctions);
 
-  /// Dummy implementation on node
+  /// Dummy implementation on node. Must be served using `firebase serve`
   @override
   Future<FfServer> serve({int port}) async => FfServerNode();
 }

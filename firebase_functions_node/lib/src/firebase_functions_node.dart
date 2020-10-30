@@ -46,6 +46,13 @@ class FirebaseFunctionsNode extends FirebaseFunctionsHttp
     return FirebaseFunctionsNode(implFunctions.runWith(impl.RuntimeOptions(
         timeoutSeconds: options.timeoutSeconds, memory: options.memory)));
   }
+
+  @override
+  operator []=(String key, dynamic function) {
+    // devPrint('function $key');
+    // To check if we need to switch to export in the future.
+    implFunctions[key] = function;
+  }
 }
 
 abstract class FirebaseFunctionNode implements common.FirebaseFunction {
