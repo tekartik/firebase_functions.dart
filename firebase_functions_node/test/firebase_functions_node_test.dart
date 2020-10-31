@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'package:fs_shim/utils/io/copy.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 import 'package:process_run/which.dart';
 import 'package:tekartik_app_node_build/gcf_build.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
@@ -74,35 +75,31 @@ Future main() async {
   context.baseUrl = 'http://localhost:5000/tekartik-free-dev/us-central1';
 
   final firebaseInstalled = whichSync('firebase') != null;
-  group('firebase_functions_io', () {
+  group('firebase_functions_node', () {
     Future<void> testServe() async {
-      var process = await Process.start(await which('firebase'), ['serve'],
-          workingDirectory: 'deploy');
-
-      streamLines(process.stdout).listen((event) {
-        print('out: $event');
-        if (event.contains('functions[helloWorld')) {
-          process.kill();
+      var controller = ShellLinesController();
+      var shell = Shell(stdout: controller.sink).cd('deploy');
+      controller.stream.listen((line) {
+        // out: === Serving from '/xxx//github.com/tekartik/firebase_functions.dart/firebase_functions_node/deploy'...
+        // out: ✔  functions: Using node@10 from host.
+        // out: i  functions: Watching "/xxx//github.com/tekartik/firebase_functions.dart/firebase_functions_node/deploy/functions" for Cloud Functions...
+        // out: >  starting...
+        // out: ✔  functions[helloWorld]: http function initialized (http://localhost:5000/xxx/us-central1/helloWorld).
+        // out: >  serving...
+        print('line: $line');
+        if (line.contains('functions[helloWorld')) {
+          shell.kill();
         }
       });
-      await process.exitCode;
+      try {
+        await shell.run('firebase serve --only functions');
+      } on ShellException catch (e) {
+        print('Error $e');
+      }
     }
 
     test('serve', () async {
       await testServe();
-      /*
-      var listener = ShellLinesController();
-
-      listener.stream.listen((event) {
-        print('out: $event');
-      });
-      var shell = Shell(stdout: null
-              // listener.sink
-              )
-          .cd('deploy');
-
-       */
-      // await shell.run('firebase serve --only functions');
     }, skip: true); // manual experiment on serve only
     group('echo', () {
       Process process;
