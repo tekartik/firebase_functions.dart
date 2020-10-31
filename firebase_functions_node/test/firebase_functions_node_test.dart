@@ -2,18 +2,23 @@
 library tekartik_firebase_functions_node.test.firebase_functions_test;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fs_shim/utils/io/copy.dart';
 import 'package:path/path.dart';
 import 'package:process_run/which.dart';
+import 'package:tekartik_app_node_build/gcf_build.dart';
 import 'package:tekartik_build_utils/cmd_run.dart';
 import 'package:tekartik_build_utils/travis/travis.dart';
+import 'package:tekartik_firebase_functions_node/src/import.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:test/test.dart';
 
 String buildFolder = join('build', 'tekartik_firebase_function_node');
 
+@deprecated
 Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
   await runCmd(
       PubCmd(['run', 'build_runner', 'build', '--output', 'bin:$buildFolder']));
@@ -21,12 +26,12 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
       File(join('deploy', 'functions', 'index.js')));
   //var cmd = FirebaseCmd(
   //    firebaseArgs(serve: true, onlyFunctions: true, projectId: 'dev'));
-  //var completer = Completer<Process>();
+  var completer = Completer<Process>();
   //print('firebase serve 1');
   //await Shell().cd('deploy').run('firebase serve');
   print('firebase serve');
-  // await Shell().cd('deploy').run('firebase serve');
-  /*
+  //await Shell().cd('deploy').run('firebase serve');
+
   var process = await Process.start(await which('firebase'), ['serve'],
       workingDirectory: 'deploy');
   process.stdout
@@ -58,9 +63,7 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
     }
   }));
 
-   */
-  //return completer.future;
-  return null;
+  return completer.future;
 }
 
 Future main() async {
@@ -72,11 +75,46 @@ Future main() async {
 
   final firebaseInstalled = whichSync('firebase') != null;
   group('firebase_functions_io', () {
+    Future<void> testServe() async {
+      var process = await Process.start(await which('firebase'), ['serve'],
+          workingDirectory: 'deploy');
+
+      streamLines(process.stdout).listen((event) {
+        print('out: $event');
+        if (event.contains('functions[helloWorld')) {
+          process.kill();
+        }
+      });
+      await process.exitCode;
+    }
+
+    test('serve', () async {
+      await testServe();
+      /*
+      var listener = ShellLinesController();
+
+      listener.stream.listen((event) {
+        print('out: $event');
+      });
+      var shell = Shell(stdout: null
+              // listener.sink
+              )
+          .cd('deploy');
+
+       */
+      // await shell.run('firebase serve --only functions');
+    }, skip: true); // manual experiment on serve only
     group('echo', () {
       Process process;
       setUpAll(() async {
-        process = await firebaseBuildCopyAndServe(context: context);
+        //process = await firebaseBuildCopyAndServe(context: context);
+        await gcfNodeBuild();
+        await gcfNodeCopyToDeploy();
       });
+
+      test('serve', () async {
+        await testServe();
+      }, skip: false);
 
       /*TODO temp excluded
       common.main(
@@ -92,4 +130,85 @@ Future main() async {
       });
     }, skip: !firebaseInstalled || runningInTravis);
   });
+}
+
+/// Basic shell lines controller.
+///
+/// Usage:
+/// ```dart
+/// ```
+class ShellLinesController {
+  final _controller = StreamController<List<int>>();
+
+  /// The sink for the Shell stderr/stdout
+  StreamSink<List<int>> get sink => _controller.sink;
+
+  /// The stram to listen to
+  Stream<String> get stream => streamLines(_controller.stream);
+}
+
+/// Basic line streaming. Assuming system encoding
+Stream<String> streamLines(Stream<List<int>> stream,
+    {Encoding encoding = systemEncoding}) {
+  StreamSubscription subscription;
+  List<int> currentLine;
+  const endOfLine = 10;
+  const lineFeed = 13;
+  StreamController<String> ctlr;
+  encoding ??= systemEncoding;
+  ctlr = StreamController<String>(onListen: () {
+    void addCurrentLine() {
+      if (currentLine?.isNotEmpty ?? false) {
+        try {
+          ctlr.add(systemEncoding.decode(currentLine));
+        } catch (_) {
+          // Ignore nad encoded line
+          print('ignoring: $currentLine');
+        }
+      }
+      currentLine = null;
+    }
+
+    void addToCurrentLine(List<int> data) {
+      if (currentLine == null) {
+        currentLine = data;
+      } else {
+        var newCurrentLine = Uint8List(currentLine.length + data.length);
+        newCurrentLine.setAll(0, currentLine);
+        newCurrentLine.setAll(currentLine.length, data);
+        currentLine = newCurrentLine;
+      }
+    }
+
+    subscription = stream.listen((data) {
+      // var _w;
+      // print('read $data');
+      // devPrint('read $data');
+      // look for \n (10)
+      var start = 0;
+      for (var i = 0; i < data.length; i++) {
+        var byte = data[i];
+        if (byte == endOfLine || byte == lineFeed) {
+          addToCurrentLine(data.sublist(start, i));
+          addCurrentLine();
+          // Skip it
+          start = i + 1;
+        }
+      }
+      // Store last current line
+      if (data.length > start) {
+        addToCurrentLine(data.sublist(start, data.length));
+      }
+    }, onDone: () {
+      // Last one
+      if (currentLine != null) {
+        addCurrentLine();
+      }
+      ctlr.close();
+    });
+  }, onCancel: () {
+    subscription?.cancel();
+  });
+
+  return ctlr.stream;
 }

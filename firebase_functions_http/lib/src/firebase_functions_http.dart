@@ -7,30 +7,18 @@ import 'package:tekartik_http/http.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'express_http_request_http.dart';
 
-class FirebaseFunctionsHttp implements FirebaseFunctions {
-  final HttpServerFactory httpServerFactory;
+class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
+  HttpServerFactory httpServerFactory;
+  FirebaseFunctionsHttpBase(this.httpServerFactory) : super();
+
   Map<String, dynamic> functions = {};
 
-  FirebaseFunctionsHttp(this.httpServerFactory);
-
-  HttpsFunctions _https;
-
   @override
-  HttpsFunctions get https => _https ??= HttpsHttp();
-
-  @override
-  operator []=(String key, dynamic function) {
+  operator []=(String key, FirebaseFunction function) {
     functions[key] = function;
   }
 
   @override
-  FirestoreFunctions get firestore => throw UnimplementedError();
-
-  @override
-  PubsubFunctions get pubsub => throw UnimplementedError();
-
-// For io only
-// To run the server in parallel
   Future<HttpServer> serveHttp({int port}) async {
     port ??= 4999;
     var requestServer =
@@ -72,6 +60,26 @@ class FirebaseFunctionsHttp implements FirebaseFunctions {
     }));
     return requestServer;
   }
+}
+
+abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
+  FirebaseFunctionsHttp();
+
+  HttpsFunctions _https;
+
+  @override
+  HttpsFunctions get https => _https ??= HttpsHttp();
+
+  @override
+  FirestoreFunctions get firestore => throw UnimplementedError();
+
+  @override
+  PubsubFunctions get pubsub => throw UnimplementedError();
+
+// For io only
+// To run the server in parallel
+  /// To implement
+  Future<HttpServer> serveHttp({int port}) async => null;
 
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');

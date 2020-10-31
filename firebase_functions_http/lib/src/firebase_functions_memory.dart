@@ -3,7 +3,7 @@ import 'package:tekartik_http/http.dart';
 
 import 'firebase_functions_http.dart';
 
-class FirebaseFunctionsMemory extends FirebaseFunctionsHttp {
+class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsMemory._() : super(httpServerFactoryMemory);
 }
 

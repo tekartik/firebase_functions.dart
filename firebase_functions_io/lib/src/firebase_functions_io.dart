@@ -9,7 +9,7 @@ import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
 import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 
-class FirebaseFunctionsIo extends FirebaseFunctionsHttp {
+class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 

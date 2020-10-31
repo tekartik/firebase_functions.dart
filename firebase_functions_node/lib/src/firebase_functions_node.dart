@@ -5,10 +5,8 @@ import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 import 'package:tekartik_firebase_functions_node/src/firebase_functions_firestore_node.dart';
 import 'package:tekartik_firebase_functions_node/src/firebase_functions_pubsub_node.dart';
-import 'package:node_interop/node_interop.dart';
+
 import 'firebase_functions_https_node.dart';
-import 'import.dart';
-import 'package:tekartik_js_utils/js_utils.dart';
 
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
@@ -36,7 +34,7 @@ class FirebaseFunctionsNode extends FirebaseFunctionsHttp
   @override
   common.PubsubFunctions get pubsub => _pubsub ??= PubsubFunctionsNode(this);
 
-  FirebaseFunctionsNode(this.implFunctions) : super(null);
+  FirebaseFunctionsNode(this.implFunctions) : super();
 
   @override
   common.FirebaseFunctions region(String region) {
@@ -50,12 +48,17 @@ class FirebaseFunctionsNode extends FirebaseFunctionsHttp
   }
 
   @override
+  operator []=(String key, common.FirebaseFunction function) {
+    implFunctions[key] = (function as FirebaseFunctionNode).value;
+  }
+/*
+  @override
   operator []=(String key, dynamic function) {
     devPrint('function $key');
     implFunctions[key] = function;
 
     devPrint(jsObjectKeys(exports));
-  }
+  }*/
 }
 
 abstract class FirebaseFunctionNode implements common.FirebaseFunction {
