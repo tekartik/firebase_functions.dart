@@ -71,5 +71,5 @@ void main(
     expect(response.body, '');
     expect(response.headers['location'], '$baseUrl/echo');
     client.close();
-  });
+  }, skip: true);
 }

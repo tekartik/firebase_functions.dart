@@ -5,8 +5,10 @@ import 'package:tekartik_firebase_functions/firebase_functions.dart' as common;
 import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 import 'package:tekartik_firebase_functions_node/src/firebase_functions_firestore_node.dart';
 import 'package:tekartik_firebase_functions_node/src/firebase_functions_pubsub_node.dart';
-
+import 'package:node_interop/node_interop.dart';
 import 'firebase_functions_https_node.dart';
+import 'import.dart';
+import 'package:tekartik_js_utils/js_utils.dart';
 
 FirebaseFunctionsNode _firebaseFunctionsNode;
 
@@ -49,9 +51,10 @@ class FirebaseFunctionsNode extends FirebaseFunctionsHttp
 
   @override
   operator []=(String key, dynamic function) {
-    // devPrint('function $key');
-    // To check if we need to switch to export in the future.
+    devPrint('function $key');
     implFunctions[key] = function;
+
+    devPrint(jsObjectKeys(exports));
   }
 }
 

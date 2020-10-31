@@ -27,7 +27,12 @@ dependencies:
       path: firestore_node
       ref: dart2
     version: '>=0.8.0'
-
+  tekartik_app_node_utils:
+    git:
+      url: git://github.com/tekartik/app_node_utils.dart
+      path: node_utils
+      ref: dart2
+    version: '>=0.1.0'
   sembast: '>=1.9.0-dev.1'
   uuid: '>=1.0.0'
   # firebase_functions_interop: ">=1.0.0 <1.0.2"
