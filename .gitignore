@@ -19,3 +19,7 @@ doc/api/
 # VS code
 .vscode
 
+# local
+.local
+
+/firebase_functions_node/deploy/functions/

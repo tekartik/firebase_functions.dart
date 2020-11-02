@@ -1,8 +1,10 @@
-import 'package:process_run/shell.dart';
+import 'package:dev_test/package.dart';
 
 import 'build.dart';
 
 Future main() async {
+  await packageRunCi('.');
+  /*
   var shell = Shell();
 
   await shell.run('''
@@ -12,6 +14,6 @@ Future main() async {
 
   pub run test -p vm
 ''');
-
+  */
   await build();
 }

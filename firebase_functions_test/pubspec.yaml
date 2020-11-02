@@ -24,3 +24,5 @@ dev_dependencies:
 dependency_overrides:
   tekartik_firebase_functions:
     path: ../firebase_functions
+  tekartik_firebase_functions_http:
+    path: ../firebase_functions_http
