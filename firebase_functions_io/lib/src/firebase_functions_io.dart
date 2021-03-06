@@ -32,12 +32,12 @@ Future onFileRequest(HttpRequest request) async {
     } catch (e) {
       print("Couldn't read file: $e");
       // exit(-1);
-      request.response..statusCode = io.HttpStatus.forbidden;
+      request.response.statusCode = io.HttpStatus.forbidden;
       await request.response.close();
     }
   } else {
     print("Can't open ${targetFile.path}.");
-    request.response..statusCode = io.HttpStatus.notFound;
+    request.response.statusCode = io.HttpStatus.notFound;
     await request.response.close();
   }
 }
@@ -49,7 +49,7 @@ Future<HttpServer> serve({int port}) async {
   var requestServer =
       await httpServerFactoryIo.bind(io.InternetAddress.anyIPv4, port);
   for (final key in firebaseFunctionsIo.functions.keys) {
-    print('$key http://localhost:${port}/${key}');
+    print('$key http://localhost:$port/$key');
   }
 
   print('listening on http://localhost:${requestServer.port}');

@@ -24,7 +24,7 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
     var requestServer =
         await httpServerFactory.bind(InternetAddress.anyIPv4, port);
     for (final key in functions.keys) {
-      print('$key http://localhost:${port}/${key}');
+      print('$key http://localhost:$port/$key');
     }
 
     print('listening on http://localhost:${requestServer.port}');

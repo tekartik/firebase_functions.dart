@@ -1,7 +1,11 @@
-# Created with https://github.com/dart-lang/mono_repo
 language: dart
-
 sudo: required
+dist: trusty
+dart:
+  - stable
+  - beta
+  - dev
+
 addons:
   chrome: stable
 
@@ -9,26 +13,16 @@ before_install:
   - nvm install node
   - node --version
 
-jobs:
-  include:
-    - stage: stable
-      script: dart ./tool/travis.dart
-      dart: stable
-    - stage: beta
-      script: dart ./tool/travis.dart
-      dart: beta
-    - stage: dev
-      script: dart ./tool/travis.dart
-      dart: dev
-
-stages:
-  - stable
-  - beta
-  - dev
-
-# Only building master means that we don't run two builds for each pull request.
-# branches:
-#  only: [master]
+before_script:
+  - pushd repo_support
+  - pub get
+  - pub run chrome_travis:init
+  - source $(pub run chrome_travis:env_rc)
+script:
+  - dart tool/travis.dart
+matrix:
+  allow_failures:
+    - dart: dev
 
 cache:
   directories:

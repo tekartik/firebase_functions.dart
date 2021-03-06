@@ -1,11 +1,7 @@
-//@dart=2.9
-import 'dart:io';
-
-import 'package:process_run/shell.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:dev_test/package.dart';
+import 'package:path/path.dart';
 
-Future<void> main() async {
+Future main() async {
   for (var dir in [
     'firebase_functions',
     'firebase_functions_http',
@@ -13,6 +9,6 @@ Future<void> main() async {
     'firebase_functions_node',
     'firebase_functions_test'
   ]) {
-    await packageRunCi(dir);
+    await packageRunCi(join('..', dir));
   }
 }

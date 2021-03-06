@@ -1,4 +1,5 @@
 import 'package:process_run/shell.dart';
+import 'package:path/path.dart';
 
 Future main() async {
   var shell = Shell();
@@ -9,12 +10,12 @@ Future main() async {
     'firebase_functions_node',
     'firebase_functions_test',
   ]) {
-    shell = shell.pushd(dir);
+    shell = shell.pushd(join('..', dir));
     await shell.run('''
     
-    pub get
-    dart tool/travis.dart
-    
+  pub get
+  dart tool/travis.dart
+  
 ''');
     shell = shell.popd();
   }
