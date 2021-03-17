@@ -9,19 +9,19 @@ String requestBodyAsText(dynamic body) {
   if (body is String) {
     return body;
   } else if (body is List) {
-    return utf8.decode(body?.cast<int>());
+    return utf8.decode(body.cast<int>());
   }
   throw 'body $body not text';
 }
 
-Map<String, dynamic> requestBodyAsJsonObject(dynamic body) {
+Map<String, dynamic>? requestBodyAsJsonObject(dynamic body) {
   if (body == null) {
     return null;
   } else if (body is Map) {
-    return body?.cast<String, dynamic>();
+    return body.cast<String, dynamic>();
   } else if (body is String) {
     try {
-      return (json.decode(body) as Map)?.cast<String, dynamic>();
+      return (json.decode(body) as Map?)?.cast<String, dynamic>();
     } catch (_) {
       return null;
     }
@@ -52,7 +52,7 @@ abstract class ExpressHttpResponse {
   Future send([dynamic body]);
 
   // redirect
-  Future redirect(Uri location, {int status});
+  Future redirect(Uri location, {int? status});
 
   // Write a string
   void write(String content);
@@ -91,7 +91,7 @@ abstract class ExpressHttpResponseWrapperBase extends Object
 }
 
 abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
-  HttpResponse implHttpResponse;
+  late HttpResponse implHttpResponse;
 
   @override
   Future send([body]) {
@@ -130,7 +130,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
   void writeln(String content) => implHttpResponse.write(content);
 
   @override
-  Future redirect(Uri location, {int status}) => implHttpResponse
+  Future redirect(Uri location, {int? status}) => implHttpResponse
       .redirect(location, status: status ?? httpStatusMovedTemporarily);
 
 /*

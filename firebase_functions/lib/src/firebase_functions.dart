@@ -132,12 +132,12 @@ abstract class PubsubFunctions {
 /// RunWith options
 class RuntimeOptions {
   /// Timeout for the function in seconds.
-  final int timeoutSeconds;
+  final int? timeoutSeconds;
 
   /// Amount of memory to allocate to the function.
   ///
   /// Valid values are: '128MB', '256MB', '512MB', '1GB', and '2GB'.
-  final String memory;
+  final String? memory;
 
   RuntimeOptions({this.timeoutSeconds, this.memory});
 }
