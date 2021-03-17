@@ -9,15 +9,9 @@ dart:
 addons:
   chrome: stable
 
-before_install:
-  - nvm install node
-  - node --version
-
 before_script:
   - pushd repo_support
   - pub get
-  - pub run chrome_travis:init
-  - source $(pub run chrome_travis:env_rc)
 script:
   - dart tool/travis.dart
 matrix:
