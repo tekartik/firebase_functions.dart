@@ -9,6 +9,7 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         FirestoreFunction,
         EventContext,
         ChangeEventHandler,
+        DataEventHandler,
         Change,
         DocumentBuilder,
         ScheduleBuilder,

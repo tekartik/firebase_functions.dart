@@ -59,7 +59,7 @@ Future<Process> firebaseBuildCopyAndServe({TestContext context}) async {
   unawaited(process.exitCode.then((exitCode) async {
     if (!completer.isCompleted) {
       //await stderr.addStream(process.stderr);
-      print('exitCode: ${exitCode}');
+      print('exitCode: $exitCode');
       completer.completeError('exitCode: $exitCode');
     }
   }));

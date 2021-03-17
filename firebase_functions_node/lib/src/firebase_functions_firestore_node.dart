@@ -30,6 +30,36 @@ class DocumentBuilderNode implements common.DocumentBuilder {
           DocumentSnapshotChangeNode(data), EventContextNode(context));
     }));
   }
+
+  @override
+  common.FirestoreFunction onCreate(
+      common.DataEventHandler<common.DocumentSnapshot> handler) {
+    return FirestoreFunctionNode(implBuilder.onCreate((data, context) {
+      /// Important to return the handler content here so that the function does not end
+      return handler(
+          firestore_node.DocumentSnapshotNode(data), EventContextNode(context));
+    }));
+  }
+
+  @override
+  common.FirestoreFunction onUpdate(
+      common.ChangeEventHandler<common.DocumentSnapshot> handler) {
+    return FirestoreFunctionNode(implBuilder.onUpdate((data, context) {
+      /// Important to return the handler content here so that the function does not end
+      return handler(
+          DocumentSnapshotChangeNode(data), EventContextNode(context));
+    }));
+  }
+
+  @override
+  common.FirestoreFunction onDelete(
+      common.DataEventHandler<common.DocumentSnapshot> handler) {
+    return FirestoreFunctionNode(implBuilder.onDelete((data, context) {
+      /// Important to return the handler content here so that the function does not end
+      return handler(
+          firestore_node.DocumentSnapshotNode(data), EventContextNode(context));
+    }));
+  }
 }
 
 class FirestoreFunctionNode extends FirebaseFunctionNode

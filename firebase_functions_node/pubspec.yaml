@@ -1,6 +1,6 @@
 name: tekartik_firebase_functions_node
 description: Firebase functions node
-version: 0.3.6+2
+version: 0.3.6+3
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>

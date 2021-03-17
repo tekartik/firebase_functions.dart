@@ -52,12 +52,28 @@ abstract class HttpsFunctions {
   HttpsFunction onRequest(RequestHandler handler);
 }
 
+/// Document builder.
 abstract class DocumentBuilder {
+  /// onWrite
   FirestoreFunction onWrite(ChangeEventHandler<DocumentSnapshot> handler);
+
+  /// onCreate
+  FirestoreFunction onCreate(DataEventHandler<DocumentSnapshot> handler);
+
+  /// onUpdate
+  FirestoreFunction onUpdate(ChangeEventHandler<DocumentSnapshot> handler);
+
+  /// onDelete
+  FirestoreFunction onDelete(DataEventHandler<DocumentSnapshot> handler);
 }
 
+/// Change event handler.
 typedef ChangeEventHandler<T> = FutureOr<void> Function(
     Change<T> data, EventContext context);
+
+/// Data event handler.
+typedef DataEventHandler<T> = FutureOr<void> Function(
+    T data, EventContext context);
 
 /// The context in which an event occurred.
 ///
