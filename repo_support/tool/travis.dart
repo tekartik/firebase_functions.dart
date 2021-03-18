@@ -7,6 +7,7 @@ Future main() async {
   for (var dir in [
     'firebase_functions',
     'firebase_functions_io',
+    'firebase_functions_http',
     'firebase_functions_test',
   ]) {
     shell = shell.pushd(join('..', dir));
