@@ -40,7 +40,7 @@ void testHttp(
       test('post', () async {
         var client = httpClientFactory.newClient();
         var response = await client.post(
-            p.url.join(httpServerGetUri(server).toString(), 'echo'),
+            Uri.parse(p.url.join(httpServerGetUri(server).toString(), 'echo')),
             body: 'hello');
         expect(response.statusCode, 200);
         expect(response.contentLength, greaterThan(0));

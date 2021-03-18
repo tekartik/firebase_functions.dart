@@ -1,10 +1,5 @@
 import 'package:tekartik_http/http_server.dart';
-
-abstract class FfServer {
-  Uri get uri;
-
-  Future<void> close();
-}
+import 'package:tekartik_firebase_functions/ff_server.dart';
 
 class FfServerHttp implements FfServer {
   final HttpServer httpServer;

@@ -16,11 +16,6 @@ dependencies:
       path: firebase_functions_http
       ref: dart2
     version: '>=0.2.1'
-  tekartik_firebase_sim_io:
-    git:
-      url: git://github.com/tekartik/firebase.dart
-      path: firebase_sim_io
-      ref: dart2
   shelf: any
   tekartik_http_io:
     git:
