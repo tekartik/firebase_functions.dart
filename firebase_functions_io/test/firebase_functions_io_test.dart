@@ -19,7 +19,7 @@ class FirebaseFunctionsTestContextMemoryIo
 
 /// Uses memory for internal communication and http for external communication
 Future main() async {
-  var context = FirebaseFunctionsTestContextMemoryIo();
+  FirebaseFunctionsTestContext context = FirebaseFunctionsTestContextMemoryIo();
 
   context = setup(
     testContext: context,

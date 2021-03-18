@@ -1,16 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:meta/meta.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
-import 'package:tekartik_firebase_functions_http/firebase_functions_test_context_memory.dart';
-
-import 'src/import.dart';
-
-export 'package:tekartik_firebase_functions_http/firebase_functions_test_context_memory.dart';
+import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
   // devPrint('request.body ${request.body?.runtimeType}: ${request.body}');
-  request.response.send(request.body as Uint8List);
+  request.response.send(request.body as Uint8List?);
 }
 
 void echoHandler(ExpressHttpRequest request) {
@@ -31,14 +26,13 @@ void echoFragmentHandler(ExpressHttpRequest request) {
 }
 
 class TestContext {
-  String baseUrl;
+  String? baseUrl;
 }
 
 T setup<T extends FirebaseFunctionsTestContext>(
-    {@required T testContext,
-    FirebaseFunctions firebaseFunctions,
-    TestContext context}) {
-  testContext ??= FirebaseFunctionsTestContextMemory() as T;
+    {required T testContext,
+    FirebaseFunctions? firebaseFunctions,
+    TestContext? context}) {
   firebaseFunctions ??= testContext.firebaseFunctions;
 
   void redirectFragmentHandler(ExpressHttpRequest request) {
