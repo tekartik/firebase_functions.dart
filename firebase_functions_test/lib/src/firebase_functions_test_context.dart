@@ -7,12 +7,12 @@ import 'package:tekartik_http/http_memory.dart';
 abstract class FirebaseFunctionsTestContext {
   final FirebaseFunctions firebaseFunctions;
   final HttpClientFactory httpClientFactory;
-  final String baseUrl;
+  final String? baseUrl;
 
   FirebaseFunctionsTestContext(
       {required this.firebaseFunctions,
       required this.httpClientFactory,
-      required this.baseUrl});
+      this.baseUrl});
 
   String url(String path);
 

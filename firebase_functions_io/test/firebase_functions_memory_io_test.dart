@@ -31,7 +31,7 @@ Future main() async {
     group('echo', () {
       setUpAll(() async {});
 
-      common.main(testContext: context);
+      common.ffTest(testContext: context);
       tearDownAll(() async {
         await server.close();
       });

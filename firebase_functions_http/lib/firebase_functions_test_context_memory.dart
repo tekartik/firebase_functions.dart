@@ -13,7 +13,7 @@ class FirebaseFunctionsTestContextMemory extends FirebaseFunctionsTestContext {
       {
 
       /// external client factory
-      HttpClientFactory httpClientFactory})
+      HttpClientFactory? httpClientFactory})
       : super(
           httpClientFactory: httpClientFactoryMemory,
           firebaseFunctions: firebaseFunctionsMemory,
@@ -21,12 +21,13 @@ class FirebaseFunctionsTestContextMemory extends FirebaseFunctionsTestContext {
         );
 
   // To set when ready
-  FfServer server;
+  late FfServer server;
 
   @override
   String url(String path) => p.url.join(server.uri.toString(), path);
 
   /// Serve locally
+  @override
   Future<FfServer> serve() async {
     var server =
         await (firebaseFunctions as FirebaseFunctionsHttp).serveHttp(port: 0);

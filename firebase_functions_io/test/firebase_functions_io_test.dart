@@ -7,6 +7,7 @@ import 'package:tekartik_firebase_functions_http/firebase_functions_test_context
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
     as common;
+import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
 import 'package:tekartik_http_io/http_client_io.dart';
 import 'package:test/test.dart';
 
@@ -31,7 +32,7 @@ Future main() async {
     group('echo', () {
       setUpAll(() async {});
 
-      common.main(testContext: context);
+      common.ffTest(testContext: context);
       tearDownAll(() async {
         await server.close();
       });

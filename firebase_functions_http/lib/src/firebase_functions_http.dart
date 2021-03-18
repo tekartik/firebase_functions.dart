@@ -19,7 +19,7 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
   }
 
   @override
-  Future<HttpServer> serveHttp({int port}) async {
+  Future<HttpServer> serveHttp({int? port}) async {
     port ??= 4999;
     var requestServer =
         await httpServerFactory.bind(InternetAddress.anyIPv4, port);
@@ -35,7 +35,7 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
         var uri = request.uri;
         // /test
         var functionKey = listFirst(uri.pathSegments);
-        var function = functions[functionKey];
+        var function = functions[functionKey!];
         if (function is HttpsFunctionHttp) {
           final rewrittenUri = Uri(
               pathSegments: uri.pathSegments.sublist(1),
@@ -65,7 +65,7 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
 abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
   FirebaseFunctionsHttp();
 
-  HttpsFunctions _https;
+  HttpsFunctions? _https;
 
   @override
   HttpsFunctions get https => _https ??= HttpsHttp();
@@ -79,7 +79,7 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
 // For io only
 // To run the server in parallel
   /// To implement
-  Future<HttpServer> serveHttp({int port}) async => null;
+  Future<HttpServer?> serveHttp({int? port}) async => null;
 
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');

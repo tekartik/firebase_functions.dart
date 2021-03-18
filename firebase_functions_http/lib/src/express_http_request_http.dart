@@ -12,7 +12,7 @@ class ExpressHttpRequestHttp extends ExpressHttpRequestWrapperBase
   ExpressHttpRequestHttp(this.body, HttpRequest httpRequest, Uri rewrittenUri)
       : super(httpRequest, rewrittenUri);
 
-  ExpressHttpResponse _response;
+  ExpressHttpResponse? _response;
 
   @override
   ExpressHttpResponse get response =>

@@ -7,7 +7,7 @@ class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsMemory._() : super(httpServerFactoryMemory);
 }
 
-FirebaseFunctionsMemory _firebaseFunctionsMemory;
+FirebaseFunctionsMemory? _firebaseFunctionsMemory;
 
 FirebaseFunctionsMemory get firebaseFunctionsMemory =>
     _firebaseFunctionsMemory ??= FirebaseFunctionsMemory._();
