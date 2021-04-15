@@ -13,7 +13,7 @@ class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 
-FirebaseFunctionsIo _firebaseFunctionsIo;
+FirebaseFunctionsIo? _firebaseFunctionsIo;
 
 FirebaseFunctionsIo get firebaseFunctionsIo =>
     _firebaseFunctionsIo ??= FirebaseFunctionsIo._();
@@ -44,7 +44,7 @@ Future onFileRequest(HttpRequest request) async {
 
 // For io only
 // To run the server in parallel
-Future<HttpServer> serve({int port}) async {
+Future<HttpServer> serve({int? port}) async {
   port ??= 4999;
   var requestServer =
       await httpServerFactoryIo.bind(io.InternetAddress.anyIPv4, port);
