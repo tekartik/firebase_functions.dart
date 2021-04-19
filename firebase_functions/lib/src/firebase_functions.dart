@@ -1,7 +1,7 @@
 // import 'package:tekartik_http/http_server.dart';
-
 import 'dart:async';
 
+import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
@@ -31,12 +31,59 @@ abstract class FirebaseFunctions {
   FirebaseFunctions runWith(RuntimeOptions options);
 }
 
+/// Https request handler
 typedef RequestHandler = void Function(ExpressHttpRequest request);
+
+/// Call context
+abstract class CallContext {
+  /// Auth information
+  CallContextAuth? get auth;
+}
+
+/// Call context
+abstract class CallContextAuth {
+  // TODO no nnbd here?
+  /// Auth information
+  DecodedIdToken? get token;
+
+  /// User id
+  String? get uid;
+}
+
+/// Mixin for base implementation
+mixin CallContextMixin implements CallContext {
+  @override
+  CallContextAuth? get auth => throw UnimplementedError('auth');
+}
+
+/// Mixin for base implementation
+mixin CallContextAuthMixin implements CallContextAuth {
+  @override
+  DecodedIdToken? get token => throw UnimplementedError('token');
+
+  @override
+  String? get uid => throw UnimplementedError('uid');
+}
+
+/// Call request
+abstract class CallRequest {
+  /// Context
+  CallContext get context;
+
+  /// Query
+  String? get text;
+}
+
+/// Call request handler
+typedef CallHandler = FutureOr<Object?> Function(CallRequest request);
 
 abstract class FirebaseFunction {}
 
 /// Https function.
 abstract class HttpsFunction implements FirebaseFunction {}
+
+/// Https function.
+abstract class CallFunction implements FirebaseFunction {}
 
 /// Firestore function.
 abstract class FirestoreFunction implements FirebaseFunction {}
@@ -49,7 +96,18 @@ abstract class FirestoreFunctions {
 }
 
 abstract class HttpsFunctions {
+  /// HTTPS request
   HttpsFunction onRequest(RequestHandler handler);
+
+  /// call request
+  CallFunction onCall(CallHandler handler);
+}
+
+/// no-op by default to never break compilation
+mixin HttpsFunctionsMixin implements HttpsFunctions {
+  @override
+  CallFunction onCall(CallHandler handler) =>
+      throw UnimplementedError('onCall');
 }
 
 /// Document builder.

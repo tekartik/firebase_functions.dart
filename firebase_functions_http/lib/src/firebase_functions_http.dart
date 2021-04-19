@@ -94,12 +94,17 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
   FirebaseFunctions runWith(RuntimeOptions options) => this;
 }
 
-class HttpsHttp implements HttpsFunctions {
+class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
   HttpsHttp();
 
   @override
   HttpsFunction onRequest(RequestHandler handler) {
     return HttpsFunctionHttp(handler);
+  }
+
+  @override
+  CallFunction onCall(CallHandler handler) {
+    return CallFunctionHttp(handler);
   }
 }
 
@@ -108,6 +113,13 @@ class HttpsFunctionHttp implements HttpsFunction {
   final RequestHandler handler;
 
   HttpsFunctionHttp(this.handler);
+}
+
+class CallFunctionHttp implements CallFunction {
+  // ignore: unused_field
+  final CallHandler handler;
+
+  CallFunctionHttp(this.handler);
 }
 
 String rewritePath(String path) {
