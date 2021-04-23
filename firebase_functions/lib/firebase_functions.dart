@@ -8,6 +8,7 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         CallFunction,
         CallHandler,
         CallRequest,
+        CallRequestMixin,
         CallContext,
         CallContextAuth,
         CallContextAuthMixin,
