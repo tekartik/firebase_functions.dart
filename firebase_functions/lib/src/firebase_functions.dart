@@ -72,6 +72,18 @@ abstract class CallRequest {
 
   /// Query
   String? get text;
+
+  /// Incoming data that could be decoded from json
+  Object? get data;
+}
+
+/// Call request
+mixin CallRequestMixin implements CallRequest {
+  @override
+  String? get text => data?.toString();
+
+  @override
+  Object? get data => null;
 }
 
 /// Call request handler
