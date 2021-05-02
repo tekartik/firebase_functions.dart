@@ -4,16 +4,16 @@ import 'dart:io' as io;
 import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
+import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
-import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 
 class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsIo._() : super(httpServerFactoryIo);
 }
 
-FirebaseFunctionsIo _firebaseFunctionsIo;
+FirebaseFunctionsIo? _firebaseFunctionsIo;
 
 FirebaseFunctionsIo get firebaseFunctionsIo =>
     _firebaseFunctionsIo ??= FirebaseFunctionsIo._();
@@ -44,7 +44,7 @@ Future onFileRequest(HttpRequest request) async {
 
 // For io only
 // To run the server in parallel
-Future<HttpServer> serve({int port}) async {
+Future<HttpServer> serve({int? port}) async {
   port ??= 4999;
   var requestServer =
       await httpServerFactoryIo.bind(io.InternetAddress.anyIPv4, port);

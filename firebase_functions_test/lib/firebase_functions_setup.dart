@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
+import 'package:tekartik_firebase_functions_test/src/import.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
   // devPrint('request.body ${request.body?.runtimeType}: ${request.body}');
@@ -23,6 +25,15 @@ void echoQueryHandler(ExpressHttpRequest request) {
 void echoFragmentHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.fragment}");
   request.response.send(request.uri.fragment);
+}
+
+FutureOr<dynamic> callHandler(CallRequest request) async {
+  //devPrint('request data ${request.text}');
+  try {
+    return jsonDecode(request.text!);
+  } catch (_) {
+    return {'error': 'no_body'};
+  }
 }
 
 class TestContext {
@@ -49,5 +60,7 @@ T setup<T extends FirebaseFunctionsTestContext>(
       firebaseFunctions.https.onRequest(echoBytesHandler);
   firebaseFunctions['echoFragment'] =
       firebaseFunctions.https.onRequest(echoFragmentHandler);
+
+  firebaseFunctions['call'] = firebaseFunctions.https.onCall(callHandler);
   return testContext;
 }

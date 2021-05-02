@@ -11,7 +11,7 @@ class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
   ExpressHttpRequestIo(this.body, HttpRequest httpRequest, Uri rewrittenUri)
       : super(httpRequest, rewrittenUri);
 
-  ExpressHttpResponse _response;
+  ExpressHttpResponse? _response;
 
   @override
   ExpressHttpResponse get response =>

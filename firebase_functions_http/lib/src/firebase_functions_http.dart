@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_http/http.dart';
-import 'package:tekartik_common_utils/list_utils.dart';
+
 import 'express_http_request_http.dart';
 
 class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
   HttpServerFactory httpServerFactory;
+
   FirebaseFunctionsHttpBase(this.httpServerFactory) : super();
 
   Map<String, dynamic> functions = {};
@@ -94,12 +96,17 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
   FirebaseFunctions runWith(RuntimeOptions options) => this;
 }
 
-class HttpsHttp implements HttpsFunctions {
+class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
   HttpsHttp();
 
   @override
   HttpsFunction onRequest(RequestHandler handler) {
     return HttpsFunctionHttp(handler);
+  }
+
+  @override
+  CallFunction onCall(CallHandler handler) {
+    return CallFunctionHttp(handler);
   }
 }
 
@@ -108,6 +115,13 @@ class HttpsFunctionHttp implements HttpsFunction {
   final RequestHandler handler;
 
   HttpsFunctionHttp(this.handler);
+}
+
+class CallFunctionHttp implements CallFunction {
+  // ignore: unused_field
+  final CallHandler handler;
+
+  CallFunctionHttp(this.handler);
 }
 
 String rewritePath(String path) {

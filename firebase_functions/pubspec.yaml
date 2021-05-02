@@ -1,6 +1,6 @@
 name: tekartik_firebase_functions
 description: Firebase functions
-version: 0.3.6
+version: 0.3.7
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
@@ -21,7 +21,12 @@ dependencies:
       path: firestore
       ref: null_safety
     version: '>=0.8.0'
-
+  tekartik_firebase_auth:
+    git:
+      url: git://github.com/tekartik/firebase_auth.dart
+      path: auth
+      ref: null_safety
+    version: '>=0.9.0'
 dev_dependencies:
   test: ">=1.2.0"
   dev_test: any
