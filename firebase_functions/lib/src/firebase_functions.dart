@@ -108,7 +108,7 @@ abstract class FirestoreFunctions {
 }
 
 /// Error thrown
-abstract class HttpsError {
+class HttpsError {
   HttpsError(this.code, this.message, this.details);
 
   /// A status error code to include in the response.
