@@ -1,5 +1,4 @@
-import 'package:tekartik_firebase_functions/firebase_functions.dart';
-import 'package:tekartik_http/http.dart';
+import 'package:tekartik_http/http_memory.dart';
 
 import 'firebase_functions_http.dart';
 

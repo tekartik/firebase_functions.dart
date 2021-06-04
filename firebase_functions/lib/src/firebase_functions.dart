@@ -107,6 +107,31 @@ abstract class FirestoreFunctions {
   DocumentBuilder document(String path);
 }
 
+/// Error thrown
+abstract class HttpsError {
+  HttpsError(this.code, this.message, this.details);
+
+  /// A status error code to include in the response.
+  final String code;
+
+  /// A message string to be included in the response body to the client.
+  final String message;
+
+  /// An object to include in the "details" field of the response body.
+  ///
+  /// As with the data returned from a callable HTTPS handler, this can be
+  /// `null` or any JSON-encodable object (`String`, `int`, `List` or `Map`
+  /// containing primitive types).
+  final Object? details;
+
+  @override
+  String toString() => {
+        'code': code,
+        'message': message,
+        if (details != null) 'details': details
+      }.toString();
+}
+
 abstract class HttpsFunctions {
   /// HTTPS request
   HttpsFunction onRequest(RequestHandler handler);
