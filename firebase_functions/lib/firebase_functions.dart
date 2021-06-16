@@ -16,6 +16,7 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         HttpsFunctionsMixin,
         HttpsFunction,
         HttpsError,
+        HttpsErrorCode,
         CallFunction,
         CallHandler,
         CallRequest,
