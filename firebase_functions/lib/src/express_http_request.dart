@@ -43,7 +43,7 @@ abstract class ExpressHttpRequest {
 
   HttpHeaders get headers;
 
-  @deprecated
+  @Deprecated('Use uri')
   Uri get requestedUri;
 }
 
