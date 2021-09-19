@@ -107,8 +107,29 @@ abstract class FirestoreFunctions {
   DocumentBuilder document(String path);
 }
 
+/// FunctionsErrorCode: "ok" | "cancelled" | "unknown" | "invalid-argument" | "deadline-exceeded" | "not-found" | "already-exists" | "permission-denied" | "resource-exhausted" | "failed-precondition" | "aborted" | "out-of-range" | "unimplemented" | "internal" | "unavailable" | "data-loss" | "unauthenticated"
+abstract class HttpsErrorCode {
+  static const ok = 'ok';
+  static const cancelled = 'cancelled';
+  static const unknown = 'unknown';
+  static const invalidArgument = 'invalid-argument';
+  static const deadlineExceeded = 'deadline-exceeded';
+  static const notFound = 'not-found';
+  static const alreadyExists = 'already-exists';
+  static const permissionDenied = 'permission-denied';
+  static const resourceExhausted = 'resource-exhausted';
+  static const failedPrecondition = 'failed-precondition';
+  static const aborted = 'aborted';
+  static const outOrRange = 'out-of-range';
+  static const unimplemented = 'unimplemented';
+  static const internal = 'internal';
+  static const unavailable = 'unavailable';
+  static const dataLoss = 'data-loss';
+  static const unauthenticated = 'unauthenticated';
+}
+
 /// Error thrown
-class HttpsError {
+class HttpsError implements Exception {
   HttpsError(this.code, this.message, this.details);
 
   /// A status error code to include in the response.
