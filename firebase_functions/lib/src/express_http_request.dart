@@ -104,7 +104,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
     } else if (body is Map || body is List) {
       implHttpResponse.write(jsonEncode(body));
     } else {
-      throw '${body?.toString()} not supported';
+      throw '${(body as Object?).runtimeType} not supported';
     }
     return implHttpResponse.close();
   }
