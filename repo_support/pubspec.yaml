@@ -8,7 +8,12 @@ environment:
 dev_dependencies:
   test: '>=1.0.0'
   dev_test: '>=0.13.4-dev.1'
-
+  tekartik_lints:
+    git:
+      url: git://github.com/tekartik/common.dart
+      ref: null_safety
+      path: packages/lints
+    version: '>=0.1.0'
 dependency_overrides:
 #  tekartik_build_utils:
 #    path: ../../../tekartik/build_utils.dart
