@@ -238,6 +238,9 @@ typedef ScheduleEventHandler = FutureOr<void> Function(ScheduleContext context);
 abstract class ScheduleBuilder {
   /// Event handler that fires every time a schedule occurs.
   PubsubFunction onRun(ScheduleEventHandler handler);
+
+  /// Set scheduler in a specific timezone
+  ScheduleBuilder timeZone(String timeZone);
 }
 
 /// Pubsub functions.
@@ -258,8 +261,12 @@ class RuntimeOptions {
   RuntimeOptions({this.timeoutSeconds, this.memory});
 }
 
+// https://cloud.google.com/compute/docs/regions-zones
 /// Belgium location
 const regionBelgium = 'europe-west1';
+
+/// Frankfurst location
+const regionFrankfurt = 'europe-west3';
 
 /// Memory
 const runtimeOptionsMemory128MB = '128MB';
