@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:path/path.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_http/http.dart';
