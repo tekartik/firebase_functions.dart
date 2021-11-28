@@ -12,16 +12,16 @@ dependencies:
   uuid: '>=1.0.0'
   tekartik_firebase_functions_http:
     git:
-      url: git://github.com/tekartik/firebase_functions.dart
+      url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_http
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
   shelf: any
   tekartik_http_io:
     git:
-      url: git://github.com/tekartik/http.dart
+      url: https://github.com/tekartik/http.dart
       path: http_io
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.5.8'
 
 dev_dependencies:
@@ -32,9 +32,9 @@ dev_dependencies:
 
   tekartik_firebase_functions_test:
     git:
-      url: git://github.com/tekartik/firebase_functions.dart
+      url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_test
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
   process_run: '>=0.10.0+1'
 

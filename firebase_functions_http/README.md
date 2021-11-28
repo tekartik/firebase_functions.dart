@@ -3,8 +3,8 @@
 ```yaml
   tekartik_firebase_functions_http:
     git:
-      url: git://github.com/tekartik/firebase_functions.dart
+      url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_http
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
 ```
