@@ -249,6 +249,8 @@ abstract class PubsubFunctions {
 }
 
 /// RunWith options
+///
+/// Tested on node, it is necessary to specify both parameters
 class RuntimeOptions {
   /// Timeout for the function in seconds.
   final int? timeoutSeconds;
