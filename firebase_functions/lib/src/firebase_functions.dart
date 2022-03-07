@@ -249,6 +249,8 @@ abstract class PubsubFunctions {
 }
 
 /// RunWith options
+///
+/// Tested on node, it is necessary to specify both parameters
 class RuntimeOptions {
   /// Timeout for the function in seconds.
   final int? timeoutSeconds;
@@ -258,7 +260,7 @@ class RuntimeOptions {
   /// Valid values are: '128MB', '256MB', '512MB', '1GB', and '2GB'.
   final String? memory;
 
-  RuntimeOptions({this.timeoutSeconds, this.memory});
+  RuntimeOptions({this.timeoutSeconds, this.memory})
 }
 
 // https://cloud.google.com/compute/docs/regions-zones
