@@ -1,8 +1,6 @@
 import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase_functions/ff_server.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
-import 'package:tekartik_http/http.dart';
-import 'package:tekartik_http/http_memory.dart';
+import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'; // ignore: depend_on_referenced_packages
 
 import 'ff_server.dart';
 import 'firebase_functions_memory.dart';

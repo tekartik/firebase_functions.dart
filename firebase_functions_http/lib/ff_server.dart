@@ -1,5 +1,5 @@
 import 'package:tekartik_firebase_functions/ff_server.dart';
-import 'package:tekartik_http/http_server.dart';
+import 'package:tekartik_firebase_functions_http/src/import.dart';
 
 class FfServerHttp implements FfServer {
   final HttpServer? httpServer;
