@@ -1,9 +1,8 @@
 library tekartik_firebase_functions_http.test.firebase_functions_memory_test;
 
 import 'package:path/path.dart' as p;
-import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
-import 'package:tekartik_http/http_memory.dart';
+import 'package:tekartik_firebase_functions_http/src/import.dart';
 import 'package:test/test.dart';
 
 void echoHandler(ExpressHttpRequest request) {

@@ -1,7 +1,7 @@
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
-import 'package:tekartik_http/http.dart';
-import 'package:tekartik_http/http_memory.dart';
+
+import 'import.dart';
 
 /// Test
 abstract class FirebaseFunctionsTestContext {

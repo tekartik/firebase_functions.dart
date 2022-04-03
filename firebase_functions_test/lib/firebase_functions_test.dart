@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
-import 'package:tekartik_http/http.dart';
+import 'package:tekartik_http/http.dart'; // ignore: depend_on_referenced_packages
 import 'package:test/test.dart';
+
+import 'src/import.dart';
 
 export 'src/firebase_functions_test_context.dart';
 
