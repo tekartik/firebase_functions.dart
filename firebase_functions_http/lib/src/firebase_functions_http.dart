@@ -19,7 +19,7 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
   Future<HttpServer> serveHttp({int? port}) async {
     port ??= 4999;
     var requestServer =
-    await httpServerFactory.bind(InternetAddress.anyIPv4, port);
+        await httpServerFactory.bind(InternetAddress.anyIPv4, port);
     for (final key in functions.keys) {
       print('$key http://localhost:$port/$key');
     }
@@ -44,12 +44,11 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
                 fragment: uri.fragment);
             //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
             ExpressHttpRequest httpRequest =
-            await asExpressHttpRequestHttp(request, rewrittenUri);
+                await asExpressHttpRequestHttp(request, rewrittenUri);
             function.handler(httpRequest);
             handled = true;
           }
         }
-
 
         if (!handled) {
           try {
