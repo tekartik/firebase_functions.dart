@@ -26,6 +26,15 @@ void echoFragmentHandler(ExpressHttpRequest request) {
   request.response.send(request.uri.fragment);
 }
 
+void echoHeadersHandler(ExpressHttpRequest request) {
+  // print("request.url ${request.uri} ${request.uri.fragment}");
+  var sb = StringBuffer();
+  request.headers.forEach((name, values) {
+    sb.writeln('name: ${values.join(', ')}');
+  });
+  request.response.send(sb.toString());
+}
+
 FutureOr<dynamic> callHandler(CallRequest request) async {
   //devPrint('request data ${request.text}');
   try {
@@ -59,6 +68,8 @@ T setup<T extends FirebaseFunctionsTestContext>(
       firebaseFunctions.https.onRequest(echoBytesHandler);
   firebaseFunctions['echoFragment'] =
       firebaseFunctions.https.onRequest(echoFragmentHandler);
+  firebaseFunctions['echoHeaders'] =
+      firebaseFunctions.https.onRequest(echoHeadersHandler);
 
   firebaseFunctions['call'] = firebaseFunctions.https.onCall(callHandler);
   return testContext;
