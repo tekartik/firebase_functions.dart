@@ -86,7 +86,9 @@ mixin CallRequestMixin implements CallRequest {
   Object? get data => null;
 }
 
-/// Call request handler
+/// Call request handler.
+///
+/// The object returned is the response. Could be a map object
 typedef CallHandler = FutureOr<Object?> Function(CallRequest request);
 
 abstract class FirebaseFunction {}
