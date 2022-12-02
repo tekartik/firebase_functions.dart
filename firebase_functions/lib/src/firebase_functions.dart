@@ -272,6 +272,9 @@ const regionBelgium = 'europe-west1';
 /// Frankfurst location
 const regionFrankfurt = 'europe-west3';
 
+/// Us central 1, default region for firebase serve.
+const regionUsCentral1 = 'us-central1';
+
 /// Memory
 const runtimeOptionsMemory128MB = '128MB';
 const runtimeOptionsMemory256MB = '256MB';
