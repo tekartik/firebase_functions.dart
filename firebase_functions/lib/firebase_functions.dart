@@ -40,6 +40,8 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         PubsubFunction,
         RuntimeOptions,
         regionBelgium,
+        regionFrankfurt,
+        regionUsCentral1,
         runtimeOptionsMemory128MB,
         runtimeOptionsMemory256MB,
         runtimeOptionsMemory512MB,

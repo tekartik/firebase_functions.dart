@@ -25,24 +25,29 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
     }
 
     print('listening on http://localhost:${requestServer.port}');
-    var handled = false;
+
     // Launch in background
     unawaited(Future.sync(() async {
       await for (HttpRequest request in requestServer) {
         var uri = request.uri;
+        var handled = false;
         // /test
         var functionKey = listFirst(uri.pathSegments);
-        var function = functions[functionKey!];
-        if (function is HttpsFunctionHttp) {
-          final rewrittenUri = Uri(
-              pathSegments: uri.pathSegments.sublist(1),
-              query: uri.query,
-              fragment: uri.fragment);
-          //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
-          ExpressHttpRequest httpRequest =
-              await asExpressHttpRequestHttp(request, rewrittenUri);
-          function.handler(httpRequest);
-          handled = true;
+        if (functionKey == null) {
+          print('No functions key found for $uri');
+        } else {
+          var function = functions[functionKey];
+          if (function is HttpsFunctionHttp) {
+            final rewrittenUri = Uri(
+                pathSegments: uri.pathSegments.sublist(1),
+                query: uri.query,
+                fragment: uri.fragment);
+            //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
+            ExpressHttpRequest httpRequest =
+                await asExpressHttpRequestHttp(request, rewrittenUri);
+            function.handler(httpRequest);
+            handled = true;
+          }
         }
 
         if (!handled) {

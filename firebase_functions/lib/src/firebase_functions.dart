@@ -86,7 +86,9 @@ mixin CallRequestMixin implements CallRequest {
   Object? get data => null;
 }
 
-/// Call request handler
+/// Call request handler.
+///
+/// The object returned is the response. Could be a map object
 typedef CallHandler = FutureOr<Object?> Function(CallRequest request);
 
 abstract class FirebaseFunction {}
@@ -269,6 +271,9 @@ const regionBelgium = 'europe-west1';
 
 /// Frankfurst location
 const regionFrankfurt = 'europe-west3';
+
+/// Us central 1, default region for firebase serve.
+const regionUsCentral1 = 'us-central1';
 
 /// Memory
 const runtimeOptionsMemory128MB = '128MB';

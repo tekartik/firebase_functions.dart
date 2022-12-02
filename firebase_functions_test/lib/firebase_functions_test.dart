@@ -58,6 +58,17 @@ void ffTest(
     client.close();
   });
 
+  test('headers', () async {
+    var client = httpClientFactory!.newClient();
+    var response = await client.get(Uri.parse(testContext.url('echoHeaders')),
+        headers: {'x-test1': 'value1'});
+    expect(response.statusCode, 200);
+    // Server has no fragment
+    expect(response.body,
+        startsWith('name: value1')); // don't care about line feed
+    client.close();
+  });
+
   test('redirect', () async {
     var client = httpClientFactory!.newClient();
     var response = await client.post(Uri.parse(testContext.url('redirect')),
