@@ -30,14 +30,28 @@ void testHttp(
       setUpAll(() async {
         firebaseFunctions['echo'] =
             firebaseFunctions.https.onRequest(echoHandler);
+        firebaseFunctions['echov2'] =
+            firebaseFunctions.https.onRequestV2(HttpsOptions(), echoHandler);
 
         server = await firebaseFunctions.serveHttp(port: 0);
       });
 
-      test('post', () async {
+      test('echo', () async {
         var client = httpClientFactory.newClient();
         var response = await client.post(
             Uri.parse(p.url.join(httpServerGetUri(server!).toString(), 'echo')),
+            body: 'hello');
+        expect(response.statusCode, 200);
+        expect(response.contentLength, greaterThan(0));
+        expect(response.body, equals('hello'));
+
+        client.close();
+      });
+      test('echov2', () async {
+        var client = httpClientFactory.newClient();
+        var response = await client.post(
+            Uri.parse(
+                p.url.join(httpServerGetUri(server!).toString(), 'echov2')),
             body: 'hello');
         expect(response.statusCode, 200);
         expect(response.contentLength, greaterThan(0));

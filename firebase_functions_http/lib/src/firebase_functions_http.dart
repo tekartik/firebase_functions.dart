@@ -101,7 +101,12 @@ class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
 
   @override
   HttpsFunction onRequest(RequestHandler handler) {
-    return HttpsFunctionHttp(handler);
+    return HttpsFunctionHttp(null, handler);
+  }
+
+  @override
+  HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler) {
+    return HttpsFunctionHttp(httpsOptions, handler);
   }
 
   @override
@@ -111,10 +116,11 @@ class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
 }
 
 class HttpsFunctionHttp implements HttpsFunction {
+  final HttpsOptions? options;
   // ignore: unused_field
   final RequestHandler handler;
 
-  HttpsFunctionHttp(this.handler);
+  HttpsFunctionHttp(this.options, this.handler);
 }
 
 class CallFunctionHttp implements CallFunction {

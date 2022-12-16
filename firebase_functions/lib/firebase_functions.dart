@@ -46,5 +46,6 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         runtimeOptionsMemory256MB,
         runtimeOptionsMemory512MB,
         runtimeOptionsMemory1GB,
-        runtimeOptionsMemory2GB;
+        runtimeOptionsMemory2GB,
+        HttpsOptions;
 export 'package:tekartik_http/http_server.dart';

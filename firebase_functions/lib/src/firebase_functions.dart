@@ -25,6 +25,7 @@ abstract class FirebaseFunctions {
   /// Configures the regions to which to deploy and run a function.
   ///
   /// For a list of valid values see https://firebase.google.com/docs/functions/locations
+  /// V1 only
   FirebaseFunctions region(String region);
 
   /// Configures memory allocation and timeout for a function.
@@ -159,6 +160,9 @@ abstract class HttpsFunctions {
   /// HTTPS request
   HttpsFunction onRequest(RequestHandler handler);
 
+  /// HTTPS request with options
+  HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler);
+
   /// call request
   CallFunction onCall(CallHandler handler);
 }
@@ -168,6 +172,10 @@ mixin HttpsFunctionsMixin implements HttpsFunctions {
   @override
   CallFunction onCall(CallHandler handler) =>
       throw UnimplementedError('onCall');
+  @override
+  HttpsFunction onRequestV2(
+          HttpsOptions httpsOptions, RequestHandler handler) =>
+      throw UnimplementedError('onRequestV2');
 }
 
 /// Document builder.
@@ -265,11 +273,20 @@ class RuntimeOptions {
   RuntimeOptions({this.timeoutSeconds, this.memory});
 }
 
+/// Https options
+class HttpsOptions {
+  /// Either region or regions
+  final String? region;
+  final List<String>? regions;
+
+  HttpsOptions({this.region, this.regions});
+}
+
 // https://cloud.google.com/compute/docs/regions-zones
-/// Belgium location
+/// Belgium location, V2 ok
 const regionBelgium = 'europe-west1';
 
-/// Frankfurst location
+/// Frankfurt location
 const regionFrankfurt = 'europe-west3';
 
 /// Us central 1, default region for firebase serve.
