@@ -20,7 +20,7 @@ abstract class FirebaseFunctions {
   /// Pubsub functions.
   PubsubFunctions get pubsub;
 
-  operator []=(String key, FirebaseFunction function);
+  void operator []=(String key, FirebaseFunction function);
 
   /// Configures the regions to which to deploy and run a function.
   ///
