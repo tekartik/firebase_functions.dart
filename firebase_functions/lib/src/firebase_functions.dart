@@ -279,7 +279,10 @@ class HttpsOptions {
   final String? region;
   final List<String>? regions;
 
-  HttpsOptions({this.region, this.regions});
+  /// Set to true to allow cors
+  final bool? cors;
+
+  HttpsOptions({this.region, this.regions, this.cors});
 }
 
 // https://cloud.google.com/compute/docs/regions-zones

@@ -45,6 +45,20 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
             //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
             ExpressHttpRequest httpRequest =
                 await asExpressHttpRequestHttp(request, rewrittenUri);
+            // cors?
+            var cors = function.options?.cors ?? false;
+            if (cors) {
+              httpRequest.response.headers
+                ..set('Access-Control-Allow-Origin', '*')
+                ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
+              var requestHeaders =
+                  request.headers['Access-Control-Request-Headers'];
+              if (requestHeaders != null) {
+                httpRequest.response.headers
+                    .set('Access-Control-Allow-Headers', requestHeaders);
+              }
+            }
+
             function.handler(httpRequest);
             handled = true;
           }
@@ -81,7 +95,8 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
 // For io only
 // To run the server in parallel
   /// To implement
-  Future<HttpServer?> serveHttp({int? port}) async => null;
+  Future<HttpServer> serveHttp({int? port}) async =>
+      throw UnimplementedError('serveHttp');
 
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');

@@ -29,7 +29,13 @@ dev_dependencies:
   dev_test: any
   build_runner: ">=0.8.8"
   build_test:
-
+  build_web_compilers:
+  tekartik_test_menu_browser:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      path: test_menu_browser
+      ref: dart2_3
+    version: '>=0.4.7'
   tekartik_firebase_functions_test:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
