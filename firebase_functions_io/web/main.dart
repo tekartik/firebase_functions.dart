@@ -13,6 +13,6 @@ Future main(List<String> arguments) async {
           client, httpMethodPost, Uri.parse('http://localhost:4999/echo'),
           body: 'test body');
       write('result: $result');
-    }, solo: true);
+    });
   });
 }

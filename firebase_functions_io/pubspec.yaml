@@ -1,6 +1,6 @@
 name: tekartik_firebase_functions_io
 description: Firebase functions io simulation
-version: 0.4.0
+version: 0.4.1
 publish_to: none
 #homepage: https://www.example.com
 #author: alex <email@example.com>
@@ -15,7 +15,7 @@ dependencies:
       url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_http
       ref: dart2_3
-    version: '>=0.2.1'
+    version: '>=0.4.1'
   shelf: any
   tekartik_http_io:
     git:
