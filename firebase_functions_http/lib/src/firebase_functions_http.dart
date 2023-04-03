@@ -45,6 +45,20 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
             //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
             ExpressHttpRequest httpRequest =
                 await asExpressHttpRequestHttp(request, rewrittenUri);
+            // cors?
+            var cors = function.options?.cors ?? false;
+            if (cors) {
+              httpRequest.response.headers
+                ..set('Access-Control-Allow-Origin', '*')
+                ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
+              var requestHeaders =
+                  request.headers['Access-Control-Request-Headers'];
+              if (requestHeaders != null) {
+                httpRequest.response.headers
+                    .set('Access-Control-Allow-Headers', requestHeaders);
+              }
+            }
+
             function.handler(httpRequest);
             handled = true;
           }
@@ -81,7 +95,8 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
 // For io only
 // To run the server in parallel
   /// To implement
-  Future<HttpServer?> serveHttp({int? port}) async => null;
+  Future<HttpServer> serveHttp({int? port}) async =>
+      throw UnimplementedError('serveHttp');
 
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');
@@ -101,7 +116,12 @@ class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
 
   @override
   HttpsFunction onRequest(RequestHandler handler) {
-    return HttpsFunctionHttp(handler);
+    return HttpsFunctionHttp(null, handler);
+  }
+
+  @override
+  HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler) {
+    return HttpsFunctionHttp(httpsOptions, handler);
   }
 
   @override
@@ -111,10 +131,11 @@ class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
 }
 
 class HttpsFunctionHttp implements HttpsFunction {
+  final HttpsOptions? options;
   // ignore: unused_field
   final RequestHandler handler;
 
-  HttpsFunctionHttp(this.handler);
+  HttpsFunctionHttp(this.options, this.handler);
 }
 
 class CallFunctionHttp implements CallFunction {
