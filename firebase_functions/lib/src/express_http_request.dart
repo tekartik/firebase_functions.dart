@@ -90,7 +90,7 @@ abstract class ExpressHttpResponseWrapperBase extends Object
   }
 }
 
-abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
+abstract mixin class HttpResponseWrapperMixin implements ExpressHttpResponse {
   late HttpResponse implHttpResponse;
 
   @override
@@ -145,7 +145,7 @@ abstract class HttpResponseWrapperMixin implements ExpressHttpResponse {
    */
 }
 
-abstract class HttpRequestWrapperMixin implements ExpressHttpRequest {
+abstract mixin class HttpRequestWrapperMixin implements ExpressHttpRequest {
   HttpRequest get implHttpRequest;
 
   Uri get _rewrittenUri;

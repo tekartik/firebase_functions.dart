@@ -6,7 +6,7 @@ publish_to: none
 #author: alex <email@example.com>
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   uuid: '>=1.0.0'
@@ -14,14 +14,14 @@ dependencies:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_http
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.4.1'
   shelf: any
   tekartik_http_io:
     git:
       url: https://github.com/tekartik/http.dart
       path: http_io
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.5.8'
 
 dev_dependencies:
@@ -34,13 +34,13 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/test_menu.dart
       path: test_menu_browser
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.4.7'
   tekartik_firebase_functions_test:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_test
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.2.1'
   process_run: '>=0.10.0+1'
 
