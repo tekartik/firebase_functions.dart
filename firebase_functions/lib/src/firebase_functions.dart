@@ -5,13 +5,14 @@ import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
+import 'params.dart';
+
 export 'package:tekartik_firebase_firestore/firestore.dart'
     show DocumentSnapshot, Timestamp;
 
 /// Global namespace for Firebase Cloud Functions functionality.
 abstract class FirebaseFunctions {
   /// HTTPS functions.
-
   HttpsFunctions get https;
 
   /// Firestore functions.
@@ -30,6 +31,9 @@ abstract class FirebaseFunctions {
 
   /// Configures memory allocation and timeout for a function.
   FirebaseFunctions runWith(RuntimeOptions options);
+
+  /// Params
+  Params get params;
 }
 
 /// Https request handler

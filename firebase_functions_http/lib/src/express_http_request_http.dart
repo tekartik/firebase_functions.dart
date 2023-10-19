@@ -19,8 +19,7 @@ class ExpressHttpRequestHttp extends ExpressHttpRequestWrapperBase
 
 class ExpressHttpResponseHttp extends ExpressHttpResponseWrapperBase
     implements ExpressHttpResponse {
-  ExpressHttpResponseHttp(HttpResponse implHttpResponse)
-      : super(implHttpResponse);
+  ExpressHttpResponseHttp(super.implHttpResponse);
 }
 
 Future<ExpressHttpRequestHttp> asExpressHttpRequestHttp(

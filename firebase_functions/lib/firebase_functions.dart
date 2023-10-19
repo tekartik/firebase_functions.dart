@@ -49,3 +49,4 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         runtimeOptionsMemory2GB,
         HttpsOptions;
 export 'package:tekartik_http/http_server.dart';
+export 'src/params.dart' show Params;

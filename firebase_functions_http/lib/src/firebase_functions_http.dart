@@ -109,6 +109,9 @@ abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
   /// No-op.
   @override
   FirebaseFunctions runWith(RuntimeOptions options) => this;
+
+  @override
+  Params get params => throw UnimplementedError('params');
 }
 
 class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {

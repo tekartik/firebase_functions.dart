@@ -18,8 +18,7 @@ class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
 
 class ExpressHttpResponseIo extends ExpressHttpResponseWrapperBase
     implements ExpressHttpResponse {
-  ExpressHttpResponseIo(HttpResponse implHttpResponse)
-      : super(implHttpResponse);
+  ExpressHttpResponseIo(super.implHttpResponse);
 }
 
 Future<ExpressHttpRequestIo> asExpressHttpRequestIo(
