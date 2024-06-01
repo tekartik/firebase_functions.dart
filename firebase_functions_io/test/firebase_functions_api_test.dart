@@ -1,4 +1,6 @@
 @TestOn('vm')
+library;
+
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:test/test.dart';
 
