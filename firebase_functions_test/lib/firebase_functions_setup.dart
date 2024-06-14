@@ -57,15 +57,17 @@ class TestContext {
   String? baseUrl;
 }
 
-T setup<T extends FirebaseFunctionsTestContext>(
+T setup<T extends FirebaseFunctionsTestServerContext>(
     {required T testContext,
     FirebaseFunctions? firebaseFunctions,
-    TestContext? context}) {
+    TestContext? context,
+    String? testRedirectUrl}) {
   firebaseFunctions ??= testContext.firebaseFunctions;
 
+  /// Not working not tested yet
   void redirectFragmentHandler(ExpressHttpRequest request) {
     // print("request.url ${request.uri} ${request.uri.fragment}");
-    request.response.redirect(Uri.parse(testContext.url('echo')));
+    request.response.redirect(Uri.parse(testRedirectUrl!));
   }
 
   firebaseFunctions['echo'] = firebaseFunctions.https.onRequestV2(
@@ -73,15 +75,15 @@ T setup<T extends FirebaseFunctionsTestContext>(
 
   firebaseFunctions['redirect'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), redirectFragmentHandler);
-  firebaseFunctions['echoQuery'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions['echoquery'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoQueryHandler);
-  firebaseFunctions['echoBytes'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions['echobytes'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoBytesHandler);
-  firebaseFunctions['echoFragment'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions['echofragment'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoFragmentHandler);
-  firebaseFunctions['echoHeaders'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions['echoheaders'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoHeadersHandler);
-  firebaseFunctions['echoInfo'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions['echoinfo'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoInfoHandler);
 
   /// temp out for node testing
@@ -92,3 +94,14 @@ T setup<T extends FirebaseFunctionsTestContext>(
   }
   return testContext;
 }
+
+var testFunctionNames = [
+  'echo',
+  'redirect',
+  'echoquery',
+  'echobytes',
+  'echofragment',
+  'echoheaders',
+  'echoinfo',
+  'call'
+];

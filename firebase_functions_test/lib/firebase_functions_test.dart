@@ -10,7 +10,7 @@ import 'src/import.dart';
 export 'src/firebase_functions_test_context.dart';
 
 void ffTest(
-    {required FirebaseFunctionsTestContext testContext,
+    {required FirebaseFunctionsTestClientContext testContext,
     HttpClientFactory? httpClientFactory,
     String? baseUrl}) {
   setUp(() async {
@@ -29,7 +29,7 @@ void ffTest(
 
   test('echoBytes binary', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echoBytes')),
+    var response = await client.post(Uri.parse(testContext.url('echobytes')),
         body: Uint8List.fromList([1, 2, 3]),
 
         /// Needed for node
@@ -44,7 +44,7 @@ void ffTest(
   test('echoBytes test', () async {
     var content = 'éàö';
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echoBytes')),
+    var response = await client.post(Uri.parse(testContext.url('echobytes')),
         body: content,
 
         /// Needed for node
@@ -61,7 +61,7 @@ void ffTest(
   test('echoBytes json', () async {
     var map = {'test': 'éàö'};
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echoBytes')),
+    var response = await client.post(Uri.parse(testContext.url('echobytes')),
         body: jsonEncode(map),
 
         /// Needed for node
@@ -78,7 +78,7 @@ void ffTest(
   test('queryParams', () async {
     var client = httpClientFactory!.newClient();
     var response = await client
-        .get(Uri.parse(testContext.url('echoQuery?dev&param=value')));
+        .get(Uri.parse(testContext.url('echoquery?dev&param=value')));
     expect(response.statusCode, 200);
     expect(response.body, 'dev&param=value');
 
@@ -88,7 +88,7 @@ void ffTest(
   test('fragment', () async {
     var client = httpClientFactory!.newClient();
     var response = await client
-        .get(Uri.parse(testContext.url('echoFragment#some_fragment')));
+        .get(Uri.parse(testContext.url('echofragment#some_fragment')));
     expect(response.statusCode, 200);
     // Server has no fragment
     expect(response.body, '');
@@ -98,7 +98,7 @@ void ffTest(
   test('info', () async {
     var client = httpClientFactory!.newClient();
     var response =
-        await client.get(Uri.parse(testContext.url('echoInfo?param#fragment')));
+        await client.get(Uri.parse(testContext.url('echoinfo?param#fragment')));
     expect(response.statusCode, 200);
     // Server has no fragment
     var decoded = jsonDecode(response.body);
@@ -109,15 +109,15 @@ void ffTest(
       expect(decoded, {'method': 'GET', 'uri': '/?param'});
     }
     response = await client
-        .post(Uri.parse(testContext.url('echoInfo?param#fragment')));
+        .post(Uri.parse(testContext.url('echoinfo/sub1/sub2?param#fragment')));
     expect(response.statusCode, 200);
     // Server has no fragment
     decoded = jsonDecode(response.body);
     try {
-      expect(decoded, {'method': 'POST', 'uri': '?param#'});
+      expect(decoded, {'method': 'POST', 'uri': 'sub1/sub2?param#'});
     } catch (e) {
       // On node we have a leading /
-      expect(decoded, {'method': 'POST', 'uri': '/?param'});
+      expect(decoded, {'method': 'POST', 'uri': '/sub1/sub2?param'});
     }
 
     client.close();
@@ -125,7 +125,7 @@ void ffTest(
 
   test('headers', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.get(Uri.parse(testContext.url('echoHeaders')),
+    var response = await client.get(Uri.parse(testContext.url('echoheaders')),
         headers: {'x-test1': 'value1'});
     expect(response.statusCode, 200);
     // Server has no fragment

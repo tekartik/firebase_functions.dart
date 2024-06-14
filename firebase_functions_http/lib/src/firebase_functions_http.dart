@@ -78,7 +78,9 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
   }
 }
 
-abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
+abstract class FirebaseFunctionsHttp
+    with FirebaseFunctionsDefaultMixin
+    implements FirebaseFunctions {
   FirebaseFunctionsHttp();
 
   HttpsFunctions? _https;

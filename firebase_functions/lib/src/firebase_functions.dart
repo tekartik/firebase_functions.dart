@@ -5,6 +5,7 @@ import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
+import 'firebase_functions_scheduler.dart';
 import 'params.dart';
 
 export 'package:tekartik_firebase_firestore/firestore.dart'
@@ -21,6 +22,9 @@ abstract class FirebaseFunctions {
   /// Pubsub functions.
   PubsubFunctions get pubsub;
 
+  /// Scheduler functions.
+  SchedulerFunctions get scheduler;
+
   void operator []=(String key, FirebaseFunction function);
 
   /// Configures the regions to which to deploy and run a function.
@@ -36,8 +40,14 @@ abstract class FirebaseFunctions {
   Params get params;
 }
 
+mixin FirebaseFunctionsDefaultMixin {
+  /// Scheduler functions.
+  SchedulerFunctions get scheduler =>
+      throw UnimplementedError('FirebaseFunction.scheduler');
+}
+
 /// Https request handler
-typedef RequestHandler = void Function(ExpressHttpRequest request);
+typedef RequestHandler = FutureOr<void> Function(ExpressHttpRequest request);
 
 /// Call context
 abstract class CallContext {
@@ -278,15 +288,17 @@ class RuntimeOptions {
 }
 
 /// Https options
-class HttpsOptions {
-  /// Either region or regions
-  final String? region;
-  final List<String>? regions;
-
+class HttpsOptions extends GlobalOptions {
   /// Set to true to allow cors
   final bool? cors;
 
-  HttpsOptions({this.region, this.regions, this.cors});
+  HttpsOptions(
+      {this.cors,
+      super.concurrency,
+      super.memory,
+      super.region,
+      super.regions,
+      super.timeoutSeconds});
 }
 
 // https://cloud.google.com/compute/docs/regions-zones
@@ -305,3 +317,29 @@ const runtimeOptionsMemory256MB = '256MB';
 const runtimeOptionsMemory512MB = '512MB';
 const runtimeOptionsMemory1GB = '1GB';
 const runtimeOptionsMemory2GB = '2GB';
+
+abstract class GlobalOptions {
+  /// Either region or regions
+  final String? region;
+  final List<String>? regions;
+
+  /// Amount of memory to allocate to a function.
+  /// "128MiB" | "256MiB" | "512MiB" | "1GiB" | "2GiB" | "4GiB" | "8GiB" | "16GiB" | "32GiB";
+  /// external Object? get region;
+
+  final String? memory;
+
+  /// Number of requests a function can serve at once.
+
+  final int? concurrency;
+
+  /// Timeout for the function in sections, possible values are 0 to 540. HTTPS functions can specify a higher timeout.
+  final int? timeoutSeconds;
+
+  GlobalOptions(
+      {this.timeoutSeconds,
+      this.region,
+      this.regions,
+      this.memory,
+      this.concurrency});
+}

@@ -11,6 +11,7 @@ export 'package:tekartik_firebase_functions/src/express_http_request.dart'
 export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
     show
         FirebaseFunctions,
+        FirebaseFunctionsDefaultMixin,
         FirebaseFunction,
         HttpsFunctions,
         HttpsFunctionsMixin,
@@ -48,5 +49,15 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         runtimeOptionsMemory1GB,
         runtimeOptionsMemory2GB,
         HttpsOptions;
+export 'package:tekartik_firebase_functions/src/firebase_functions_scheduler.dart'
+    show
+        SchedulerFunctions,
+        ScheduleEvent,
+        ScheduleOptions,
+        ScheduleHandler,
+        SchedulerFunctionsDefaultMixin,
+        ScheduleFunction,
+        SchedulerEventDefaultMixin;
 export 'package:tekartik_http/http_server.dart';
+
 export 'src/params.dart' show Params;
