@@ -48,7 +48,8 @@ abstract class ExpressHttpRequest {
 }
 
 abstract class ExpressHttpResponse {
-  // send closes too
+  /// send closes too
+  /// Node only supports this.
   Future send([dynamic body]);
 
   // redirect
@@ -67,7 +68,7 @@ abstract class ExpressHttpResponse {
 
   set statusCode(int statusCode);
 
-  // To call if not using call
+  /// To call if not using send
   Future close();
 
   HttpHeaders get headers;

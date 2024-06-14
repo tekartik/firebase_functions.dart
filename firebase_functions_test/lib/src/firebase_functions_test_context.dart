@@ -6,6 +6,8 @@ import 'import.dart';
 /// Test
 abstract class FirebaseFunctionsTestContext {
   final FirebaseFunctions firebaseFunctions;
+
+  /// External client factory.
   final HttpClientFactory httpClientFactory;
   final String? baseUrl;
 

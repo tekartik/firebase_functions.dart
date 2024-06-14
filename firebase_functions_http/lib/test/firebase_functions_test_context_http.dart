@@ -2,26 +2,23 @@ import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'; // ignore: depend_on_referenced_packages
 
-import 'ff_server.dart';
-import 'firebase_functions_memory.dart';
-import 'src/import.dart';
+import '../ff_server.dart';
+import '../firebase_functions_memory.dart';
+import '../src/import.dart';
 
-class FirebaseFunctionsTestContextMemory extends FirebaseFunctionsTestContext {
-  FirebaseFunctionsTestContextMemory(
+class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext {
+  FirebaseFunctionsTestContextHttp(
       {
       /// external client factory
-      HttpClientFactory? httpClientFactory})
-      : super(
-          httpClientFactory: httpClientFactoryMemory,
-          firebaseFunctions: firebaseFunctionsMemory,
-          baseUrl: null,
-        );
+      required super.httpClientFactory,
+      required super.firebaseFunctions,
+      super.baseUrl});
 
   // To set when ready
   late FfServer server;
 
   @override
-  String url(String path) => p.url.join(server.uri.toString(), path);
+  String url(String path) => p.url.join(baseUrl ?? server.uri.toString(), path);
 
   /// Serve locally
   @override
