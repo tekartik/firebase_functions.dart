@@ -107,7 +107,17 @@ void ffTest(
       // On node we have a leading /
       expect(decoded, {'method': 'GET', 'uri': '/?param'});
     }
-    // Not working memory/http expect(response.headers[httpHeaderContentType], httpContentTypeJson);
+    response = await client
+        .post(Uri.parse(testContext.url('echoInfo?param#fragment')));
+    expect(response.statusCode, 200);
+    // Server has no fragment
+    decoded = jsonDecode(response.body);
+    try {
+      expect(decoded, {'method': 'POST', 'uri': '?param#'});
+    } catch (e) {
+      // On node we have a leading /
+      expect(decoded, {'method': 'POST', 'uri': '/?param'});
+    }
 
     client.close();
   });
