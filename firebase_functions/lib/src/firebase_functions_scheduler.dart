@@ -49,7 +49,7 @@ class ScheduleOptions extends GlobalOptions {
 mixin SchedulerFunctionsDefaultMixin implements SchedulerFunctions {
   @override
   ScheduleFunction onSchedule(
-      ScheduleOptions httpsOptions, ScheduleHandler handler) {
+      ScheduleOptions scheduleOptions, ScheduleHandler handler) {
     throw UnimplementedError('SchedulerFunctions.onSchedule');
   }
 }
