@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
-import 'package:tekartik_http/http.dart'; // ignore: depend_on_referenced_packages
+// ignore: depend_on_referenced_packages
 import 'package:test/test.dart';
 
 import 'src/import.dart';
@@ -18,7 +17,6 @@ void ffTest(
   });
   test('post', () async {
     var client = httpClientFactory!.newClient();
-    devPrint('url: ${testContext.url('echo')}');
     var response =
         await client.post(Uri.parse(testContext.url('echo')), body: 'hello');
     expect(response.statusCode, 200);

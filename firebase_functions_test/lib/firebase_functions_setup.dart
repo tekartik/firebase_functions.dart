@@ -6,10 +6,9 @@ import 'package:tekartik_firebase_functions_test/src/import.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
   var body = request.body;
-  devPrint('echoBytes ${body?.runtimeType}: ${body}');
-  devPrint('echoBytes: request.body ${body?.runtimeType}: ${body}');
+  //devPrint('echoBytes ${body?.runtimeType}: ${body}');
   request.response.headers.contentType = request.headers.contentType;
-  request.response.send(request.body as Uint8List?);
+  request.response.send(body as Uint8List?);
 }
 
 void echoHandler(ExpressHttpRequest request) {
