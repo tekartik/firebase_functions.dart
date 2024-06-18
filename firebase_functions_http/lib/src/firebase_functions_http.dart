@@ -1,13 +1,24 @@
 import 'package:path/path.dart';
+import 'package:tekartik_firebase_firestore/firestore.dart';
+import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
 import 'express_http_request_http.dart';
 import 'import.dart';
 
 class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
   HttpServerFactory httpServerFactory;
+  GlobalOptions? globalOptions;
 
   FirebaseFunctionsHttpBase(this.httpServerFactory) : super();
 
+  @override
+  void init({Firestore? firestore}) {
+    firebaseFirestore = firestore;
+  }
+
+  Firestore? firebaseFirestore;
+  @override
+  late final firestore = FirestoreFunctionsHttp(this);
   Map<String, dynamic> functions = {};
 
   @override
@@ -94,6 +105,7 @@ abstract class FirebaseFunctionsHttp
   @override
   PubsubFunctions get pubsub => throw UnimplementedError();
 
+  void init({Firestore? firestore});
 // For io only
 // To run the server in parallel
   /// To implement

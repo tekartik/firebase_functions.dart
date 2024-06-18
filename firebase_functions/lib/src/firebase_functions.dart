@@ -40,6 +40,7 @@ abstract class FirebaseFunctions {
   /// Params
   Params get params;
 
+  /// Set global options
   set globalOptions(GlobalOptions options);
 }
 
@@ -210,7 +211,8 @@ const runtimeOptionsMemory512MB = '512MB';
 const runtimeOptionsMemory1GB = '1GB';
 const runtimeOptionsMemory2GB = '2GB';
 
-abstract class GlobalOptions {
+/// Global firebase function options
+class GlobalOptions {
   /// Either region or regions
   final String? region;
   final List<String>? regions;
