@@ -2,9 +2,10 @@
 import 'dart:async';
 
 import 'package:tekartik_firebase_auth/auth.dart';
-import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
+import 'firebase_functions_firestore.dart';
+import 'firebase_functions_https.dart';
 import 'firebase_functions_scheduler.dart';
 import 'params.dart';
 
@@ -38,12 +39,51 @@ abstract class FirebaseFunctions {
 
   /// Params
   Params get params;
+
+  set globalOptions(GlobalOptions options);
 }
 
-mixin FirebaseFunctionsDefaultMixin {
+mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
   /// Scheduler functions.
+  @override
   SchedulerFunctions get scheduler =>
       throw UnimplementedError('FirebaseFunction.scheduler');
+
+  /// Firestore functions.
+  @override
+  FirestoreFunctions get firestore =>
+      throw UnimplementedError('FirebaseFunction.firestore');
+
+  @override
+  set globalOptions(GlobalOptions options) {
+    throw UnimplementedError('FirebaseFunction.globalOptions');
+  }
+
+  @override
+  void operator []=(String key, FirebaseFunction function) {
+    throw UnimplementedError('FirebaseFunction.[]=');
+  }
+
+  @override
+  HttpsFunctions get https =>
+      throw UnimplementedError('FirebaseFunction.https');
+
+  @override
+  Params get params => throw UnimplementedError('FirebaseFunction.params');
+
+  @override
+  PubsubFunctions get pubsub =>
+      throw UnimplementedError('FirebaseFunction.pubsub');
+
+  /// Deprecated use setGlobalOptions
+  @override
+  FirebaseFunctions region(String region) =>
+      throw UnimplementedError('FirebaseFunction.region');
+
+  /// Deprecated user setGlobalOptions
+  @override
+  FirebaseFunctions runWith(RuntimeOptions options) =>
+      throw UnimplementedError('FirebaseFunction.runWith');
 }
 
 /// Https request handler
@@ -109,144 +149,10 @@ typedef CallHandler = FutureOr<Object?> Function(CallRequest request);
 abstract class FirebaseFunction {}
 
 /// Https function.
-abstract class HttpsFunction implements FirebaseFunction {}
-
-/// Https function.
 abstract class CallFunction implements FirebaseFunction {}
-
-/// Firestore function.
-abstract class FirestoreFunction implements FirebaseFunction {}
 
 /// Pubsub function
 abstract class PubsubFunction implements FirebaseFunction {}
-
-abstract class FirestoreFunctions {
-  DocumentBuilder document(String path);
-}
-
-/// FunctionsErrorCode: "ok" | "cancelled" | "unknown" | "invalid-argument" | "deadline-exceeded" | "not-found" | "already-exists" | "permission-denied" | "resource-exhausted" | "failed-precondition" | "aborted" | "out-of-range" | "unimplemented" | "internal" | "unavailable" | "data-loss" | "unauthenticated"
-abstract class HttpsErrorCode {
-  static const ok = 'ok';
-  static const cancelled = 'cancelled';
-  static const unknown = 'unknown';
-  static const invalidArgument = 'invalid-argument';
-  static const deadlineExceeded = 'deadline-exceeded';
-  static const notFound = 'not-found';
-  static const alreadyExists = 'already-exists';
-  static const permissionDenied = 'permission-denied';
-  static const resourceExhausted = 'resource-exhausted';
-  static const failedPrecondition = 'failed-precondition';
-  static const aborted = 'aborted';
-  static const outOrRange = 'out-of-range';
-  static const unimplemented = 'unimplemented';
-  static const internal = 'internal';
-  static const unavailable = 'unavailable';
-  static const dataLoss = 'data-loss';
-  static const unauthenticated = 'unauthenticated';
-}
-
-/// Error thrown
-class HttpsError implements Exception {
-  HttpsError(this.code, this.message, this.details);
-
-  /// A status error code to include in the response.
-  final String code;
-
-  /// A message string to be included in the response body to the client.
-  final String message;
-
-  /// An object to include in the "details" field of the response body.
-  ///
-  /// As with the data returned from a callable HTTPS handler, this can be
-  /// `null` or any JSON-encodable object (`String`, `int`, `List` or `Map`
-  /// containing primitive types).
-  final Object? details;
-
-  @override
-  String toString() => {
-        'code': code,
-        'message': message,
-        if (details != null) 'details': details
-      }.toString();
-}
-
-abstract class HttpsFunctions {
-  /// HTTPS request
-  HttpsFunction onRequest(RequestHandler handler);
-
-  /// HTTPS request with options
-  HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler);
-
-  /// call request
-  CallFunction onCall(CallHandler handler);
-}
-
-/// no-op by default to never break compilation
-mixin HttpsFunctionsMixin implements HttpsFunctions {
-  @override
-  CallFunction onCall(CallHandler handler) =>
-      throw UnimplementedError('onCall');
-  @override
-  HttpsFunction onRequestV2(
-          HttpsOptions httpsOptions, RequestHandler handler) =>
-      throw UnimplementedError('onRequestV2');
-}
-
-/// Document builder.
-abstract class DocumentBuilder {
-  /// onWrite
-  FirestoreFunction onWrite(ChangeEventHandler<DocumentSnapshot> handler);
-
-  /// onCreate
-  FirestoreFunction onCreate(DataEventHandler<DocumentSnapshot> handler);
-
-  /// onUpdate
-  FirestoreFunction onUpdate(ChangeEventHandler<DocumentSnapshot> handler);
-
-  /// onDelete
-  FirestoreFunction onDelete(DataEventHandler<DocumentSnapshot> handler);
-}
-
-/// Change event handler.
-typedef ChangeEventHandler<T> = FutureOr<void> Function(
-    Change<T> data, EventContext context);
-
-/// Data event handler.
-typedef DataEventHandler<T> = FutureOr<void> Function(
-    T data, EventContext context);
-
-/// The context in which an event occurred.
-///
-/// An EventContext describes:
-///
-///   * The time an event occurred.
-///   * A unique identifier of the event.
-///   * The resource on which the event occurred, if applicable.
-///   * Authorization of the request that triggered the event, if applicable
-///     and available.
-abstract class EventContext {
-  /// An object containing the values of the wildcards in the path parameter
-  /// provided to the ref() method for a firestore/realtime database trigger.
-  Map<String, String> get params;
-
-  /// Type of event.
-  String get eventType;
-
-  /// Timestamp for the event.
-  Timestamp get timestamp;
-}
-
-/// Container for events that change state, such as Realtime Database or
-/// Cloud Firestore `onWrite` and `onUpdate`.
-class Change<T> {
-  Change(this.after, this.before);
-
-  /// The state after the event.
-  final T after;
-
-  /// The state prior to the event.
-  final T before;
-}
 
 //
 // Pubsub
@@ -285,20 +191,6 @@ class RuntimeOptions {
   final String? memory;
 
   RuntimeOptions({this.timeoutSeconds, this.memory});
-}
-
-/// Https options
-class HttpsOptions extends GlobalOptions {
-  /// Set to true to allow cors
-  final bool? cors;
-
-  HttpsOptions(
-      {this.cors,
-      super.concurrency,
-      super.memory,
-      super.region,
-      super.regions,
-      super.timeoutSeconds});
 }
 
 // https://cloud.google.com/compute/docs/regions-zones

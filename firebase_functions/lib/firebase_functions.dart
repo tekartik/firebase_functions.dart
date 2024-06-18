@@ -13,11 +13,6 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         FirebaseFunctions,
         FirebaseFunctionsDefaultMixin,
         FirebaseFunction,
-        HttpsFunctions,
-        HttpsFunctionsMixin,
-        HttpsFunction,
-        HttpsError,
-        HttpsErrorCode,
         CallFunction,
         CallHandler,
         CallRequest,
@@ -27,13 +22,6 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         CallContextAuthMixin,
         CallContextMixin,
         RequestHandler,
-        FirestoreFunctions,
-        FirestoreFunction,
-        EventContext,
-        ChangeEventHandler,
-        DataEventHandler,
-        Change,
-        DocumentBuilder,
         ScheduleBuilder,
         ScheduleContext,
         ScheduleEventHandler,
@@ -48,16 +36,18 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         runtimeOptionsMemory512MB,
         runtimeOptionsMemory1GB,
         runtimeOptionsMemory2GB,
-        HttpsOptions;
-export 'package:tekartik_firebase_functions/src/firebase_functions_scheduler.dart'
+        GlobalOptions;
+export 'package:tekartik_firebase_functions/src/firebase_functions_https.dart'
     show
-        SchedulerFunctions,
-        ScheduleEvent,
-        ScheduleOptions,
-        ScheduleHandler,
-        SchedulerFunctionsDefaultMixin,
-        ScheduleFunction,
-        SchedulerEventDefaultMixin;
+        HttpsFunction,
+        HttpsFunctions,
+        HttpsFunctionsMixin,
+        HttpsError,
+        HttpsErrorCode,
+        HttpsOptions;
+
 export 'package:tekartik_http/http_server.dart';
 
+export 'firebase_functions_firestore.dart';
+export 'firebase_functions_scheduler.dart';
 export 'src/params.dart' show Params;
