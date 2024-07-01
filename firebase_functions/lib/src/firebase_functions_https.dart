@@ -6,10 +6,10 @@ export 'package:tekartik_firebase_firestore/firestore.dart'
     show DocumentSnapshot, Timestamp;
 
 abstract class HttpsFunctions {
-  /// HTTPS request
-  HttpsFunction onRequest(RequestHandler handler);
+  /// HTTPS request - preferred
+  HttpsFunction onRequest(RequestHandler handler, {HttpsOptions? httpsOptions});
 
-  /// HTTPS request with options
+  /// HTTPS request with options (compat)
   HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler);
 
   /// call request
@@ -25,7 +25,13 @@ mixin HttpsFunctionsMixin implements HttpsFunctions {
   @override
   HttpsFunction onRequestV2(
           HttpsOptions httpsOptions, RequestHandler handler) =>
-      throw UnimplementedError('onRequestV2');
+      onRequest(handler, httpsOptions: httpsOptions);
+
+  @override
+  HttpsFunction onRequest(RequestHandler handler,
+      {HttpsOptions? httpsOptions}) {
+    throw UnimplementedError('onRequest');
+  }
 }
 
 /// Https function.

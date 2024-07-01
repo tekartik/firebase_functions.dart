@@ -1,6 +1,7 @@
 // import 'package:tekartik_http/http_server.dart';
 import 'dart:async';
 
+import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
@@ -11,6 +12,16 @@ import 'params.dart';
 
 export 'package:tekartik_firebase_firestore/firestore.dart'
     show DocumentSnapshot, Timestamp;
+
+/// Firebase functions service.
+abstract class FirebaseFunctionsService {
+  FirebaseFunctions functions(FirebaseApp app);
+}
+
+mixin FirebaseFunctionsServiceDefaultMixin {
+  FirebaseFunctions functions(FirebaseApp app) =>
+      throw UnimplementedError('FirebaseFunctions.function(app)');
+}
 
 /// Global namespace for Firebase Cloud Functions functionality.
 abstract class FirebaseFunctions {
@@ -32,9 +43,11 @@ abstract class FirebaseFunctions {
   ///
   /// For a list of valid values see https://firebase.google.com/docs/functions/locations
   /// V1 only
+  @Deprecated('Use setGlobalOptions')
   FirebaseFunctions region(String region);
 
   /// Configures memory allocation and timeout for a function.
+  @Deprecated('Use setGlobalOptions')
   FirebaseFunctions runWith(RuntimeOptions options);
 
   /// Params
@@ -176,6 +189,7 @@ abstract class ScheduleBuilder {
 
 /// Pubsub functions.
 abstract class PubsubFunctions {
+  @Deprecated('Use scheduler from firebase functions')
   ScheduleBuilder schedule(String expression);
 }
 

@@ -1,11 +1,31 @@
+import 'package:tekartik_firebase/firebase.dart';
+import 'package:tekartik_firebase_local/firebase_local.dart';
+
 import 'firebase_functions_http.dart';
 import 'import.dart';
 
+/// Memory service.
+class FirebaseFunctionsServiceMemory
+    with
+        FirebaseFunctionsServiceDefaultMixin,
+        FirebaseProductServiceMixin<FirebaseFunctionsHttp>
+    implements FirebaseFunctionsServiceHttp {
+  @override
+  FirebaseFunctionsHttp functions(FirebaseApp app) => getInstance(app, () {
+        return FirebaseFunctionsMemory._(app);
+      });
+}
+
 class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
-  FirebaseFunctionsMemory._() : super(httpServerFactoryMemory);
+  FirebaseFunctionsMemory._(FirebaseApp firebaseApp)
+      : super(firebaseApp, httpServerFactoryMemory);
 }
 
 FirebaseFunctionsMemory? _firebaseFunctionsMemory;
 
 FirebaseFunctionsMemory get firebaseFunctionsMemory =>
-    _firebaseFunctionsMemory ??= FirebaseFunctionsMemory._();
+    _firebaseFunctionsMemory ??= firebaseFunctionsServiceMemory
+        .functions(newFirebaseAppLocal()) as FirebaseFunctionsMemory;
+
+/// The global memory service.
+final firebaseFunctionsServiceMemory = FirebaseFunctionsServiceMemory();

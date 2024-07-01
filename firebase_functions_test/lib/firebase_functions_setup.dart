@@ -35,6 +35,12 @@ void echoInfoHandler(ExpressHttpRequest request) {
       .send({'method': request.method, 'uri': request.uri.toString()});
 }
 
+void infoHandler(FirebaseFunctions functions, ExpressHttpRequest request) {
+  //request.response.headers.contentType = request.headers.contentType;
+  request.response.headers.set(httpHeaderContentType, httpContentTypeJson);
+  request.response.send({'projectId': functions.params.projectId});
+}
+
 void echoHeadersHandler(ExpressHttpRequest request) {
   // print("request.url ${request.uri} ${request.uri.fragment}");
   var sb = StringBuffer();
@@ -85,6 +91,9 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
       HttpsOptions(cors: true, region: regionBelgium), echoHeadersHandler);
   firebaseFunctions['echoinfo'] = firebaseFunctions.https.onRequestV2(
       HttpsOptions(cors: true, region: regionBelgium), echoInfoHandler);
+  firebaseFunctions['ffinfo'] = firebaseFunctions.https.onRequest(
+      (request) => infoHandler(firebaseFunctions!, request),
+      httpsOptions: HttpsOptions(cors: true, region: regionBelgium));
 
   /// temp out for node testing
   try {
@@ -103,5 +112,6 @@ var testFunctionNames = [
   'echofragment',
   'echoheaders',
   'echoinfo',
+  'ffinfo',
   'call'
 ];

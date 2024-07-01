@@ -5,5 +5,10 @@ import 'firebase_functions_http.dart';
 
 export 'firebase_functions_http.dart';
 
+/// Default functions memory.
 FirebaseFunctionsHttp get firebaseFunctionsMemory =>
     memory.firebaseFunctionsMemory;
+
+/// Default functions service memory.
+FirebaseFunctionsServiceHttp get firebaseFunctionsServiceMemory =>
+    memory.firebaseFunctionsServiceMemory;

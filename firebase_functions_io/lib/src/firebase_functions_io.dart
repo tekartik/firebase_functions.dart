@@ -1,19 +1,34 @@
 import 'dart:io' as io;
 
+import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
+import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
 
 import 'import.dart';
 
+/// Memory service.
+class FirebaseFunctionsServiceIo
+    with
+        FirebaseFunctionsServiceDefaultMixin,
+        FirebaseProductServiceMixin<FirebaseFunctionsHttp>
+    implements FirebaseFunctionsServiceHttp {
+  @override
+  FirebaseFunctionsHttp functions(FirebaseApp app) => getInstance(app, () {
+        return FirebaseFunctionsIo._(app);
+      });
+}
+
 class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
-  FirebaseFunctionsIo._() : super(httpServerFactoryIo);
+  FirebaseFunctionsIo._(FirebaseApp firebaseApp)
+      : super(firebaseApp, httpServerFactoryIo);
 }
 
 FirebaseFunctionsIo? _firebaseFunctionsIo;
 
 FirebaseFunctionsIo get firebaseFunctionsIo =>
-    _firebaseFunctionsIo ??= FirebaseFunctionsIo._();
+    _firebaseFunctionsIo ??= FirebaseFunctionsIo._(newFirebaseAppLocal());
 
 // TODO: etags, last-modified-since support
 Future onFileRequest(HttpRequest request) async {
@@ -77,3 +92,6 @@ Future<HttpServer> serve({int? port}) async {
   }));
   return requestServer;
 }
+
+/// The global memory service.
+final firebaseFunctionsServiceIo = FirebaseFunctionsServiceIo();

@@ -16,6 +16,11 @@ dependencies:
       path: firebase_functions_http
       ref: dart3a
     version: '>=0.4.1'
+  tekartik_firebase:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      path: firebase
+      ref: dart3a
   shelf: any
   tekartik_http_io:
     git:
@@ -23,7 +28,11 @@ dependencies:
       path: http_io
       ref: dart3a
     version: '>=0.5.8'
-
+  tekartik_firebase_local:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      path: firebase_local
+      ref: dart3a
 dev_dependencies:
   test: ">=1.2.0"
   build_runner: ">=0.8.8"

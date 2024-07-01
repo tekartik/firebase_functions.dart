@@ -11,6 +11,8 @@ export 'package:tekartik_firebase_functions/src/express_http_request.dart'
 export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
     show
         FirebaseFunctions,
+        FirebaseFunctionsService,
+        FirebaseFunctionsServiceDefaultMixin,
         FirebaseFunctionsDefaultMixin,
         FirebaseFunction,
         CallFunction,

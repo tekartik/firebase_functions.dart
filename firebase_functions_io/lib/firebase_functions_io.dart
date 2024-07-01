@@ -7,3 +7,7 @@ export 'package:tekartik_firebase_functions_io/src/firebase_functions_io.dart'
     show serve;
 
 FirebaseFunctionsHttp get firebaseFunctionsIo => io.firebaseFunctionsIo;
+
+/// Default functions service memory.
+FirebaseFunctionsServiceHttp get firebaseFunctionsServiceIo =>
+    io.firebaseFunctionsServiceIo;

@@ -12,9 +12,11 @@ export 'src/firebase_functions_test_context.dart';
 void ffTest(
     {required FirebaseFunctionsTestClientContext testContext,
     HttpClientFactory? httpClientFactory,
-    String? baseUrl}) {
+    String? baseUrl,
+    String? projectId}) {
+  late HttpClientFactory clientFactory;
   setUp(() async {
-    httpClientFactory ??= testContext.httpClientFactory;
+    clientFactory = httpClientFactory ??= testContext.httpClientFactory;
   });
   test('post', () async {
     var client = httpClientFactory!.newClient();
@@ -120,6 +122,17 @@ void ffTest(
       expect(decoded, {'method': 'POST', 'uri': '/sub1/sub2?param'});
     }
 
+    client.close();
+  });
+
+  test('ffinfo', () async {
+    var client = clientFactory.newClient();
+    var map =
+        jsonDecode(await client.read(Uri.parse(testContext.url('ffinfo'))))
+            as Map;
+    if (projectId != null) {
+      expect(map['projectId'], projectId);
+    }
     client.close();
   });
 

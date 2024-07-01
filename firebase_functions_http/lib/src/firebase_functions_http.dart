@@ -1,15 +1,45 @@
 import 'package:path/path.dart';
+import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
 import 'express_http_request_http.dart';
 import 'import.dart';
 
-class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
+/// Http service definition.
+abstract class FirebaseFunctionsServiceHttp
+    implements FirebaseFunctionsService {
+  @override
+  FirebaseFunctionsHttp functions(FirebaseApp app);
+}
+
+mixin FirebaseFunctionsHttpDefaultMixin {
+  void init({Firestore? firestore}) {
+    throw UnimplementedError('init');
+  }
+
+// For io only
+// To run the server in parallel
+  /// To implement
+  Future<HttpServer> serveHttp({int? port}) async =>
+      throw UnimplementedError('serveHttp');
+
+  Future onFileRequestHttp(HttpRequest request) {
+    throw UnsupportedError('io required for onFileRequest');
+  }
+}
+
+class FirebaseFunctionsHttpBase
+    with FirebaseFunctionsDefaultMixin, FirebaseFunctionsHttpDefaultMixin
+    implements FirebaseFunctionsHttp {
+  final FirebaseApp firebaseApp;
   HttpServerFactory httpServerFactory;
   GlobalOptions? globalOptions;
 
-  FirebaseFunctionsHttpBase(this.httpServerFactory) : super();
+  FirebaseFunctionsHttpBase(this.firebaseApp, this.httpServerFactory) : super();
+
+  @override
+  late final https = HttpsHttp();
 
   @override
   void init({Firestore? firestore}) {
@@ -87,53 +117,53 @@ class FirebaseFunctionsHttpBase extends FirebaseFunctionsHttp {
     }));
     return requestServer;
   }
-}
-
-abstract class FirebaseFunctionsHttp
-    with FirebaseFunctionsDefaultMixin
-    implements FirebaseFunctions {
-  FirebaseFunctionsHttp();
-
-  HttpsFunctions? _https;
-
-  @override
-  HttpsFunctions get https => _https ??= HttpsHttp();
-
-  @override
-  FirestoreFunctions get firestore => throw UnimplementedError();
-
-  @override
-  PubsubFunctions get pubsub => throw UnimplementedError();
-
-  void init({Firestore? firestore});
-// For io only
-// To run the server in parallel
-  /// To implement
-  Future<HttpServer> serveHttp({int? port}) async =>
-      throw UnimplementedError('serveHttp');
-
-  Future onFileRequestHttp(HttpRequest request) {
-    throw UnsupportedError('io required for onFileRequest');
-  }
 
   /// No-op.
+  @Deprecated('use setGlobalOptions')
   @override
   FirebaseFunctions region(String region) => this;
 
   /// No-op.
   @override
+  @Deprecated('use setGlobalOptions')
   FirebaseFunctions runWith(RuntimeOptions options) => this;
 
   @override
-  Params get params => throw UnimplementedError('params');
+  late final params = ParamsHttp(this);
+}
+
+class ParamsHttp extends Params {
+  final FirebaseFunctionsHttpBase functions;
+
+  ParamsHttp(this.functions);
+
+  @override
+  String get projectId {
+    var projectId = functions.firebaseApp.options.projectId;
+    if (projectId != null) {
+      return projectId;
+    }
+    throw StateError('Define a default projectId for the memory functions');
+  }
+}
+
+abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
+  void init({Firestore? firestore});
+
+  /// To implement
+  Future<HttpServer> serveHttp({int? port});
+
+  // To implement
+  Future onFileRequestHttp(HttpRequest request);
 }
 
 class HttpsHttp with HttpsFunctionsMixin implements HttpsFunctions {
   HttpsHttp();
 
   @override
-  HttpsFunction onRequest(RequestHandler handler) {
-    return HttpsFunctionHttp(null, handler);
+  HttpsFunction onRequest(RequestHandler handler,
+      {HttpsOptions? httpsOptions}) {
+    return HttpsFunctionHttp(httpsOptions, handler);
   }
 
   @override
