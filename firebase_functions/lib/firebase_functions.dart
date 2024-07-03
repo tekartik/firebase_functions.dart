@@ -15,7 +15,6 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         FirebaseFunctionsServiceDefaultMixin,
         FirebaseFunctionsDefaultMixin,
         FirebaseFunction,
-        CallFunction,
         CallHandler,
         CallRequest,
         CallRequestMixin,
@@ -43,10 +42,12 @@ export 'package:tekartik_firebase_functions/src/firebase_functions_https.dart'
     show
         HttpsFunction,
         HttpsFunctions,
-        HttpsFunctionsMixin,
+        HttpsFunctionsDefaultMixin,
         HttpsError,
         HttpsErrorCode,
-        HttpsOptions;
+        HttpsOptions,
+        HttpsCallableOptions,
+        HttpsCallableFunction;
 
 export 'package:tekartik_http/http_server.dart';
 

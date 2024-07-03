@@ -162,9 +162,6 @@ typedef CallHandler = FutureOr<Object?> Function(CallRequest request);
 
 abstract class FirebaseFunction {}
 
-/// Https function.
-abstract class CallFunction implements FirebaseFunction {}
-
 /// Pubsub function
 abstract class PubsubFunction implements FirebaseFunction {}
 

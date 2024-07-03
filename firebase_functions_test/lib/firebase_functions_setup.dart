@@ -4,6 +4,8 @@ import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
 
+import 'constants.dart';
+
 void echoBytesHandler(ExpressHttpRequest request) {
   var body = request.body;
   //devPrint('echoBytes ${body?.runtimeType}: ${body}');
@@ -50,10 +52,10 @@ void echoHeadersHandler(ExpressHttpRequest request) {
   request.response.send(sb.toString());
 }
 
-FutureOr<dynamic> callHandler(CallRequest request) async {
+FutureOr<Object?> callHandler(CallRequest request) async {
   //devPrint('request data ${request.text}');
   try {
-    return jsonDecode(request.text!);
+    return {'uid': request.context.auth?.uid, 'data': request.data};
   } catch (_) {
     return {'error': 'no_body'};
   }
@@ -97,7 +99,10 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
 
   /// temp out for node testing
   try {
-    firebaseFunctions['call'] = firebaseFunctions.https.onCall(callHandler);
+    firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
+        callHandler,
+        callableOptions:
+            HttpsCallableOptions(cors: true, region: regionBelgium));
   } catch (e) {
     print('error onCall definition $e');
   }
@@ -113,5 +118,5 @@ var testFunctionNames = [
   'echoheaders',
   'echoinfo',
   'ffinfo',
-  'call'
+  functionCallName
 ];

@@ -13,13 +13,15 @@ abstract class HttpsFunctions {
   HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler);
 
   /// call request
-  CallFunction onCall(CallHandler handler);
+  HttpsCallableFunction onCall(CallHandler handler,
+      {HttpsCallableOptions? callableOptions});
 }
 
 /// no-op by default to never break compilation
-mixin HttpsFunctionsMixin implements HttpsFunctions {
+mixin HttpsFunctionsDefaultMixin implements HttpsFunctions {
   @override
-  CallFunction onCall(CallHandler handler) =>
+  HttpsCallableFunction onCall(CallHandler handler,
+          {HttpsCallableOptions? callableOptions}) =>
       throw UnimplementedError('onCall');
 
   @override
@@ -36,6 +38,27 @@ mixin HttpsFunctionsMixin implements HttpsFunctions {
 
 /// Https function.
 abstract class HttpsFunction implements FirebaseFunction {}
+
+/// Callable function.
+abstract class HttpsCallableFunction implements FirebaseFunction {}
+
+/// Callable options
+class HttpsCallableOptions extends HttpsOptions {
+  /// Determines whether Firebase App Check token is consumed on request. Defaults to false.
+  final bool? consumeAppCheckToken;
+
+  /// Determines whether Firebase AppCheck is enforced. When true, requests with invalid tokens autorespond with a 401 (Unauthorized) error. When false, requests with invalid tokens set event.app to undefiend.
+  final bool? enforceAppCheck;
+  HttpsCallableOptions(
+      {this.consumeAppCheckToken,
+      this.enforceAppCheck,
+      super.cors,
+      super.concurrency,
+      super.memory,
+      super.region,
+      super.regions,
+      super.timeoutSeconds});
+}
 
 /// Https options
 class HttpsOptions extends GlobalOptions {
