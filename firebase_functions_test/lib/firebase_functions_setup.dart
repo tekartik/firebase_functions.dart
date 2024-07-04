@@ -52,12 +52,17 @@ void echoHeadersHandler(ExpressHttpRequest request) {
   request.response.send(sb.toString());
 }
 
-FutureOr<Object?> callHandler(CallRequest request) async {
+Future<Object?> callHandler(CallRequest request) async {
+  await Future<void>.delayed(Duration(milliseconds: 100));
   //devPrint('request data ${request.text}');
   try {
-    return {'uid': request.context.auth?.uid, 'data': request.data};
-  } catch (_) {
-    return {'error': 'no_body'};
+    return {'v': 1, 'uid': request.context.auth?.uid, 'data': request.data};
+  } catch (error) {
+    try {
+      return {'v': 2, 'data': request.data, 'error': '$error'};
+    } catch (error) {
+      return {'v': 3, 'error': '$error'};
+    }
   }
 }
 
@@ -101,8 +106,12 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
   try {
     firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
         callHandler,
-        callableOptions:
-            HttpsCallableOptions(cors: true, region: regionBelgium));
+        callableOptions: HttpsCallableOptions(
+            cors: true, region: regionBelgium, enforceAppCheck: false));
+    firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https
+        .onCall(callHandler,
+            callableOptions: HttpsCallableOptions(
+                cors: true, region: regionBelgium, enforceAppCheck: true));
   } catch (e) {
     print('error onCall definition $e');
   }
@@ -118,5 +127,6 @@ var testFunctionNames = [
   'echoheaders',
   'echoinfo',
   'ffinfo',
-  functionCallName
+  functionCallName,
+  functionCallAppCheckName,
 ];
