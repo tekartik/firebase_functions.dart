@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
+import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions/src/express_http_request.dart';
 
 import 'firebase_functions_firestore.dart';
@@ -55,6 +56,9 @@ abstract class FirebaseFunctions {
 
   /// Set global options
   set globalOptions(GlobalOptions options);
+
+  /// Serve
+  Future<FfServer> serve({int? port});
 }
 
 mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
@@ -98,6 +102,12 @@ mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
   @override
   FirebaseFunctions runWith(RuntimeOptions options) =>
       throw UnimplementedError('FirebaseFunction.runWith');
+
+  /// Serve
+  @override
+  Future<FfServer> serve({int? port}) async {
+    throw UnimplementedError('FirebaseFunction.serve');
+  }
 }
 
 /// Https request handler
