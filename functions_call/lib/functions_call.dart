@@ -7,4 +7,6 @@ export 'src/functions_call.dart'
         FirebaseFunctionsCallService,
         FirebaseFunctionsCall,
         FirebaseFunctionsCallable,
-        FirebaseFunctionsCallableOptions;
+        FirebaseFunctionsCallableOptions,
+        FirebaseFunctionsCallableResult,
+        FirebaseFunctionsCallableResultDefaultMixin;

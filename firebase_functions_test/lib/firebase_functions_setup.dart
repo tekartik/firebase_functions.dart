@@ -102,19 +102,15 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
       (request) => infoHandler(firebaseFunctions!, request),
       httpsOptions: HttpsOptions(cors: true, region: regionBelgium));
 
-  /// temp out for node testing
-  try {
-    firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
-        callHandler,
-        callableOptions: HttpsCallableOptions(
-            cors: true, region: regionBelgium, enforceAppCheck: false));
-    firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https
-        .onCall(callHandler,
-            callableOptions: HttpsCallableOptions(
-                cors: true, region: regionBelgium, enforceAppCheck: true));
-  } catch (e) {
-    print('error onCall definition $e');
-  }
+  firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
+      callHandler,
+      callableOptions: HttpsCallableOptions(
+          cors: true, region: regionBelgium, enforceAppCheck: false));
+  firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https.onCall(
+      callHandler,
+      callableOptions: HttpsCallableOptions(
+          cors: true, region: regionBelgium, enforceAppCheck: true));
+
   return testContext;
 }
 
