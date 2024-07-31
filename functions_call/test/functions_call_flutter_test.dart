@@ -1,6 +1,6 @@
 library;
 
-import 'package:tekartik_functions_call/functions_call.dart';
+import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:test/test.dart';
 
 void main() {
