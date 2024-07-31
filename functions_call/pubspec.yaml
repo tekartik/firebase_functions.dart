@@ -1,0 +1,24 @@
+name: tekartik_functions_call
+description: Firebase functions call
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.4.4
+
+# Add regular dependencies here.
+dependencies:
+  tekartik_firebase:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase
+  tekartik_firebase_functions:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: firebase_functions
+
+dev_dependencies:
+  lints: '>=4.0.0'
+  test: '>=1.24.0'
