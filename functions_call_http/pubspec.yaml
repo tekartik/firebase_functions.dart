@@ -8,11 +8,22 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  path:
   tekartik_firebase:
     git:
       url: https://github.com/tekartik/firebase.dart
       ref: dart3a
       path: firebase
+  tekartik_firebase_auth:
+    git:
+      url: https://github.com/tekartik/firebase_auth.dart
+      ref: dart3a
+      path: auth
+  tekartik_firebase_auth_local:
+    git:
+      url: https://github.com/tekartik/firebase_auth.dart
+      ref: dart3a
+      path: auth_local
   tekartik_firebase_functions:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
@@ -23,6 +34,11 @@ dependencies:
       url: https://github.com/tekartik/firebase_functions.dart
       ref: dart3a
       path: functions_call
+  tekartik_http:
+    git:
+      url: https://github.com/tekartik/http.dart
+      ref: dart3a
+      path: http
 
 dev_dependencies:
   tekartik_firebase_functions_http:
@@ -32,11 +48,23 @@ dev_dependencies:
       path: firebase_functions_http
   lints: '>=4.0.0'
   test: '>=1.24.0'
+  tekartik_firebase_functions_test:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: firebase_functions_test
+  tekartik_firebase_local:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase_local
 
 dependency_overrides:
-  tekartik_firebase_functions_call:
-    path: ../functions_call
   tekartik_firebase_functions:
     path: ../firebase_functions
+  tekartik_firebase_functions_call:
+    path: ../functions_call
   tekartik_firebase_functions_http:
     path: ../firebase_functions_http
+  tekartik_firebase_functions_test:
+    path: ../firebase_functions_test

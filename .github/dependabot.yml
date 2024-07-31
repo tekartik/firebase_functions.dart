@@ -26,6 +26,10 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
+    directory: "functions_call_http"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "repo_support"
     schedule:
       interval: "monthly"

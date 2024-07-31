@@ -1,8 +1,25 @@
+import 'dart:convert';
+
+import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
+import 'package:tekartik_http/http.dart';
+import 'package:tekartik_http/http_client.dart';
 
-/// Firebase functions call service flutter
-class FirebaseFunctionsCallServiceHttp implements FirebaseFunctionsCallService {
+/// Firebase functions call service Http
+class FirebaseFunctionsCallServiceHttp
+    with FirebaseFunctionsCallServiceDefaultMixin
+    implements FirebaseFunctionsCallService {
+  /// Http client factory
+  final HttpClientFactory httpClientFactory;
+
+  /// Base uri
+  final Uri baseUri;
+
+  /// Constructor
+  FirebaseFunctionsCallServiceHttp(
+      {required this.httpClientFactory, required this.baseUri});
+
   /// Most implementation need a single instance, keep it in memory!
   final _instances = <String, FirebaseFunctionsCallHttp>{};
 
@@ -21,14 +38,14 @@ class FirebaseFunctionsCallServiceHttp implements FirebaseFunctionsCallService {
   FirebaseFunctionsCallHttp functionsCall(App app, {required String region}) {
     return _getInstance(app, region, () {
       //assert(app is FirebaseAppLocal, 'invalid firebase app type');
-      //var appFlutter = app as FirebaseAppFlutter;
+      //var appHttp = app as FirebaseAppHttp;
 
       return FirebaseFunctionsCallHttp(this);
     });
   }
 }
 
-/// Firebase functions call flutter
+/// Firebase functions call Http
 class FirebaseFunctionsCallHttp implements FirebaseFunctionsCall {
   /// Service
   final FirebaseFunctionsCallServiceHttp service;
@@ -39,33 +56,46 @@ class FirebaseFunctionsCallHttp implements FirebaseFunctionsCall {
   @override
   FirebaseFunctionsCallableHttp callable(String name,
       {FirebaseFunctionsCallableOptions? options}) {
-    return FirebaseFunctionsCallableHttp(
-      this,
-    );
+    return FirebaseFunctionsCallableHttp(this, name);
   }
 }
 
-/// Firebase functions callable flutter.
+/// Firebase functions callable Http.
 class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
-  /// Functions call flutter
+  /// The function name
+  final String name;
+
+  /// Functions call Http
   final FirebaseFunctionsCallHttp functionsCallHttp;
 
   /// Constructor
-  FirebaseFunctionsCallableHttp(this.functionsCallHttp);
+  FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
 
   @override
-  Future<FirebaseFunctionsCallableResultFlutter> call<T>(
+  Future<FirebaseFunctionsCallableResultHttp> call<T>(
       [Object? parameters]) async {
-    throw UnimplementedError('FirebaseFunctionsCallableHttp.call');
+    var service = functionsCallHttp.service;
+    var httpClient = service.httpClientFactory.newClient();
+    try {
+      var baseUri = service.baseUri;
+      var uri = Uri.parse(p.url.join(baseUri.toString(), name));
+      // TODO add auth headers if any
+      var text = await httpClientRead(httpClient, httpMethodPost, uri);
+      var data = jsonDecode(text) as T;
+      var result = FirebaseFunctionsCallableResultHttp<T>(data);
+      return result;
+    } finally {
+      httpClient.close();
+    }
   }
 }
 
-/// Firebase functions callable result flutter.
-class FirebaseFunctionsCallableResultFlutter<T>
+/// Firebase functions callable result Http.
+class FirebaseFunctionsCallableResultHttp<T>
     with FirebaseFunctionsCallableResultDefaultMixin<T>
     implements FirebaseFunctionsCallableResult<T> {
   /// Constructor
-  FirebaseFunctionsCallableResultFlutter(this.data);
+  FirebaseFunctionsCallableResultHttp(this.data);
 
   @override
   final T data;

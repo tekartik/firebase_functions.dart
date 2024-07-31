@@ -174,23 +174,59 @@ class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
   @override
   HttpsCallableFunction onCall(CallHandler handler,
       {HttpsCallableOptions? callableOptions}) {
-    return HttpsCallableFunctionHttp(handler);
+    return HttpsCallableFunctionHttp(callableOptions, handler);
   }
 }
 
-class HttpsFunctionHttp implements HttpsFunction {
+abstract class HttpsFunctionHttp implements HttpsFunction {
+  HttpsOptions? get options;
+  // ignore: unused_field
+  RequestHandler get handler;
+
+  factory HttpsFunctionHttp(HttpsOptions? options, RequestHandler handler) =>
+      _HttpsFunctionImpl(options, handler);
+}
+
+class _HttpsFunctionImpl extends _HttpsFunctionBase
+    implements HttpsFunctionHttp {
+  _HttpsFunctionImpl(super.options, super.handler);
+}
+
+abstract class _HttpsFunctionBase implements HttpsFunction {
   final HttpsOptions? options;
   // ignore: unused_field
   final RequestHandler handler;
 
-  HttpsFunctionHttp(this.options, this.handler);
+  _HttpsFunctionBase(this.options, this.handler);
 }
 
-class HttpsCallableFunctionHttp implements HttpsCallableFunction {
+abstract class HttpsCallableFunctionHttp
+    implements HttpsCallableFunction, HttpsFunctionHttp {
+  HttpsCallableOptions? get callableOptions;
   // ignore: unused_field
-  final CallHandler handler;
+  CallHandler get callHandler;
 
-  HttpsCallableFunctionHttp(this.handler);
+  factory HttpsCallableFunctionHttp(
+          HttpsCallableOptions? callableOptions, CallHandler callHandler) =>
+      HttpsCallableFunctionHttpImpl(callableOptions, callHandler);
+}
+
+class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
+    implements HttpsCallableFunctionHttp {
+  @override
+  final HttpsCallableOptions? callableOptions;
+  // ignore: unused_field
+  @override
+  final CallHandler callHandler;
+
+  HttpsCallableFunctionHttpImpl(this.callableOptions, this.callHandler)
+      : super(callableOptions, (ExpressHttpRequest request) async {
+          var result = await callHandler(CallRequestHttp(request));
+          var response = request.response;
+          response.headers.set(httpHeaderContentType, httpContentTypeJson);
+          var reponseString = result is String ? result : jsonEncode(result);
+          await response.send(reponseString);
+        });
 }
 
 String rewritePath(String path) {

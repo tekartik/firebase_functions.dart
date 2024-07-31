@@ -5,6 +5,7 @@ export 'package:tekartik_firebase_functions/firebase_functions.dart'
 export 'src/functions_call.dart'
     show
         FirebaseFunctionsCallService,
+        FirebaseFunctionsCallServiceDefaultMixin,
         FirebaseFunctionsCall,
         FirebaseFunctionsCallable,
         FirebaseFunctionsCallableOptions,
