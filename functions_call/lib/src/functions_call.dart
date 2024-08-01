@@ -76,16 +76,21 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
 /// Firebase functions call service
 abstract class FirebaseFunctionsCallService {
   /// Get the firebase functions call instance
-  FirebaseFunctionsCall functionsCall(App app, {required String region});
+  FirebaseFunctionsCall functionsCall(App app,
+      {required String region,
+
+      /// Not used in flutter
+      Uri? baseUri});
 }
 
 /// Firebase functions call service default mixin
 mixin FirebaseFunctionsCallServiceDefaultMixin
     implements FirebaseFunctionsCallService {
   @override
-  FirebaseFunctionsCall functionsCall(App app, {required String region}) {
+  FirebaseFunctionsCall functionsCall(App app,
+      {required String region, Uri? baseUri}) {
     throw UnimplementedError(
-        'FirebaseFunctionsCallService.functionsCall(${app.name}, $region)');
+        'FirebaseFunctionsCallService.functionsCall(${app.name}, $region${baseUri != null ? ', $baseUri' : ''})');
   }
 }
 
