@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:tekartik_firebase/firebase.dart';
+import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
@@ -30,7 +31,10 @@ mixin FirebaseFunctionsHttpDefaultMixin {
 }
 
 class FirebaseFunctionsHttpBase
-    with FirebaseFunctionsDefaultMixin, FirebaseFunctionsHttpDefaultMixin
+    with
+        FirebaseAppProductMixin<FirebaseFunctions>,
+        FirebaseFunctionsDefaultMixin,
+        FirebaseFunctionsHttpDefaultMixin
     implements FirebaseFunctionsHttp {
   final FirebaseApp firebaseApp;
   HttpServerFactory httpServerFactory;

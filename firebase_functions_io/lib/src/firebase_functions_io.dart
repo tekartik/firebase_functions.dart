@@ -11,8 +11,8 @@ import 'import.dart';
 /// Memory service.
 class FirebaseFunctionsServiceIo
     with
-        FirebaseFunctionsServiceDefaultMixin,
-        FirebaseProductServiceMixin<FirebaseFunctionsHttp>
+        FirebaseProductServiceMixin<FirebaseFunctions>,
+        FirebaseFunctionsServiceDefaultMixin
     implements FirebaseFunctionsServiceHttp {
   @override
   FirebaseFunctionsHttp functions(FirebaseApp app) => getInstance(app, () {
