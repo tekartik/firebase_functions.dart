@@ -51,11 +51,11 @@ void testHttp(
         server = await firebaseFunctions.serveHttp(port: 0);
 
         var functionsCallService = FirebaseFunctionsCallServiceHttp(
-            httpClientFactory: httpClientFactory,
-            baseUri: httpServerGetUri(server!));
+          httpClientFactory: httpClientFactory,
+        );
 
-        functionsCall =
-            functionsCallService.functionsCall(app, region: regionBelgium);
+        functionsCall = functionsCallService.functionsCall(app,
+            region: regionBelgium, baseUri: httpServerGetUri(server!));
       });
 
       test('call', () async {

@@ -18,12 +18,8 @@ class FirebaseFunctionsCallServiceHttp
   /// Http client factory
   final HttpClientFactory httpClientFactory;
 
-  /// Base uri
-  final Uri baseUri;
-
   /// Constructor
-  FirebaseFunctionsCallServiceHttp(
-      {required this.httpClientFactory, required this.baseUri});
+  FirebaseFunctionsCallServiceHttp({required this.httpClientFactory});
 
   /// Most implementation need a single instance, keep it in memory!
   final _instances = <String, FirebaseFunctionsCallHttp>{};
@@ -41,9 +37,9 @@ class FirebaseFunctionsCallServiceHttp
 
   @override
   FirebaseFunctionsCallHttp functionsCall(FirebaseApp app,
-      {required String region}) {
+      {required String region, Uri? baseUri}) {
     return _getInstance(app, region, () {
-      return FirebaseFunctionsCallHttp(this, app);
+      return FirebaseFunctionsCallHttp(this, app, baseUri);
     });
   }
 }
@@ -58,8 +54,11 @@ class FirebaseFunctionsCallHttp
   /// App
   final FirebaseApp app;
 
+  /// Base uri
+  final Uri? baseUri;
+
   /// Constructor
-  FirebaseFunctionsCallHttp(this.service, this.app);
+  FirebaseFunctionsCallHttp(this.service, this.app, this.baseUri);
 
   @override
   FirebaseFunctionsCallableHttp callable(String name,
@@ -85,7 +84,10 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
     var service = functionsCallHttp.service;
     var httpClient = service.httpClientFactory.newClient();
     try {
-      var baseUri = service.baseUri;
+      var baseUri = functionsCallHttp.baseUri;
+      if (baseUri == null) {
+        throw StateError('FirebaseFunctionsCallable.baseUri required');
+      }
       var uri = Uri.parse(p.url.join(baseUri.toString(), name));
 
       /// Find current auth user if any
