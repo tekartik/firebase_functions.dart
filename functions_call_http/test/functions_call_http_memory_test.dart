@@ -1,8 +1,9 @@
 library;
 
+import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
-import 'package:tekartik_firebase_auth_local/auth_local.dart';
+import 'package:tekartik_firebase_auth_sembast/auth_sembast.dart';
 import 'package:tekartik_firebase_functions_call_http/functions_call_http.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
 import 'package:tekartik_firebase_functions_http/src/import.dart';
@@ -18,9 +19,11 @@ void main() {
   var app = newFirebaseAppLocal(
       options: FirebaseAppOptions(projectId: dummyProjectId));
 
+  var authService =
+      FirebaseAuthServiceSembast(databaseFactory: newDatabaseFactoryMemory());
   var httpClientFactory = httpClientFactoryMemory;
   var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
-  var firebaseAuth = authServiceLocal.auth(app);
+  var firebaseAuth = authService.auth(app);
 
   group('firebase_functions_memory', () {
     testHttp(
@@ -60,13 +63,18 @@ void testHttp(
         expect(result.data, {'uid': null});
       });
 
-      /*
       test('call with auth', () async {
-        await firebaseAuth.signInWithEmailAndPassword(email: 'email', password: password)
+        var user = await firebaseAuth.signInWithEmailAndPassword(
+            email: 'email', password: 'password');
+        var uid = user.user.uid;
         var result = await functionsCall.callable('call').call<Map>({});
 
-        expect(result.data, {'uid': 'uid'});
-      })*/
+        expect(result.data, {'uid': uid});
+
+        await firebaseAuth.signOut();
+        result = await functionsCall.callable('call').call<Map>({});
+        expect(result.data, {'uid': null});
+      });
 
       tearDownAll(() async {
         await server!.close();

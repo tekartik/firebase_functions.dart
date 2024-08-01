@@ -2,13 +2,18 @@ import 'dart:convert';
 
 import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase/firebase.dart';
+import 'package:tekartik_firebase/firebase_mixin.dart';
+import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http/http_client.dart';
 
 /// Firebase functions call service Http
 class FirebaseFunctionsCallServiceHttp
-    with FirebaseFunctionsCallServiceDefaultMixin
+    with
+        FirebaseProductServiceMixin<FirebaseFunctionsCall>,
+        FirebaseFunctionsCallServiceDefaultMixin
     implements FirebaseFunctionsCallService {
   /// Http client factory
   final HttpClientFactory httpClientFactory;
@@ -35,23 +40,26 @@ class FirebaseFunctionsCallServiceHttp
   }
 
   @override
-  FirebaseFunctionsCallHttp functionsCall(App app, {required String region}) {
+  FirebaseFunctionsCallHttp functionsCall(FirebaseApp app,
+      {required String region}) {
     return _getInstance(app, region, () {
-      //assert(app is FirebaseAppLocal, 'invalid firebase app type');
-      //var appHttp = app as FirebaseAppHttp;
-
-      return FirebaseFunctionsCallHttp(this);
+      return FirebaseFunctionsCallHttp(this, app);
     });
   }
 }
 
 /// Firebase functions call Http
-class FirebaseFunctionsCallHttp implements FirebaseFunctionsCall {
+class FirebaseFunctionsCallHttp
+    with FirebaseAppProductMixin<FirebaseFunctionsCall>
+    implements FirebaseFunctionsCall {
   /// Service
   final FirebaseFunctionsCallServiceHttp service;
 
+  /// App
+  final FirebaseApp app;
+
   /// Constructor
-  FirebaseFunctionsCallHttp(this.service);
+  FirebaseFunctionsCallHttp(this.service, this.app);
 
   @override
   FirebaseFunctionsCallableHttp callable(String name,
@@ -79,8 +87,19 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
     try {
       var baseUri = service.baseUri;
       var uri = Uri.parse(p.url.join(baseUri.toString(), name));
-      // TODO add auth headers if any
-      var text = await httpClientRead(httpClient, httpMethodPost, uri);
+
+      /// Find current auth user if any
+      var authUserId = (functionsCallHttp.app as FirebaseAppMixin)
+          .getProduct<FirebaseAuth>()
+          ?.currentUser
+          ?.uid;
+
+      var headers = <String, String>{
+        if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId
+      };
+      var text = await httpClientRead(httpClient, httpMethodPost, uri,
+          headers: headers,
+          body: parameters != null ? jsonEncode(parameters) : null);
       var data = jsonDecode(text) as T;
       var result = FirebaseFunctionsCallableResultHttp<T>(data);
       return result;
