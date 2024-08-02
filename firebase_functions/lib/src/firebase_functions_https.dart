@@ -49,6 +49,7 @@ class HttpsCallableOptions extends HttpsOptions {
 
   /// Determines whether Firebase AppCheck is enforced. When true, requests with invalid tokens autorespond with a 401 (Unauthorized) error. When false, requests with invalid tokens set event.app to undefiend.
   final bool? enforceAppCheck;
+
   HttpsCallableOptions(
       {this.consumeAppCheckToken,
       this.enforceAppCheck,

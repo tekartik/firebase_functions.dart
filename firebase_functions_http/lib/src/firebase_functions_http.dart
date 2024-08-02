@@ -184,6 +184,7 @@ class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
 
 abstract class HttpsFunctionHttp implements HttpsFunction {
   HttpsOptions? get options;
+
   // ignore: unused_field
   RequestHandler get handler;
 
@@ -198,6 +199,7 @@ class _HttpsFunctionImpl extends _HttpsFunctionBase
 
 abstract class _HttpsFunctionBase implements HttpsFunction {
   final HttpsOptions? options;
+
   // ignore: unused_field
   final RequestHandler handler;
 
@@ -207,6 +209,7 @@ abstract class _HttpsFunctionBase implements HttpsFunction {
 abstract class HttpsCallableFunctionHttp
     implements HttpsCallableFunction, HttpsFunctionHttp {
   HttpsCallableOptions? get callableOptions;
+
   // ignore: unused_field
   CallHandler get callHandler;
 
@@ -219,6 +222,7 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
     implements HttpsCallableFunctionHttp {
   @override
   final HttpsCallableOptions? callableOptions;
+
   // ignore: unused_field
   @override
   final CallHandler callHandler;

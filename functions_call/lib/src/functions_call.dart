@@ -1,4 +1,5 @@
 import 'package:tekartik_firebase/firebase.dart';
+import 'package:tekartik_firebase/firebase_mixin.dart';
 
 /// Interface representing an HttpsCallable instance's options,
 class FirebaseFunctionsCallableOptions {
@@ -29,6 +30,11 @@ abstract class FirebaseFunctionsCall {
     String name, {
     FirebaseFunctionsCallableOptions? options,
   });
+
+  /// Default Firebase functions call instance.
+  static FirebaseFunctionsCall get instance =>
+      (FirebaseApp.instance as FirebaseAppMixin)
+          .getProduct<FirebaseFunctionsCall>()!;
 }
 
 /// A reference to a particular Callable HTTPS trigger in Cloud Functions.

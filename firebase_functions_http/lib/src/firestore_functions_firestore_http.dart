@@ -17,6 +17,7 @@ class DocumentBuilderHttp with DocumentBuilderDefaultMixin {
   final String path;
 
   Firestore get firestore => firestoreFunctionsHttp.httpBase.firebaseFirestore!;
+
   DocumentBuilderHttp(this.firestoreFunctionsHttp, this.path);
 
   @override
@@ -28,7 +29,9 @@ class DocumentBuilderHttp with DocumentBuilderDefaultMixin {
 class FirestoreFunctionHttp implements FirestoreFunction {
   final DocumentBuilderHttp documentBuilder;
   final ChangeEventHandler<DocumentSnapshot> handler;
+
   Firestore get firestore => documentBuilder.firestore;
+
   String get path => documentBuilder.path;
 
   FirestoreFunctionHttp(this.documentBuilder, this.handler) {
