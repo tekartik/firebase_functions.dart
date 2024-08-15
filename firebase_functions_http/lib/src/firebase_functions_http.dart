@@ -17,6 +17,7 @@ abstract class FirebaseFunctionsServiceHttp
 }
 
 mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
+  @override
   void init({Firestore? firestore}) {
     throw UnimplementedError('init');
   }
@@ -30,9 +31,11 @@ mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
 // For io only
 // To run the server in parallel
   /// To implement
+  @override
   Future<HttpServer> serveHttp({int? port}) async =>
       throw UnimplementedError('serveHttp');
 
+  @override
   Future onFileRequestHttp(HttpRequest request) {
     throw UnsupportedError('io required for onFileRequest');
   }
