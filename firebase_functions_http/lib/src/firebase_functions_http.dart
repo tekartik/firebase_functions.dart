@@ -2,6 +2,8 @@ import 'package:path/path.dart';
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
+import 'package:tekartik_firebase_functions/ff_server.dart';
+import 'package:tekartik_firebase_functions_http/ff_server.dart';
 import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
 import 'express_http_request_http.dart';
@@ -14,9 +16,15 @@ abstract class FirebaseFunctionsServiceHttp
   FirebaseFunctionsHttp functions(FirebaseApp app);
 }
 
-mixin FirebaseFunctionsHttpDefaultMixin {
+mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
   void init({Firestore? firestore}) {
     throw UnimplementedError('init');
+  }
+
+  @override
+  Future<FfServer> serve({int? port}) async {
+    var server = await serveHttp();
+    return FfServerHttp(server);
   }
 
 // For io only
