@@ -3,6 +3,7 @@ export 'package:tekartik_firebase_firestore/firestore.dart'
 export 'package:tekartik_firebase_functions/src/express_http_request.dart'
     show
         ExpressHttpRequest,
+        ExpressHttpRequestExt,
         ExpressHttpResponse,
         ExpressHttpRequestWrapperBase,
         ExpressHttpResponseWrapperBase,
@@ -18,6 +19,7 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         CallHandler,
         CallRequest,
         CallRequestMixin,
+        CallRequestExt,
         CallContext,
         CallContextAuth,
         CallContextAuthMixin,

@@ -165,10 +165,22 @@ abstract class CallRequest {
 /// Call request
 mixin CallRequestMixin implements CallRequest {
   @override
+  CallContext get context => throw UnimplementedError('context');
+
+  @override
   String? get text => data?.toString();
 
   @override
   Object? get data => null;
+}
+
+/// Extension to get the body as a map
+extension CallRequestExt on CallRequest {
+  /// Get the body as a map
+  Map<String, Object?>? get dataAsMap => requestBodyAsJsonObject(data);
+
+  /// Get the body as a text
+  String? get dataAsText => requestBodyAsText(data);
 }
 
 /// Call request handler.

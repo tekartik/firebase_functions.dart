@@ -11,4 +11,5 @@ export 'src/functions_call.dart'
         FirebaseFunctionsCallable,
         FirebaseFunctionsCallableOptions,
         FirebaseFunctionsCallableResult,
+        FirebaseFunctionsCallableResultExt,
         FirebaseFunctionsCallableResultDefaultMixin;

@@ -79,7 +79,7 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
   FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
 
   @override
-  Future<FirebaseFunctionsCallableResultHttp> call<T>(
+  Future<FirebaseFunctionsCallableResultHttp<T>> call<T>(
       [Object? parameters]) async {
     var service = functionsCallHttp.service;
     var httpClient = service.httpClientFactory.newClient();

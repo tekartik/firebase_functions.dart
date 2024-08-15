@@ -1,5 +1,6 @@
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
+import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 /// Interface representing an HttpsCallable instance's options,
 class FirebaseFunctionsCallableOptions {
@@ -53,13 +54,23 @@ abstract class FirebaseFunctionsCallable {
   /// automatically includes a Firebase Instance ID token to identify the app
   /// instance. If a user is logged in with Firebase Auth, an auth ID token for
   /// the user is also automatically included.
-  Future<FirebaseFunctionsCallableResult> call<T>([Object? parameters]);
+  Future<FirebaseFunctionsCallableResult<T>> call<T>([Object? parameters]);
 }
 
 /// Firebase functions callable result.
 abstract class FirebaseFunctionsCallableResult<T> {
   /// The data that was returned from the Callable HTTPS trigger.
   T get data;
+}
+
+/// Firebase functions callable result helper extension
+extension FirebaseFunctionsCallableResultExt
+    on FirebaseFunctionsCallableResult {
+  /// Get the body as a map
+  Map<String, Object?>? get dataAsMap => requestBodyAsJsonObject(data);
+
+  /// Get the body as a text
+  String? get dataAsText => requestBodyAsText(data);
 }
 
 /// Firebase functions callable result default mixin
@@ -104,7 +115,7 @@ mixin FirebaseFunctionsCallServiceDefaultMixin
 mixin FirebaseFunctionsCallableDefaultMixin
     implements FirebaseFunctionsCallable {
   @override
-  Future<FirebaseFunctionsCallableResult> call<T>([Object? parameters]) {
+  Future<FirebaseFunctionsCallableResult<T>> call<T>([Object? parameters]) {
     throw UnimplementedError('FirebaseFunctionsCallable.call');
   }
 }

@@ -8,20 +8,22 @@ import 'package:tekartik_http/src/utils.dart'; // ignore: implementation_imports
 String requestBodyAsText(dynamic body) {
   if (body is String) {
     return body;
-  } else if (body is List) {
+  } else if (body is Uint8List) {
     return utf8.decode(body.cast<int>());
+  } else if (body is Map) {
+    return jsonEncode(body);
   }
   throw 'body $body not text';
 }
 
-Map<String, dynamic>? requestBodyAsJsonObject(dynamic body) {
+Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
   if (body == null) {
     return null;
   } else if (body is Map) {
-    return body.cast<String, dynamic>();
+    return body.cast<String, Object?>();
   } else if (body is String) {
     try {
-      return (json.decode(body) as Map?)?.cast<String, dynamic>();
+      return (json.decode(body) as Map?)?.cast<String, Object?>();
     } catch (_) {
       return null;
     }
@@ -45,6 +47,15 @@ abstract class ExpressHttpRequest {
 
   @Deprecated('Use uri')
   Uri get requestedUri;
+}
+
+/// Extension to get the body as a map
+extension ExpressHttpRequestExt on ExpressHttpRequest {
+  /// Get the body as a map
+  Map<String, Object?>? get bodyAsMap => requestBodyAsJsonObject(body);
+
+  /// Get the body as a text
+  String? get bodyAsText => requestBodyAsText(body);
 }
 
 abstract class ExpressHttpResponse {
