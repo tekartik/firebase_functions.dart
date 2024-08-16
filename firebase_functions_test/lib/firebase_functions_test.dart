@@ -213,7 +213,7 @@ void ffTest(
   }, skip: true);
 
   group('testFunction', () {
-    group('call $httpFunctionTestName', () {
+    group('call $callableFunctionTestName', () {
       late CallFunctionTestClient client;
       setUpAll(() async {
         client = CallFunctionTestClient(
@@ -257,8 +257,8 @@ void ffTest(
       tearDownAll(() async {
         await client.close();
       });
-    });
-    group('http $callableFunctionTestName', () {
+    }, skip: testContext.functionsCall == null);
+    group('http $httpFunctionTestName', () {
       late HttpFunctionTestClient client;
 
       setUpAll(() async {
@@ -285,7 +285,7 @@ void ffTest(
       tearDownAll(() async {
         await client.close();
       });
-    }, skip: testContext.functionsCall == null);
+    });
   });
 }
 
