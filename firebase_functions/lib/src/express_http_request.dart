@@ -12,6 +12,8 @@ String requestBodyAsText(dynamic body) {
     return utf8.decode(body.cast<int>());
   } else if (body is Map) {
     return jsonEncode(body);
+  } else if (body is List) {
+    return jsonEncode(body);
   }
   throw 'body $body not text';
 }
