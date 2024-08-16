@@ -177,7 +177,7 @@ mixin CallRequestMixin implements CallRequest {
 /// Extension to get the body as a map
 extension CallRequestExt on CallRequest {
   /// Get the body as a map
-  Map<String, Object?>? get dataAsMap => requestBodyAsJsonObject(data);
+  Map<String, Object?> get dataAsMap => requestBodyAsJsonObject(data)!;
 
   /// Get the body as a text
   String? get dataAsText => requestBodyAsText(data);

@@ -100,10 +100,15 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
         if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId
       };
       var text = await httpClientRead(httpClient, httpMethodPost, uri,
-          headers: headers,
-          body: parameters != null ? jsonEncode(parameters) : null);
-      var data = jsonDecode(text) as T;
-      var result = FirebaseFunctionsCallableResultHttp<T>(data);
+          headers: headers, body: jsonEncode(parameters));
+      FirebaseFunctionsCallableResultHttp<T> result;
+      if (text.isEmpty) {
+        result = FirebaseFunctionsCallableResultHttp<T>(null as T);
+      } else {
+        var data = jsonDecode(text) as T;
+        result = FirebaseFunctionsCallableResultHttp<T>(data);
+      }
+
       return result;
     } finally {
       httpClient.close();

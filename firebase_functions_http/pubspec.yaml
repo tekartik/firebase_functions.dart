@@ -11,6 +11,11 @@ environment:
 dependencies:
   path:
   uuid: '>=1.0.0'
+  tekartik_firebase_functions_call:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: functions_call
   tekartik_firebase_functions:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
@@ -64,9 +69,18 @@ dev_dependencies:
       ref: dart3a
     version: '>=0.2.1'
   process_run: '>=0.10.0+1'
+  tekartik_firebase_functions_call_http:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: functions_call_http
 
 dependency_overrides:
   tekartik_firebase_functions:
     path: ../firebase_functions
+  tekartik_firebase_functions_call:
+    path: ../functions_call
+  tekartik_firebase_functions_call_http:
+    path: ../functions_call_http
   tekartik_firebase_functions_test:
     path: ../firebase_functions_test

@@ -1,8 +1,9 @@
-library tekartik_firebase_functions_http.test.firebase_functions_memory_test;
+library;
 
 import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';
+import 'package:tekartik_firebase_functions_call_http/functions_call_memory.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
 import 'package:tekartik_firebase_functions_http/src/import.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_memory.dart';
@@ -24,6 +25,9 @@ void main() {
       options: FirebaseAppOptions(projectId: dummyProjectId));
 
   var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
+  var firebaseFunctionsCallService = firebaseFunctionsCallServiceMemory;
+  var firebaseFunctionsCall =
+      firebaseFunctionsCallService.functionsCall(app, region: 'dummy');
   var httpClientFactory = httpClientFactoryMemory;
 
   group('firebase_functions_memory', () {
@@ -32,7 +36,11 @@ void main() {
         httpClientFactory: httpClientFactory);
     group('common', () {
       var context = FirebaseFunctionsTestContextMemory(
-          firebaseFunctions: firebaseFunctions);
+        firebaseFunctions: firebaseFunctions,
+
+        /// Set initially to trigger testing but changed later
+        functionsCall: firebaseFunctionsCall,
+      );
 
       context = setup(
         testContext: context,
@@ -43,6 +51,9 @@ void main() {
       late FfServer ffServer;
       setUpAll(() async {
         ffServer = await context.serve();
+        var firebaseFunctionsCall = firebaseFunctionsCallService
+            .functionsCall(app, region: regionBelgium, baseUri: ffServer.uri);
+        context.functionsCall = firebaseFunctionsCall;
       });
 
       ffTest(testContext: context, projectId: dummyProjectId);

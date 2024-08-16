@@ -39,7 +39,7 @@ class CallRequestHttp with CallRequestMixin implements CallRequest {
 
   String? get uid => httpRequest.headers.value(firebaseFunctionsHttpHeaderUid);
   @override
-  late final Object? data = httpRequest.body;
+  late final Object? data = jsonDecode(httpRequest.bodyAsString);
 
   @override
   late final CallContext context = CallContextNode(this);

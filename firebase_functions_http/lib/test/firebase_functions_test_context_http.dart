@@ -4,6 +4,7 @@ import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'; 
 
 class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
     with
+        //FirebaseFunctionsTestClientContextMixin,
         FirebaseFunctionsTestServerContextHttpMixin,
         FirebaseFunctionsTestClientContextHttpMixin {
   FirebaseFunctionsTestContextHttp(
@@ -11,7 +12,8 @@ class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
       /// external client factory
       required super.httpClientFactory,
       required super.firebaseFunctions,
-      super.baseUrl});
+      super.baseUrl,
+      super.functionsCall});
 
   @override
   String url(String path) => baseUrl != null
@@ -56,7 +58,9 @@ class FirebaseFunctionsTestServerContextHttp
 
 class FirebaseFunctionsTestClientContextHttp
     extends FirebaseFunctionsTestClientContext
-    with FirebaseFunctionsTestClientContextHttpMixin {
+    with
+        FirebaseFunctionsTestClientContextMixin,
+        FirebaseFunctionsTestClientContextHttpMixin {
   FirebaseFunctionsTestClientContextHttp({
     /// external client factory
     required super.httpClientFactory,

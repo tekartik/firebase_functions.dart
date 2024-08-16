@@ -59,3 +59,7 @@ dependency_overrides:
     path: ../firebase_functions_http
   tekartik_firebase_functions_test:
     path: ../firebase_functions_test
+  tekartik_firebase_functions_call:
+    path: ../functions_call
+  tekartik_firebase_functions_call_http:
+    path: ../functions_call_http

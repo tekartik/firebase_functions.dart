@@ -1,5 +1,6 @@
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
+import 'package:tekartik_firebase_functions_call/functions_call.dart';
 
 import 'import.dart';
 
@@ -11,6 +12,9 @@ abstract class FirebaseFunctionsTestContext
   @override
   final FirebaseFunctions firebaseFunctions;
 
+  @override
+  FirebaseFunctionsCall? functionsCall;
+
   /// External client factory.
   @override
   final HttpClientFactory httpClientFactory;
@@ -20,6 +24,7 @@ abstract class FirebaseFunctionsTestContext
   FirebaseFunctionsTestContext(
       {required this.firebaseFunctions,
       required this.httpClientFactory,
+      this.functionsCall,
       this.baseUrl});
 }
 
@@ -38,9 +43,16 @@ abstract class FirebaseFunctionsTestClientContext {
   /// External client factory.
   final HttpClientFactory httpClientFactory;
   final String? baseUrl;
+  FirebaseFunctionsCall? get functionsCall;
 
   FirebaseFunctionsTestClientContext(
       {required this.httpClientFactory, this.baseUrl});
 
   String url(String path);
+}
+
+mixin FirebaseFunctionsTestClientContextMixin
+    implements FirebaseFunctionsTestClientContext {
+  @override
+  FirebaseFunctionsCall? get functionsCall => null;
 }

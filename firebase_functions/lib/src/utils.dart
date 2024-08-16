@@ -22,8 +22,8 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
     var result = await handler(CallRequestFromExpress(request: this));
     try {
       response.headers.set(httpHeaderContentType, httpContentTypeJson);
-      var reponseString = result is String ? result : jsonEncode(result);
-      await response.send(reponseString);
+      var responseString = result is String ? result : jsonEncode(result);
+      await response.send(responseString);
     } catch (e) {
       var errorCode = HttpsErrorCode.internal;
       var message = e.toString();

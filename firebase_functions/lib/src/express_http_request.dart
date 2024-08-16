@@ -37,7 +37,7 @@ Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
 
 abstract class ExpressHttpRequest {
   // String, List<int>, Map
-  dynamic get body;
+  Object? get body;
 
   Uri get uri;
 
@@ -54,16 +54,22 @@ abstract class ExpressHttpRequest {
 /// Extension to get the body as a map
 extension ExpressHttpRequestExt on ExpressHttpRequest {
   /// Get the body as a map
-  Map<String, Object?>? get bodyAsMap => requestBodyAsJsonObject(body);
+  Map<String, Object?> get bodyAsMap => bodyAsMapOrNull!;
 
   /// Get the body as a text
+  Map<String, Object?>? get bodyAsMapOrNull => httpDataAsMapOrNull(body);
+
+  /// Get the body as a text - DEPRECATED
   String? get bodyAsText => requestBodyAsText(body);
+
+  /// Get the body as a text
+  String get bodyAsString => httpDataAsString(body!);
 }
 
 abstract class ExpressHttpResponse {
   /// send closes too
   /// Node only supports this.
-  Future send([dynamic body]);
+  Future send([Object? body]);
 
   // redirect
   Future redirect(Uri location, {int? status});
@@ -108,17 +114,19 @@ abstract mixin class HttpResponseWrapperMixin implements ExpressHttpResponse {
   late HttpResponse implHttpResponse;
 
   @override
-  Future send([body]) {
-    if (body is Uint8List) {
-      implHttpResponse.add(body);
-    } else if (body is String) {
-      implHttpResponse.write(body);
-    } else if (body is List<int>) {
-      implHttpResponse.add(asUint8List(body));
-    } else if (body is Map || body is List) {
-      implHttpResponse.write(jsonEncode(body));
-    } else {
-      throw '${(body as Object?).runtimeType} not supported';
+  Future send([Object? body]) {
+    if (body != null) {
+      if (body is Uint8List) {
+        implHttpResponse.add(body);
+      } else if (body is String) {
+        implHttpResponse.write(body);
+      } else if (body is List<int>) {
+        implHttpResponse.add(asUint8List(body));
+      } else if (body is Map || body is List) {
+        implHttpResponse.write(jsonEncode(body));
+      } else {
+        throw '${body.runtimeType} not supported';
+      }
     }
     return implHttpResponse.close();
   }

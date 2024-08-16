@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
-import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
 
 import 'constants.dart';
+import 'firebase_functions_test.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
   var body = request.body;
@@ -66,6 +66,49 @@ Future<Object?> callHandler(CallRequest request) async {
   }
 }
 
+FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
+  switch (input.command) {
+    case testCommandData:
+      return input.data;
+    case testCommandThrow:
+      throw Exception('throw unsupported to throw on purpose');
+  }
+  return UnsupportedError('unsupported command ${input.command}');
+}
+
+Map<String, Object?> _outputData(Object? data) {
+  return FunctionTestOutputData(data: data).toMap();
+}
+
+/// Test
+Future<Object?> testCallableFunctionHandler(CallRequest request) async {
+  var input = FunctionTestInputData.fromMap(request.dataAsMap,
+      userId: request.context.auth?.uid);
+  switch (input.command) {
+    case testCommandRaw:
+      return input.data;
+  }
+  var result = await _testFunctionHandler(input);
+  return _outputData(result);
+}
+
+FutureOr<void> testHttpFunctionHandler(ExpressHttpRequest request) async {
+  var response = request.response;
+  var input = FunctionTestInputData.fromMap(request.bodyAsMap);
+  switch (input.command) {
+    case testCommandRaw:
+      return request.response.send(null);
+  }
+  try {
+    var result = await _testFunctionHandler(input);
+    return response.send(_outputData(result));
+  } catch (e) {
+    response.statusCode = httpStatusCodeInternalServerError;
+    await response.send(jsonEncode({'error': '$e'}));
+    //return request.response.statusCode = httpStatusCodeInternalServerError;
+  }
+}
+
 class TestContext {
   String? baseUrl;
 }
@@ -106,10 +149,19 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
       callHandler,
       callableOptions: HttpsCallableOptions(
           cors: true, region: regionBelgium, enforceAppCheck: false));
+
   firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https.onCall(
       callHandler,
       callableOptions: HttpsCallableOptions(
           cors: true, region: regionBelgium, enforceAppCheck: true));
+
+  firebaseFunctions[callableFunctionTestName] = firebaseFunctions.https.onCall(
+      testCallableFunctionHandler,
+      callableOptions: HttpsCallableOptions(
+          cors: true, region: regionBelgium, enforceAppCheck: false));
+  firebaseFunctions[httpFunctionTestName] = firebaseFunctions.https.onRequest(
+      testHttpFunctionHandler,
+      httpsOptions: HttpsOptions(cors: true, region: regionBelgium));
 
   return testContext;
 }
@@ -125,4 +177,6 @@ var testFunctionNames = [
   'ffinfo',
   functionCallName,
   functionCallAppCheckName,
+  callableFunctionTestName,
+  httpFunctionTestName,
 ];

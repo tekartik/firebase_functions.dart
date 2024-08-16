@@ -6,7 +6,8 @@ import '../src/import.dart';
 
 class FirebaseFunctionsTestContextMemory
     extends FirebaseFunctionsTestContextHttp {
-  FirebaseFunctionsTestContextMemory({required super.firebaseFunctions})
+  FirebaseFunctionsTestContextMemory(
+      {required super.firebaseFunctions, super.functionsCall})
       : super(
           httpClientFactory: httpClientFactoryMemory,
         );
