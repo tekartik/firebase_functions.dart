@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
+import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
 
 import 'constants.dart';
@@ -70,6 +71,9 @@ FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
   switch (input.command) {
     case testCommandData:
       return input.data;
+    case testCommandNotFound:
+      throw HttpsError(
+          HttpsErrorCode.notFound, 'Not found', 'command $testCommandNotFound');
     case testCommandThrow:
       throw Exception('throw unsupported to throw on purpose');
   }
@@ -102,6 +106,10 @@ FutureOr<void> testHttpFunctionHandler(ExpressHttpRequest request) async {
   try {
     var result = await _testFunctionHandler(input);
     return response.send(_outputData(result));
+  } on HttpsError catch (e) {
+    var statusCode = httpsErrorCodeToStatusCode(e.code);
+    response.statusCode = statusCode;
+    await response.send(jsonEncode({'https_error': '$e'}));
   } catch (e) {
     response.statusCode = httpStatusCodeInternalServerError;
     await response.send(jsonEncode({'error': '$e'}));

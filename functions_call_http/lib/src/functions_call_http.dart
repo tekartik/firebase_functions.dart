@@ -1,9 +1,10 @@
-import 'dart:convert';
-
 import 'package:path/path.dart' as p;
+// ignore: depend_on_referenced_packages
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
+import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
 import 'package:tekartik_http/http.dart';
@@ -99,17 +100,22 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
       var headers = <String, String>{
         if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId
       };
-      var text = await httpClientRead(httpClient, httpMethodPost, uri,
-          headers: headers, body: jsonEncode(parameters));
-      FirebaseFunctionsCallableResultHttp<T> result;
-      if (text.isEmpty) {
-        result = FirebaseFunctionsCallableResultHttp<T>(null as T);
-      } else {
-        var data = jsonDecode(text) as T;
-        result = FirebaseFunctionsCallableResultHttp<T>(data);
+      try {
+        var text = await httpClientRead(httpClient, httpMethodPost, uri,
+            headers: headers, body: jsonEncode(parameters));
+        FirebaseFunctionsCallableResultHttp<T> result;
+        if (text.isEmpty) {
+          result = FirebaseFunctionsCallableResultHttp<T>(null as T);
+        } else {
+          var data = jsonDecode(text) as T;
+          result = FirebaseFunctionsCallableResultHttp<T>(data);
+        }
+        return result;
+      } catch (e, st) {
+        var httpsError = anyExceptionToHttpsError(e, stackTrace: st);
+        //devPrint('e: $e, httpsError: $httpsError');
+        throw httpsError;
       }
-
-      return result;
     } finally {
       httpClient.close();
     }

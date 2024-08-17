@@ -31,6 +31,8 @@ class FunctionTestOutputData {
       data: map['data'],
     );
   }
+  @override
+  String toString() => toMap().toString();
 }
 
 class FunctionTestInputData {
@@ -47,6 +49,9 @@ class FunctionTestInputData {
       'data': data,
     };
   }
+
+  @override
+  String toString() => toMap().toString();
 
   factory FunctionTestInputData.fromMap(Map map, {String? userId}) {
     return FunctionTestInputData(
@@ -217,7 +222,7 @@ void ffTest(
       late CallFunctionTestClient client;
       setUpAll(() async {
         client = CallFunctionTestClient(
-            testContext.functionsCall!.callable(httpFunctionTestName));
+            testContext.functionsCall!.callable(callableFunctionTestName));
       });
 
       test('data', () async {
@@ -227,9 +232,22 @@ void ffTest(
         try {
           await client.sendThrow();
         } on HttpsError catch (e) {
+          print('error: $e');
           expect(e.code, 'internal');
         } catch (e) {
           print('error: $e (${e.runtimeType})');
+          rethrow;
+        }
+      }, skip: true);
+
+      test('not-found', () async {
+        try {
+          await client.sendNotFound();
+        } on HttpsError catch (e) {
+          expect(e.code, HttpsErrorCode.notFound);
+        } catch (e) {
+          print('error: $e (${e.runtimeType})');
+          rethrow;
         }
       });
       test('raw all', () async {
@@ -275,6 +293,13 @@ void ffTest(
           await client.sendThrow();
         } on HttpClientException catch (e) {
           expect(e.statusCode, httpStatusCodeInternalServerError);
+        }
+      });
+      test('not-found', () async {
+        try {
+          await client.sendNotFound();
+        } on HttpClientException catch (e) {
+          expect(e.statusCode, httpStatusCodeNotFound);
         }
       });
       test('raw', () async {
@@ -351,6 +376,11 @@ abstract class FunctionTestClient {
     await send(data);
   }
 
+  Future<void> sendNotFound() async {
+    var data = FunctionTestInputData(command: testCommandNotFound, data: null);
+    await send(data);
+  }
+
   Future<void> testData() async {
     for (var data in [
       null,
@@ -360,9 +390,18 @@ abstract class FunctionTestClient {
       {'test': 1},
       true
     ]) {
-      var input = FunctionTestInputData(command: testCommandData, data: data);
-      var output = await send(input);
-      expect(output.data, data);
+      try {
+        var input = FunctionTestInputData(command: testCommandData, data: data);
+        // devPrint('input $input');
+        var output = await send(input);
+        // devPrint('input $output');
+
+        expect(output.data, data);
+      } catch (e) {
+        print('Error for $data');
+        print('Error: $e');
+        rethrow;
+      }
     }
   }
 

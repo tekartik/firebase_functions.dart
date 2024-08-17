@@ -3,6 +3,7 @@ import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';
+import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_http/ff_server.dart';
 import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
@@ -240,11 +241,34 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
 
   HttpsCallableFunctionHttpImpl(this.callableOptions, this.callHandler)
       : super(callableOptions, (ExpressHttpRequest request) async {
-          var result = await callHandler(CallRequestHttp(request));
-          var response = request.response;
-          response.headers.set(httpHeaderContentType, httpContentTypeJson);
-          var reponseString = result is String ? result : jsonEncode(result);
-          await response.send(reponseString);
+          try {
+            var result = await callHandler(CallRequestHttp(request));
+            var response = request.response;
+            response.headers.set(httpHeaderContentType, httpContentTypeJson);
+            var reponseString = result is String ? result : jsonEncode(result);
+            await response.send(reponseString);
+          } on HttpsError catch (e) {
+            var response = request.response;
+            try {
+              response.statusCode = httpsErrorCodeToStatusCode(e.code);
+              response.headers.set(httpHeaderContentType, httpContentTypeJson);
+            } catch (_) {
+              // ignore: avoid_print
+              print('error setting status code');
+            }
+            await response.send(jsonEncode({'error': '$e'}));
+          } catch (e) {
+            var response = request.response;
+
+            try {
+              response.statusCode = httpStatusCodeInternalServerError;
+              response.headers.set(httpHeaderContentType, httpContentTypeJson);
+            } catch (_) {
+              // ignore: avoid_print
+              print('error setting status code');
+            }
+            await response.send(jsonEncode({'error': '$e'}));
+          }
         });
 }
 

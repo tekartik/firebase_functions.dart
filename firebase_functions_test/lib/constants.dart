@@ -9,6 +9,9 @@ const httpFunctionTestName = 'tktesthttpv1';
 /// Throws an argument error
 const testCommandThrow = 'throw';
 
+/// Throws an a not found error
+const testCommandNotFound = 'notfound';
+
 /// Returns incoming data as full response
 const testCommandRaw = 'raw';
 

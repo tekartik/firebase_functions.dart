@@ -3,4 +3,8 @@ export 'src/utils.dart'
         CallRequestFromExpress,
         CallRequestFfExt,
         ExpressHttpRequestFfExt,
-        onCallHandlerAsRequestHandler;
+        onCallHandlerAsRequestHandler,
+        anyExceptionToHttpsError,
+        httpsErrorCodeToStatusCode,
+        statusCodeToHttpsErrorCode,
+        HttpClientExceptionFirebaseFunctionsExt;
