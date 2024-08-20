@@ -120,6 +120,9 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
       httpClient.close();
     }
   }
+
+  @override
+  String toString() => 'CallableHttp($name)';
 }
 
 /// Firebase functions callable result Http.
