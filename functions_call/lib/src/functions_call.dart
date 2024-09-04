@@ -23,7 +23,8 @@ class FirebaseFunctionsCallableOptions {
 }
 
 /// Firebase functions call
-abstract class FirebaseFunctionsCall {
+abstract class FirebaseFunctionsCall
+    implements FirebaseAppProduct<FirebaseFunctionsCall> {
   /// A reference to the Callable HTTPS trigger with the given name.
   ///
   /// Should be the name of the Callable function in Firebase
@@ -36,6 +37,9 @@ abstract class FirebaseFunctionsCall {
   static FirebaseFunctionsCall get instance =>
       (FirebaseApp.instance as FirebaseAppMixin)
           .getProduct<FirebaseFunctionsCall>()!;
+
+  /// Service access
+  FirebaseFunctionsCallService get service;
 }
 
 /// A reference to a particular Callable HTTPS trigger in Cloud Functions.
@@ -122,8 +126,16 @@ mixin FirebaseFunctionsCallableDefaultMixin
 
 // ignore: unused_element
 class _FirebaseFunctionsCallMock
-    with FirebaseFunctionsCallDefaultMixin
-    implements FirebaseFunctionsCall {}
+    with
+        FirebaseFunctionsCallDefaultMixin,
+        FirebaseAppProductMixin<FirebaseFunctionsCall>
+    implements FirebaseFunctionsCall {
+  @override
+  FirebaseFunctionsCallService get service => throw UnimplementedError();
+
+  @override
+  FirebaseApp get app => throw UnimplementedError();
+}
 
 // ignore: unused_element
 class _FirebaseFunctionsCallServiceMock

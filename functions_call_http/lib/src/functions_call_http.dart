@@ -50,9 +50,11 @@ class FirebaseFunctionsCallHttp
     with FirebaseAppProductMixin<FirebaseFunctionsCall>
     implements FirebaseFunctionsCall {
   /// Service
+  @override
   final FirebaseFunctionsCallServiceHttp service;
 
   /// App
+  @override
   final FirebaseApp app;
 
   /// Base uri

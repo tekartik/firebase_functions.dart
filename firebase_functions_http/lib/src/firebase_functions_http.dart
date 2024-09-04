@@ -48,6 +48,8 @@ class FirebaseFunctionsHttpBase
         FirebaseFunctionsDefaultMixin,
         FirebaseFunctionsHttpDefaultMixin
     implements FirebaseFunctionsHttp {
+  @override
+  FirebaseApp get app => firebaseApp;
   final FirebaseApp firebaseApp;
   HttpServerFactory httpServerFactory;
   GlobalOptions? globalOptions;
