@@ -11,6 +11,7 @@ import 'package:test/test.dart';
 import 'constants.dart';
 import 'src/import.dart';
 
+export 'package:tekartik_firebase_functions/firebase_functions.dart';
 export 'package:tekartik_http/http_utils.dart';
 
 export 'src/firebase_functions_test_context.dart';
@@ -31,6 +32,7 @@ class FunctionTestOutputData {
       data: map['data'],
     );
   }
+
   @override
   String toString() => toMap().toString();
 }
@@ -360,6 +362,7 @@ class HttpFunctionTestClient extends FunctionTestClient {
 
 abstract class FunctionTestClient {
   Future<FunctionTestOutputData> send(FunctionTestInputData data);
+
   Future<Object?> rawSend(FunctionTestInputData data);
 
   Future<Object?> sendRaw(Object? raw) async {

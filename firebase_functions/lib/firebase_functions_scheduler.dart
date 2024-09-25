@@ -7,3 +7,5 @@ export 'package:tekartik_firebase_functions/src/firebase_functions_scheduler.dar
         SchedulerFunctionsDefaultMixin,
         ScheduleFunction,
         SchedulerEventDefaultMixin;
+
+export 'firebase_functions.dart';

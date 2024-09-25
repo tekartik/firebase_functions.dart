@@ -9,3 +9,5 @@ export 'package:tekartik_firebase_functions/src/firebase_functions_firestore.dar
         DocumentBuilder,
         DocumentBuilderDefaultMixin,
         FirestoreFunctionsDefaultMixin;
+
+export 'firebase_functions.dart';

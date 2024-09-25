@@ -1,3 +1,4 @@
+export 'firebase_functions.dart';
 export 'src/utils.dart'
     show
         CallRequestFromExpress,

@@ -6,6 +6,7 @@ import 'package:tekartik_firebase_functions_test/src/import.dart';
 
 import 'constants.dart';
 import 'firebase_functions_test.dart';
+export 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
   var body = request.body;

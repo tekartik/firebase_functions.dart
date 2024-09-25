@@ -1,3 +1,4 @@
+export 'package:tekartik_firebase/firebase.dart';
 export 'package:tekartik_firebase_firestore/firestore.dart'
     show DocumentSnapshot;
 export 'package:tekartik_firebase_functions/src/express_http_request.dart'

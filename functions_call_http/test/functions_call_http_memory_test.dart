@@ -1,7 +1,6 @@
 library;
 
 import 'package:sembast/sembast_memory.dart';
-import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_auth_sembast/auth_sembast.dart';
 import 'package:tekartik_firebase_functions_call_http/functions_call_http.dart';

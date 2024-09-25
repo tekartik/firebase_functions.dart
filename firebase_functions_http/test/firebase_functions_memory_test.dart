@@ -1,7 +1,6 @@
 library;
 
 import 'package:path/path.dart' as p;
-import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions_call_http/functions_call_memory.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';

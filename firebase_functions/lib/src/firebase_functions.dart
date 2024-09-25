@@ -1,7 +1,6 @@
 // import 'package:tekartik_http/http_server.dart';
 import 'dart:async';
 
-import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';

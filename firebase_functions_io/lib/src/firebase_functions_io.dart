@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';

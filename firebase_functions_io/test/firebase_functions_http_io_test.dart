@@ -3,7 +3,6 @@ library;
 
 import 'dart:async';
 
-import 'package:tekartik_firebase/firebase.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_http.dart';
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
