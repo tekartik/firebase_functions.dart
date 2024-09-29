@@ -52,22 +52,22 @@ dependencies:
       url: https://github.com/tekartik/firebase_auth.dart
       ref: dart3a
       path: auth
+
 dev_dependencies:
   test: ">=1.2.0"
   build_runner: ">=0.8.8"
   build_test:
+  tekartik_firebase_functions_test:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: firebase_functions_test
   tekartik_firebase_firestore_sembast:
     git:
       url: https://github.com/tekartik/firebase_firestore.dart
       path: firestore_sembast
       ref: dart3a
     version: '>=0.8.0'
-  tekartik_firebase_functions_test:
-    git:
-      url: https://github.com/tekartik/firebase_functions.dart
-      path: firebase_functions_test
-      ref: dart3a
-    version: '>=0.2.1'
   process_run: '>=0.10.0+1'
   tekartik_firebase_functions_call_http:
     git:

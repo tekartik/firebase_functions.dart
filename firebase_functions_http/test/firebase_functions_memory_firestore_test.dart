@@ -1,4 +1,4 @@
-library tekartik_firebase_functions_http.test.firebase_functions_memory_test;
+library;
 
 import 'package:http/http.dart' as http;
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
