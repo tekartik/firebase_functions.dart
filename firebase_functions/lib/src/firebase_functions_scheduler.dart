@@ -32,7 +32,7 @@ class ScheduleOptions extends GlobalOptions {
 
   /// The timezone that the schedule executes in.
   ///
-  /// timeZone?: timezone | Expression<string> | ResetValue
+  /// timeZone?: `timezone` | `Expression<string>` | `ResetValue`
   final String? timeZone;
 
   ScheduleOptions({
