@@ -179,7 +179,7 @@ extension CallRequestExt on CallRequest {
   Map<String, Object?> get dataAsMap => requestBodyAsJsonObject(data)!;
 
   /// Get the body as a text
-  String? get dataAsText => requestBodyAsText(data);
+  String get dataAsText => requestBodyAsText(data);
 }
 
 /// Call request handler.

@@ -70,10 +70,13 @@ abstract class FirebaseFunctionsCallableResult<T> {
 extension FirebaseFunctionsCallableResultExt
     on FirebaseFunctionsCallableResult {
   /// Get the body as a map
-  Map<String, Object?>? get dataAsMap => requestBodyAsJsonObject(data);
+  Map<String, Object?>? get dataAsMap => dataAsMapOrNull!;
+
+  /// Get the body as a map
+  Map<String, Object?>? get dataAsMapOrNull => requestBodyAsJsonObject(data);
 
   /// Get the body as a text
-  String? get dataAsText => requestBodyAsText(data);
+  String get dataAsText => requestBodyAsText(data);
 }
 
 /// Firebase functions callable result default mixin
