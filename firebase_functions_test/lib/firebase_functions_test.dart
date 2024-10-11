@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:http/http.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
