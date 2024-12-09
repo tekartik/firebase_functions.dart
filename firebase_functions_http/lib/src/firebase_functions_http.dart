@@ -24,7 +24,7 @@ mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
 
   @override
   Future<FfServer> serve({int? port}) async {
-    var server = await serveHttp();
+    var server = await serveHttp(port: port);
     return FfServerHttp(server);
   }
 
