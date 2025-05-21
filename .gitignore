@@ -23,5 +23,4 @@ doc/api/
 .local
 
 /firebase_functions_node/deploy/functions/
-/pubspec.yaml
 pubspec_overrides.yaml
