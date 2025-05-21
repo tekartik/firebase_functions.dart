@@ -24,8 +24,11 @@ class FirebaseFunctionsCallServiceHttp
   /// Most implementation need a single instance, keep it in memory!
   final _instances = <String, FirebaseFunctionsCallHttp>{};
 
-  FirebaseFunctionsCallHttp _getInstance(App app, String region,
-      FirebaseFunctionsCallHttp Function() createIfNotFound) {
+  FirebaseFunctionsCallHttp _getInstance(
+    App app,
+    String region,
+    FirebaseFunctionsCallHttp Function() createIfNotFound,
+  ) {
     var key = '${app.name}_$region';
     var instance = _instances[key];
     if (instance == null) {
@@ -36,8 +39,11 @@ class FirebaseFunctionsCallServiceHttp
   }
 
   @override
-  FirebaseFunctionsCallHttp functionsCall(FirebaseApp app,
-      {required String region, Uri? baseUri}) {
+  FirebaseFunctionsCallHttp functionsCall(
+    FirebaseApp app, {
+    required String region,
+    Uri? baseUri,
+  }) {
     return _getInstance(app, region, () {
       return FirebaseFunctionsCallHttp(this, app, baseUri);
     });
@@ -63,8 +69,10 @@ class FirebaseFunctionsCallHttp
   FirebaseFunctionsCallHttp(this.service, this.app, this.baseUri);
 
   @override
-  FirebaseFunctionsCallableHttp callable(String name,
-      {FirebaseFunctionsCallableOptions? options}) {
+  FirebaseFunctionsCallableHttp callable(
+    String name, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
     return FirebaseFunctionsCallableHttp(this, name);
   }
 }
@@ -81,8 +89,9 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
   FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
 
   @override
-  Future<FirebaseFunctionsCallableResultHttp<T>> call<T>(
-      [Object? parameters]) async {
+  Future<FirebaseFunctionsCallableResultHttp<T>> call<T>([
+    Object? parameters,
+  ]) async {
     var service = functionsCallHttp.service;
     var httpClient = service.httpClientFactory.newClient();
     try {
@@ -93,17 +102,23 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
       var uri = Uri.parse(p.url.join(baseUri.toString(), name));
 
       /// Find current auth user if any
-      var authUserId = (functionsCallHttp.app as FirebaseAppMixin)
-          .getProduct<FirebaseAuth>()
-          ?.currentUser
-          ?.uid;
+      var authUserId =
+          (functionsCallHttp.app as FirebaseAppMixin)
+              .getProduct<FirebaseAuth>()
+              ?.currentUser
+              ?.uid;
 
       var headers = <String, String>{
-        if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId
+        if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId,
       };
       try {
-        var text = await httpClientRead(httpClient, httpMethodPost, uri,
-            headers: headers, body: jsonEncode(parameters));
+        var text = await httpClientRead(
+          httpClient,
+          httpMethodPost,
+          uri,
+          headers: headers,
+          body: jsonEncode(parameters),
+        );
         FirebaseFunctionsCallableResultHttp<T> result;
         if (text.isEmpty) {
           result = FirebaseFunctionsCallableResultHttp<T>(null as T);

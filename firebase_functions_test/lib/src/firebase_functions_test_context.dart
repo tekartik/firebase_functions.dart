@@ -21,19 +21,18 @@ abstract class FirebaseFunctionsTestContext
   @override
   final String? baseUrl;
 
-  FirebaseFunctionsTestContext(
-      {required this.firebaseFunctions,
-      required this.httpClientFactory,
-      this.functionsCall,
-      this.baseUrl});
+  FirebaseFunctionsTestContext({
+    required this.firebaseFunctions,
+    required this.httpClientFactory,
+    this.functionsCall,
+    this.baseUrl,
+  });
 }
 
 abstract class FirebaseFunctionsTestServerContext {
   final FirebaseFunctions firebaseFunctions;
 
-  FirebaseFunctionsTestServerContext({
-    required this.firebaseFunctions,
-  });
+  FirebaseFunctionsTestServerContext({required this.firebaseFunctions});
 
   Future<FfServer> serve();
 }
@@ -45,8 +44,10 @@ abstract class FirebaseFunctionsTestClientContext {
   final String? baseUrl;
   FirebaseFunctionsCall? get functionsCall;
 
-  FirebaseFunctionsTestClientContext(
-      {required this.httpClientFactory, this.baseUrl});
+  FirebaseFunctionsTestClientContext({
+    required this.httpClientFactory,
+    this.baseUrl,
+  });
 
   String url(String path);
 }

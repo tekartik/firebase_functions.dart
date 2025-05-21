@@ -13,25 +13,31 @@ abstract class HttpsFunctions {
   HttpsFunction onRequestV2(HttpsOptions httpsOptions, RequestHandler handler);
 
   /// call request
-  HttpsCallableFunction onCall(CallHandler handler,
-      {HttpsCallableOptions? callableOptions});
+  HttpsCallableFunction onCall(
+    CallHandler handler, {
+    HttpsCallableOptions? callableOptions,
+  });
 }
 
 /// no-op by default to never break compilation
 mixin HttpsFunctionsDefaultMixin implements HttpsFunctions {
   @override
-  HttpsCallableFunction onCall(CallHandler handler,
-          {HttpsCallableOptions? callableOptions}) =>
-      throw UnimplementedError('onCall');
+  HttpsCallableFunction onCall(
+    CallHandler handler, {
+    HttpsCallableOptions? callableOptions,
+  }) => throw UnimplementedError('onCall');
 
   @override
   HttpsFunction onRequestV2(
-          HttpsOptions httpsOptions, RequestHandler handler) =>
-      onRequest(handler, httpsOptions: httpsOptions);
+    HttpsOptions httpsOptions,
+    RequestHandler handler,
+  ) => onRequest(handler, httpsOptions: httpsOptions);
 
   @override
-  HttpsFunction onRequest(RequestHandler handler,
-      {HttpsOptions? httpsOptions}) {
+  HttpsFunction onRequest(
+    RequestHandler handler, {
+    HttpsOptions? httpsOptions,
+  }) {
     throw UnimplementedError('onRequest');
   }
 }
@@ -50,15 +56,16 @@ class HttpsCallableOptions extends HttpsOptions {
   /// Determines whether Firebase AppCheck is enforced. When true, requests with invalid tokens autorespond with a 401 (Unauthorized) error. When false, requests with invalid tokens set event.app to undefiend.
   final bool? enforceAppCheck;
 
-  HttpsCallableOptions(
-      {this.consumeAppCheckToken,
-      this.enforceAppCheck,
-      super.cors,
-      super.concurrency,
-      super.memory,
-      super.region,
-      super.regions,
-      super.timeoutSeconds});
+  HttpsCallableOptions({
+    this.consumeAppCheckToken,
+    this.enforceAppCheck,
+    super.cors,
+    super.concurrency,
+    super.memory,
+    super.region,
+    super.regions,
+    super.timeoutSeconds,
+  });
 }
 
 /// Https options
@@ -66,13 +73,14 @@ class HttpsOptions extends GlobalOptions {
   /// Set to true to allow cors
   final bool? cors;
 
-  HttpsOptions(
-      {this.cors,
-      super.concurrency,
-      super.memory,
-      super.region,
-      super.regions,
-      super.timeoutSeconds});
+  HttpsOptions({
+    this.cors,
+    super.concurrency,
+    super.memory,
+    super.region,
+    super.regions,
+    super.timeoutSeconds,
+  });
 }
 
 /// Error thrown
@@ -93,10 +101,11 @@ class HttpsError implements Exception {
   final Object? details;
 
   @override
-  String toString() => {
+  String toString() =>
+      {
         'code': code,
         'message': message,
-        if (details != null) 'details': details
+        if (details != null) 'details': details,
       }.toString();
 }
 

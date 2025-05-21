@@ -50,12 +50,12 @@ mixin DocumentBuilderDefaultMixin implements DocumentBuilder {
 abstract class FirestoreFunction implements FirebaseFunction {}
 
 /// Change event handler.
-typedef ChangeEventHandler<T> = FutureOr<void> Function(
-    Change<T> data, EventContext context);
+typedef ChangeEventHandler<T> =
+    FutureOr<void> Function(Change<T> data, EventContext context);
 
 /// Data event handler.
-typedef DataEventHandler<T> = FutureOr<void> Function(
-    T data, EventContext context);
+typedef DataEventHandler<T> =
+    FutureOr<void> Function(T data, EventContext context);
 
 /// The context in which an event occurred.
 ///

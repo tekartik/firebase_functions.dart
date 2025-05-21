@@ -268,10 +268,11 @@ class GlobalOptions {
   /// Timeout for the function in sections, possible values are 0 to 540. HTTPS functions can specify a higher timeout.
   final int? timeoutSeconds;
 
-  GlobalOptions(
-      {this.timeoutSeconds,
-      this.region,
-      this.regions,
-      this.memory,
-      this.concurrency});
+  GlobalOptions({
+    this.timeoutSeconds,
+    this.region,
+    this.regions,
+    this.memory,
+    this.concurrency,
+  });
 }

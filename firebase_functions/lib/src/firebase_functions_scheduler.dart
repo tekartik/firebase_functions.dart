@@ -21,7 +21,9 @@ abstract class ScheduleEvent {
 abstract class SchedulerFunctions {
   /// HTTPS request
   ScheduleFunction onSchedule(
-      ScheduleOptions scheduleOptions, ScheduleHandler handler);
+    ScheduleOptions scheduleOptions,
+    ScheduleHandler handler,
+  );
 }
 
 class ScheduleOptions extends GlobalOptions {
@@ -49,7 +51,9 @@ class ScheduleOptions extends GlobalOptions {
 mixin SchedulerFunctionsDefaultMixin implements SchedulerFunctions {
   @override
   ScheduleFunction onSchedule(
-      ScheduleOptions scheduleOptions, ScheduleHandler handler) {
+    ScheduleOptions scheduleOptions,
+    ScheduleHandler handler,
+  ) {
     throw UnimplementedError('SchedulerFunctions.onSchedule');
   }
 }

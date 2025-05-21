@@ -11,7 +11,7 @@ void main() {
         FirebaseFunctionsCallService,
         FirebaseFunctionsCall,
         FirebaseFunctionsCallable,
-        FirebaseFunctionsCallableOptions
+        FirebaseFunctionsCallableOptions,
       ];
     });
   });

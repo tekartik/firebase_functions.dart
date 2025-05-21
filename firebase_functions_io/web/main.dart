@@ -9,8 +9,11 @@ Future main(List<String> arguments) async {
       // This test cors on the web
       var client = Client();
       var result = await httpClientRead(
-          client, httpMethodPost, Uri.parse('http://localhost:4999/echo'),
-          body: 'test body');
+        client,
+        httpMethodPost,
+        Uri.parse('http://localhost:4999/echo'),
+        body: 'test body',
+      );
       write('result: $result');
     });
   });

@@ -10,21 +10,24 @@ class FirebaseFunctionsServiceMemory
         FirebaseFunctionsServiceDefaultMixin
     implements FirebaseFunctionsServiceHttp {
   @override
-  FirebaseFunctionsHttp functions(FirebaseApp app) => getInstance(app, () {
-        return FirebaseFunctionsMemory._(app);
-      }) as FirebaseFunctionsHttp;
+  FirebaseFunctionsHttp functions(FirebaseApp app) =>
+      getInstance(app, () {
+            return FirebaseFunctionsMemory._(app);
+          })
+          as FirebaseFunctionsHttp;
 }
 
 class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsMemory._(FirebaseApp firebaseApp)
-      : super(firebaseApp, httpServerFactoryMemory);
+    : super(firebaseApp, httpServerFactoryMemory);
 }
 
 FirebaseFunctionsMemory? _firebaseFunctionsMemory;
 
 FirebaseFunctionsMemory get firebaseFunctionsMemory =>
-    _firebaseFunctionsMemory ??= firebaseFunctionsServiceMemory
-        .functions(newFirebaseAppLocal()) as FirebaseFunctionsMemory;
+    _firebaseFunctionsMemory ??=
+        firebaseFunctionsServiceMemory.functions(newFirebaseAppLocal())
+            as FirebaseFunctionsMemory;
 
 /// The global memory service.
 final firebaseFunctionsServiceMemory = FirebaseFunctionsServiceMemory();

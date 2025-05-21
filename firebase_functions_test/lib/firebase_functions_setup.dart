@@ -34,8 +34,10 @@ void echoFragmentHandler(ExpressHttpRequest request) {
 void echoInfoHandler(ExpressHttpRequest request) {
   //request.response.headers.contentType = request.headers.contentType;
   request.response.headers.set(httpHeaderContentType, httpContentTypeJson);
-  request.response
-      .send({'method': request.method, 'uri': request.uri.toString()});
+  request.response.send({
+    'method': request.method,
+    'uri': request.uri.toString(),
+  });
 }
 
 void infoHandler(FirebaseFunctions functions, ExpressHttpRequest request) {
@@ -73,7 +75,10 @@ FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
       return input.data;
     case testCommandNotFound:
       throw HttpsError(
-          HttpsErrorCode.notFound, 'Not found', 'command $testCommandNotFound');
+        HttpsErrorCode.notFound,
+        'Not found',
+        'command $testCommandNotFound',
+      );
     case testCommandThrow:
       throw Exception('throw unsupported to throw on purpose');
   }
@@ -86,8 +91,10 @@ Map<String, Object?> _outputData(Object? data) {
 
 /// Test
 Future<Object?> testCallableFunctionHandler(CallRequest request) async {
-  var input = FunctionTestInputData.fromMap(request.dataAsMap,
-      userId: request.context.auth?.uid);
+  var input = FunctionTestInputData.fromMap(
+    request.dataAsMap,
+    userId: request.context.auth?.uid,
+  );
   switch (input.command) {
     case testCommandRaw:
       return input.data;
@@ -121,11 +128,12 @@ class TestContext {
   String? baseUrl;
 }
 
-T setup<T extends FirebaseFunctionsTestServerContext>(
-    {required T testContext,
-    FirebaseFunctions? firebaseFunctions,
-    TestContext? context,
-    String? testRedirectUrl}) {
+T setup<T extends FirebaseFunctionsTestServerContext>({
+  required T testContext,
+  FirebaseFunctions? firebaseFunctions,
+  TestContext? context,
+  String? testRedirectUrl,
+}) {
   firebaseFunctions ??= testContext.firebaseFunctions;
 
   /// Not working not tested yet
@@ -135,41 +143,69 @@ T setup<T extends FirebaseFunctionsTestServerContext>(
   }
 
   firebaseFunctions['echo'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoHandler,
+  );
 
   firebaseFunctions['redirect'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), redirectFragmentHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    redirectFragmentHandler,
+  );
   firebaseFunctions['echoquery'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoQueryHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoQueryHandler,
+  );
   firebaseFunctions['echobytes'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoBytesHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoBytesHandler,
+  );
   firebaseFunctions['echofragment'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoFragmentHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoFragmentHandler,
+  );
   firebaseFunctions['echoheaders'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoHeadersHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoHeadersHandler,
+  );
   firebaseFunctions['echoinfo'] = firebaseFunctions.https.onRequestV2(
-      HttpsOptions(cors: true, region: regionBelgium), echoInfoHandler);
+    HttpsOptions(cors: true, region: regionBelgium),
+    echoInfoHandler,
+  );
   firebaseFunctions['ffinfo'] = firebaseFunctions.https.onRequest(
-      (request) => infoHandler(firebaseFunctions!, request),
-      httpsOptions: HttpsOptions(cors: true, region: regionBelgium));
+    (request) => infoHandler(firebaseFunctions!, request),
+    httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
+  );
 
   firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
-      callHandler,
-      callableOptions: HttpsCallableOptions(
-          cors: true, region: regionBelgium, enforceAppCheck: false));
+    callHandler,
+    callableOptions: HttpsCallableOptions(
+      cors: true,
+      region: regionBelgium,
+      enforceAppCheck: false,
+    ),
+  );
 
   firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https.onCall(
-      callHandler,
-      callableOptions: HttpsCallableOptions(
-          cors: true, region: regionBelgium, enforceAppCheck: true));
+    callHandler,
+    callableOptions: HttpsCallableOptions(
+      cors: true,
+      region: regionBelgium,
+      enforceAppCheck: true,
+    ),
+  );
 
   firebaseFunctions[callableFunctionTestName] = firebaseFunctions.https.onCall(
-      testCallableFunctionHandler,
-      callableOptions: HttpsCallableOptions(
-          cors: true, region: regionBelgium, enforceAppCheck: false));
+    testCallableFunctionHandler,
+    callableOptions: HttpsCallableOptions(
+      cors: true,
+      region: regionBelgium,
+      enforceAppCheck: false,
+    ),
+  );
   firebaseFunctions[httpFunctionTestName] = firebaseFunctions.https.onRequest(
-      testHttpFunctionHandler,
-      httpsOptions: HttpsOptions(cors: true, region: regionBelgium));
+    testHttpFunctionHandler,
+    httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
+  );
 
   return testContext;
 }

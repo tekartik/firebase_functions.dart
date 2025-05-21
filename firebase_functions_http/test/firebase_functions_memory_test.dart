@@ -21,18 +21,22 @@ void echoHandler(ExpressHttpRequest request) {
 void main() {
   var dummyProjectId = 'dummyproject';
   var app = newFirebaseAppLocal(
-      options: FirebaseAppOptions(projectId: dummyProjectId));
+    options: FirebaseAppOptions(projectId: dummyProjectId),
+  );
 
   var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
   var firebaseFunctionsCallService = firebaseFunctionsCallServiceMemory;
-  var firebaseFunctionsCall =
-      firebaseFunctionsCallService.functionsCall(app, region: 'dummy');
+  var firebaseFunctionsCall = firebaseFunctionsCallService.functionsCall(
+    app,
+    region: 'dummy',
+  );
   var httpClientFactory = httpClientFactoryMemory;
 
   group('firebase_functions_memory', () {
     testHttp(
-        firebaseFunctions: firebaseFunctions,
-        httpClientFactory: httpClientFactory);
+      firebaseFunctions: firebaseFunctions,
+      httpClientFactory: httpClientFactory,
+    );
     group('common', () {
       var context = FirebaseFunctionsTestContextMemory(
         firebaseFunctions: firebaseFunctions,
@@ -41,17 +45,18 @@ void main() {
         functionsCall: firebaseFunctionsCall,
       );
 
-      context = setup(
-        testContext: context,
-      );
+      context = setup(testContext: context);
 
       //server.baseUrl = 'http://localhost:${server.port}';
 
       late FfServer ffServer;
       setUpAll(() async {
         ffServer = await context.serve();
-        var firebaseFunctionsCall = firebaseFunctionsCallService
-            .functionsCall(app, region: regionBelgium, baseUri: ffServer.uri);
+        var firebaseFunctionsCall = firebaseFunctionsCallService.functionsCall(
+          app,
+          region: regionBelgium,
+          baseUri: ffServer.uri,
+        );
         context.functionsCall = firebaseFunctionsCall;
       });
 
@@ -63,18 +68,22 @@ void main() {
   });
 }
 
-void testHttp(
-    {required FirebaseFunctionsHttp firebaseFunctions,
-    required HttpClientFactory httpClientFactory}) {
+void testHttp({
+  required FirebaseFunctionsHttp firebaseFunctions,
+  required HttpClientFactory httpClientFactory,
+}) {
   group('custom', () {
     group('echo', () {
       HttpServer? server;
 
       setUpAll(() async {
-        firebaseFunctions['echo'] =
-            firebaseFunctions.https.onRequest(echoHandler);
-        firebaseFunctions['echov2'] =
-            firebaseFunctions.https.onRequestV2(HttpsOptions(), echoHandler);
+        firebaseFunctions['echo'] = firebaseFunctions.https.onRequest(
+          echoHandler,
+        );
+        firebaseFunctions['echov2'] = firebaseFunctions.https.onRequestV2(
+          HttpsOptions(),
+          echoHandler,
+        );
 
         server = await firebaseFunctions.serveHttp(port: 0);
       });
@@ -82,8 +91,9 @@ void testHttp(
       test('echo', () async {
         var client = httpClientFactory.newClient();
         var response = await client.post(
-            Uri.parse(p.url.join(httpServerGetUri(server!).toString(), 'echo')),
-            body: 'hello');
+          Uri.parse(p.url.join(httpServerGetUri(server!).toString(), 'echo')),
+          body: 'hello',
+        );
         expect(response.statusCode, 200);
         expect(response.contentLength, greaterThan(0));
         expect(response.body, equals('hello'));
@@ -93,9 +103,9 @@ void testHttp(
       test('echov2', () async {
         var client = httpClientFactory.newClient();
         var response = await client.post(
-            Uri.parse(
-                p.url.join(httpServerGetUri(server!).toString(), 'echov2')),
-            body: 'hello');
+          Uri.parse(p.url.join(httpServerGetUri(server!).toString(), 'echov2')),
+          body: 'hello',
+        );
         expect(response.statusCode, 200);
         expect(response.contentLength, greaterThan(0));
         expect(response.body, equals('hello'));

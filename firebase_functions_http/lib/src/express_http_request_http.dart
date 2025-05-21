@@ -11,7 +11,7 @@ class ExpressHttpRequestHttp extends ExpressHttpRequestWrapperBase
   final dynamic body;
 
   ExpressHttpRequestHttp(this.body, HttpRequest httpRequest, Uri rewrittenUri)
-      : super(httpRequest, rewrittenUri);
+    : super(httpRequest, rewrittenUri);
 
   ExpressHttpResponse? _response;
 
@@ -26,7 +26,9 @@ class ExpressHttpResponseHttp extends ExpressHttpResponseWrapperBase
 }
 
 Future<ExpressHttpRequestHttp> asExpressHttpRequestHttp(
-    HttpRequest httpRequest, Uri rewrittenUri) async {
+  HttpRequest httpRequest,
+  Uri rewrittenUri,
+) async {
   var body = Uint8List(0);
   if (httpRequest.contentLength != 0) {
     body = await httpStreamGetBytes(httpRequest);

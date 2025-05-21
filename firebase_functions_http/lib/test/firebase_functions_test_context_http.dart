@@ -7,18 +7,19 @@ class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
         //FirebaseFunctionsTestClientContextMixin,
         FirebaseFunctionsTestServerContextHttpMixin,
         FirebaseFunctionsTestClientContextHttpMixin {
-  FirebaseFunctionsTestContextHttp(
-      {
-      /// external client factory
-      required super.httpClientFactory,
-      required super.firebaseFunctions,
-      super.baseUrl,
-      super.functionsCall});
+  FirebaseFunctionsTestContextHttp({
+    /// external client factory
+    required super.httpClientFactory,
+    required super.firebaseFunctions,
+    super.baseUrl,
+    super.functionsCall,
+  });
 
   @override
-  String url(String path) => baseUrl != null
-      ? super.url(path)
-      : p.url.join(server.uri.toString(), path);
+  String url(String path) =>
+      baseUrl != null
+          ? super.url(path)
+          : p.url.join(server.uri.toString(), path);
 }
 
 mixin FirebaseFunctionsTestServerContextHttpMixin
@@ -40,8 +41,10 @@ mixin FirebaseFunctionsTestClientContextHttpMixin
     if (baseUrl.contains('{{function}}')) {
       var function = path.split('/').first.split('?').first.split('#').first;
       var remaining = path.substring(function.length);
-      return p.url
-          .join(baseUrl.replaceAll('{{function}}', function), remaining);
+      return p.url.join(
+        baseUrl.replaceAll('{{function}}', function),
+        remaining,
+      );
     }
     return p.url.join(baseUrl, path);
   }

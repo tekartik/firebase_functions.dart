@@ -6,7 +6,7 @@ Future main() async {
     'firebase_functions',
     'firebase_functions_http',
     'firebase_functions_io',
-    'firebase_functions_test'
+    'firebase_functions_test',
   ]) {
     await packageRunCi(join('..', dir));
   }

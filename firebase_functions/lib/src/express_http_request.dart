@@ -154,10 +154,12 @@ abstract mixin class HttpResponseWrapperMixin implements ExpressHttpResponse {
   void writeln(String content) => implHttpResponse.write(content);
 
   @override
-  Future redirect(Uri location, {int? status}) => implHttpResponse
-      .redirect(location, status: status ?? httpStatusMovedTemporarily);
+  Future redirect(Uri location, {int? status}) => implHttpResponse.redirect(
+    location,
+    status: status ?? httpStatusMovedTemporarily,
+  );
 
-/*
+  /*
   @override
   Future redirect(Uri location, {int status}) {
     statusCode = status;

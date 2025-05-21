@@ -7,7 +7,7 @@ class ExpressHttpRequestIo extends ExpressHttpRequestWrapperBase
   final dynamic body;
 
   ExpressHttpRequestIo(this.body, HttpRequest httpRequest, Uri rewrittenUri)
-      : super(httpRequest, rewrittenUri);
+    : super(httpRequest, rewrittenUri);
 
   ExpressHttpResponse? _response;
 
@@ -22,7 +22,9 @@ class ExpressHttpResponseIo extends ExpressHttpResponseWrapperBase
 }
 
 Future<ExpressHttpRequestIo> asExpressHttpRequestIo(
-    HttpRequest httpRequest, Uri rewrittenUri) async {
+  HttpRequest httpRequest,
+  Uri rewrittenUri,
+) async {
   final body = <int>[];
   if (httpRequest.contentLength != 0) {
     for (var data in await httpRequest.toList()) {

@@ -3,4 +3,5 @@ import 'package:tekartik_http/http.dart';
 
 /// Default functions call service memory.
 final firebaseFunctionsCallServiceMemory = FirebaseFunctionsCallServiceHttp(
-    httpClientFactory: httpClientFactoryMemory);
+  httpClientFactory: httpClientFactoryMemory,
+);

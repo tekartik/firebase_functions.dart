@@ -28,8 +28,8 @@ mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
     return FfServerHttp(server);
   }
 
-// For io only
-// To run the server in parallel
+  // For io only
+  // To run the server in parallel
   /// To implement
   @override
   Future<HttpServer> serveHttp({int? port}) async =>
@@ -76,8 +76,10 @@ class FirebaseFunctionsHttpBase
   @override
   Future<HttpServer> serveHttp({int? port}) async {
     port ??= 4999;
-    var requestServer =
-        await httpServerFactory.bind(InternetAddress.anyIPv4, port);
+    var requestServer = await httpServerFactory.bind(
+      InternetAddress.anyIPv4,
+      port,
+    );
     for (final key in functions.keys) {
       print('$key http://localhost:$port/$key');
     }
@@ -85,53 +87,60 @@ class FirebaseFunctionsHttpBase
     print('listening on http://localhost:${requestServer.port}');
 
     // Launch in background
-    unawaited(Future.sync(() async {
-      await for (HttpRequest request in requestServer) {
-        var uri = request.uri;
-        var handled = false;
-        // /test
-        var functionKey = listFirst(uri.pathSegments);
-        if (functionKey == null) {
-          print('No functions key found for $uri');
-        } else {
-          var function = functions[functionKey];
-          if (function is HttpsFunctionHttp) {
-            final rewrittenUri = Uri(
+    unawaited(
+      Future.sync(() async {
+        await for (HttpRequest request in requestServer) {
+          var uri = request.uri;
+          var handled = false;
+          // /test
+          var functionKey = listFirst(uri.pathSegments);
+          if (functionKey == null) {
+            print('No functions key found for $uri');
+          } else {
+            var function = functions[functionKey];
+            if (function is HttpsFunctionHttp) {
+              final rewrittenUri = Uri(
                 pathSegments: uri.pathSegments.sublist(1),
                 query: uri.query,
-                fragment: uri.fragment);
-            //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
-            ExpressHttpRequest httpRequest =
-                await asExpressHttpRequestHttp(request, rewrittenUri);
-            // cors?
-            var cors = function.options?.cors ?? false;
-            if (cors) {
-              httpRequest.response.headers
-                ..set('Access-Control-Allow-Origin', '*')
-                ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
-              var requestHeaders =
-                  request.headers['Access-Control-Request-Headers'];
-              if (requestHeaders != null) {
+                fragment: uri.fragment,
+              );
+              //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
+              ExpressHttpRequest httpRequest = await asExpressHttpRequestHttp(
+                request,
+                rewrittenUri,
+              );
+              // cors?
+              var cors = function.options?.cors ?? false;
+              if (cors) {
                 httpRequest.response.headers
-                    .set('Access-Control-Allow-Headers', requestHeaders);
+                  ..set('Access-Control-Allow-Origin', '*')
+                  ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
+                var requestHeaders =
+                    request.headers['Access-Control-Request-Headers'];
+                if (requestHeaders != null) {
+                  httpRequest.response.headers.set(
+                    'Access-Control-Allow-Headers',
+                    requestHeaders,
+                  );
+                }
               }
+
+              function.handler(httpRequest);
+              handled = true;
             }
+          }
 
-            function.handler(httpRequest);
-            handled = true;
+          if (!handled) {
+            try {
+              await onFileRequestHttp(request);
+            } catch (e) {
+              request.response.statusCode = httpStatusCodeNotFound;
+              await request.response.close();
+            }
           }
         }
-
-        if (!handled) {
-          try {
-            await onFileRequestHttp(request);
-          } catch (e) {
-            request.response.statusCode = httpStatusCodeNotFound;
-            await request.response.close();
-          }
-        }
-      }
-    }));
+      }),
+    );
     return requestServer;
   }
 
@@ -178,8 +187,10 @@ class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
   HttpsHttp();
 
   @override
-  HttpsFunction onRequest(RequestHandler handler,
-      {HttpsOptions? httpsOptions}) {
+  HttpsFunction onRequest(
+    RequestHandler handler, {
+    HttpsOptions? httpsOptions,
+  }) {
     return HttpsFunctionHttp(httpsOptions, handler);
   }
 
@@ -189,8 +200,10 @@ class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
   }
 
   @override
-  HttpsCallableFunction onCall(CallHandler handler,
-      {HttpsCallableOptions? callableOptions}) {
+  HttpsCallableFunction onCall(
+    CallHandler handler, {
+    HttpsCallableOptions? callableOptions,
+  }) {
     return HttpsCallableFunctionHttp(callableOptions, handler);
   }
 }
@@ -227,8 +240,9 @@ abstract class HttpsCallableFunctionHttp
   CallHandler get callHandler;
 
   factory HttpsCallableFunctionHttp(
-          HttpsCallableOptions? callableOptions, CallHandler callHandler) =>
-      HttpsCallableFunctionHttpImpl(callableOptions, callHandler);
+    HttpsCallableOptions? callableOptions,
+    CallHandler callHandler,
+  ) => HttpsCallableFunctionHttpImpl(callableOptions, callHandler);
 }
 
 class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
@@ -241,36 +255,36 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
   final CallHandler callHandler;
 
   HttpsCallableFunctionHttpImpl(this.callableOptions, this.callHandler)
-      : super(callableOptions, (ExpressHttpRequest request) async {
+    : super(callableOptions, (ExpressHttpRequest request) async {
+        try {
+          var result = await callHandler(CallRequestHttp(request));
+          var response = request.response;
+          response.headers.set(httpHeaderContentType, httpContentTypeJson);
+          var reponseString = result is String ? result : jsonEncode(result);
+          await response.send(reponseString);
+        } on HttpsError catch (e) {
+          var response = request.response;
           try {
-            var result = await callHandler(CallRequestHttp(request));
-            var response = request.response;
+            response.statusCode = httpsErrorCodeToStatusCode(e.code);
             response.headers.set(httpHeaderContentType, httpContentTypeJson);
-            var reponseString = result is String ? result : jsonEncode(result);
-            await response.send(reponseString);
-          } on HttpsError catch (e) {
-            var response = request.response;
-            try {
-              response.statusCode = httpsErrorCodeToStatusCode(e.code);
-              response.headers.set(httpHeaderContentType, httpContentTypeJson);
-            } catch (_) {
-              // ignore: avoid_print
-              print('error setting status code');
-            }
-            await response.send(jsonEncode({'error': '$e'}));
-          } catch (e) {
-            var response = request.response;
-
-            try {
-              response.statusCode = httpStatusCodeInternalServerError;
-              response.headers.set(httpHeaderContentType, httpContentTypeJson);
-            } catch (_) {
-              // ignore: avoid_print
-              print('error setting status code');
-            }
-            await response.send(jsonEncode({'error': '$e'}));
+          } catch (_) {
+            // ignore: avoid_print
+            print('error setting status code');
           }
-        });
+          await response.send(jsonEncode({'error': '$e'}));
+        } catch (e) {
+          var response = request.response;
+
+          try {
+            response.statusCode = httpStatusCodeInternalServerError;
+            response.headers.set(httpHeaderContentType, httpContentTypeJson);
+          } catch (_) {
+            // ignore: avoid_print
+            print('error setting status code');
+          }
+          await response.send(jsonEncode({'error': '$e'}));
+        }
+      });
 }
 
 String rewritePath(String path) {

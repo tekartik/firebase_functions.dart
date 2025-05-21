@@ -35,13 +35,15 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
       }
       response.statusCode = httpStatusCodeInternalServerError;
 
-      await response.send(jsonEncode({
-        'error': {
-          'code': errorCode,
-          'message': message,
-          if (details != null) 'details': details
-        }
-      }));
+      await response.send(
+        jsonEncode({
+          'error': {
+            'code': errorCode,
+            'message': message,
+            if (details != null) 'details': details,
+          },
+        }),
+      );
     }
   }
 }
@@ -102,11 +104,9 @@ var _map = {
 };
 
 var _statusCodeMap = Map<int, String>.from(_map)..addAll({});
-var _httpsErrorCodeMap = Map<String, int>.from(_map.map((k, v) => MapEntry(
-      v,
-      k,
-    )))
-  ..addAll({});
+var _httpsErrorCodeMap = Map<String, int>.from(
+  _map.map((k, v) => MapEntry(v, k)),
+)..addAll({});
 int httpsErrorCodeToStatusCode(String errorCode) {
   return _httpsErrorCodeMap[errorCode] ?? httpStatusCodeInternalServerError;
 }
@@ -119,7 +119,10 @@ String statusCodeToHttpsErrorCode(int statusCode) {
 extension HttpClientExceptionFirebaseFunctionsExt on HttpClientException {
   HttpsError toHttpsError({StackTrace? stackTrace}) {
     return HttpsError(
-        statusCodeToHttpsErrorCode(statusCode), '$this', response.body);
+      statusCodeToHttpsErrorCode(statusCode),
+      '$this',
+      response.body,
+    );
   }
 }
 

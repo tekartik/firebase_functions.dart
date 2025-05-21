@@ -44,8 +44,10 @@ class FirestoreFunctionHttp implements FirestoreFunction {
       var newValue = snapshot;
       var previousValue = lastValue!;
       lastValue = newValue;
-      handler(Change<DocumentSnapshot>(newValue, previousValue),
-          EventContextHttp());
+      handler(
+        Change<DocumentSnapshot>(newValue, previousValue),
+        EventContextHttp(),
+      );
     });
   }
 }

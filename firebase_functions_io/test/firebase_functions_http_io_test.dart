@@ -16,23 +16,21 @@ import 'package:test/test.dart';
 class FirebaseFunctionsTestContextHttpIo
     extends FirebaseFunctionsTestContextHttp {
   FirebaseFunctionsTestContextHttpIo({required super.firebaseFunctions})
-      : super(
-          httpClientFactory: httpClientFactoryIo,
-        );
+    : super(httpClientFactory: httpClientFactoryIo);
 }
 
 /// Uses memory for internal communication and http for external communication
 Future main() async {
   var projectId = 'testioproject';
-  var app =
-      newFirebaseAppLocal(options: FirebaseAppOptions(projectId: projectId));
-  var functions = firebaseFunctionsServiceIo.functions(app);
-  var context =
-      FirebaseFunctionsTestContextHttpIo(firebaseFunctions: functions);
-
-  context = setup(
-    testContext: context,
+  var app = newFirebaseAppLocal(
+    options: FirebaseAppOptions(projectId: projectId),
   );
+  var functions = firebaseFunctionsServiceIo.functions(app);
+  var context = FirebaseFunctionsTestContextHttpIo(
+    firebaseFunctions: functions,
+  );
+
+  context = setup(testContext: context);
   var server = await context.serve();
   //server.baseUrl = 'http://localhost:${server.port}';
 

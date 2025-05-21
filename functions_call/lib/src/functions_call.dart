@@ -6,9 +6,10 @@ class FirebaseFunctionsCallableOptions {
   /// Constructs a new [HttpsCallableOptions] instance with given `timeout` & `limitedUseAppCheckToken`
   /// Defaults [timeout] to 60 seconds.
   /// Defaults [limitedUseAppCheckToken] to `false`
-  FirebaseFunctionsCallableOptions(
-      {this.timeout = const Duration(seconds: 60),
-      this.limitedUseAppCheckToken = false});
+  FirebaseFunctionsCallableOptions({
+    this.timeout = const Duration(seconds: 60),
+    this.limitedUseAppCheckToken = false,
+  });
 
   /// Returns the timeout for this instance
   Duration timeout;
@@ -90,8 +91,10 @@ mixin FirebaseFunctionsCallableResultDefaultMixin<T>
 /// Firebase functions call default mixin
 mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
   @override
-  FirebaseFunctionsCallable callable(String name,
-      {FirebaseFunctionsCallableOptions? options}) {
+  FirebaseFunctionsCallable callable(
+    String name, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
     throw UnimplementedError('FirebaseFunctionsCall.callable');
   }
 }
@@ -99,21 +102,27 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
 /// Firebase functions call service
 abstract class FirebaseFunctionsCallService {
   /// Get the firebase functions call instance
-  FirebaseFunctionsCall functionsCall(App app,
-      {required String region,
+  FirebaseFunctionsCall functionsCall(
+    App app, {
+    required String region,
 
-      /// Not used in flutter
-      Uri? baseUri});
+    /// Not used in flutter
+    Uri? baseUri,
+  });
 }
 
 /// Firebase functions call service default mixin
 mixin FirebaseFunctionsCallServiceDefaultMixin
     implements FirebaseFunctionsCallService {
   @override
-  FirebaseFunctionsCall functionsCall(App app,
-      {required String region, Uri? baseUri}) {
+  FirebaseFunctionsCall functionsCall(
+    App app, {
+    required String region,
+    Uri? baseUri,
+  }) {
     throw UnimplementedError(
-        'FirebaseFunctionsCallService.functionsCall(${app.name}, $region${baseUri != null ? ', $baseUri' : ''})');
+      'FirebaseFunctionsCallService.functionsCall(${app.name}, $region${baseUri != null ? ', $baseUri' : ''})',
+    );
   }
 }
 

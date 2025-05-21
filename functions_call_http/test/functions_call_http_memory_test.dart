@@ -15,28 +15,32 @@ Future<Object?> callHandler(CallRequest request) async {
 void main() {
   var dummyProjectId = 'dummyproject';
   var app = newFirebaseAppLocal(
-      options: FirebaseAppOptions(projectId: dummyProjectId));
+    options: FirebaseAppOptions(projectId: dummyProjectId),
+  );
 
-  var authService =
-      FirebaseAuthServiceSembast(databaseFactory: newDatabaseFactoryMemory());
+  var authService = FirebaseAuthServiceSembast(
+    databaseFactory: newDatabaseFactoryMemory(),
+  );
   var httpClientFactory = httpClientFactoryMemory;
   var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
   var firebaseAuth = authService.auth(app);
 
   group('firebase_functions_memory', () {
     testHttp(
-        firebaseAuth: firebaseAuth,
-        firebaseFunctions: firebaseFunctions,
-        httpClientFactory: httpClientFactory,
-        app: app);
+      firebaseAuth: firebaseAuth,
+      firebaseFunctions: firebaseFunctions,
+      httpClientFactory: httpClientFactory,
+      app: app,
+    );
   });
 }
 
-void testHttp(
-    {required FirebaseApp app,
-    required FirebaseAuth firebaseAuth,
-    required FirebaseFunctionsHttp firebaseFunctions,
-    required HttpClientFactory httpClientFactory}) {
+void testHttp({
+  required FirebaseApp app,
+  required FirebaseAuth firebaseAuth,
+  required FirebaseFunctionsHttp firebaseFunctions,
+  required HttpClientFactory httpClientFactory,
+}) {
   group('custom', () {
     group('echo', () {
       HttpServer? server;
@@ -52,8 +56,11 @@ void testHttp(
           httpClientFactory: httpClientFactory,
         );
 
-        functionsCall = functionsCallService.functionsCall(app,
-            region: regionBelgium, baseUri: httpServerGetUri(server!));
+        functionsCall = functionsCallService.functionsCall(
+          app,
+          region: regionBelgium,
+          baseUri: httpServerGetUri(server!),
+        );
       });
 
       test('call', () async {
@@ -63,7 +70,9 @@ void testHttp(
 
       test('call with auth', () async {
         var user = await firebaseAuth.signInWithEmailAndPassword(
-            email: 'email', password: 'password');
+          email: 'email',
+          password: 'password',
+        );
         var uid = user.user.uid;
         var result = await functionsCall.callable('call').call<Map>({});
 

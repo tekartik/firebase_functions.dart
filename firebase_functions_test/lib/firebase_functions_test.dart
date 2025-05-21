@@ -21,15 +21,11 @@ class FunctionTestOutputData {
   FunctionTestOutputData({this.data});
 
   Map<String, Object?> toMap() {
-    return {
-      'data': data,
-    };
+    return {'data': data};
   }
 
   factory FunctionTestOutputData.fromMap(Map map) {
-    return FunctionTestOutputData(
-      data: map['data'],
-    );
+    return FunctionTestOutputData(data: map['data']);
   }
 
   @override
@@ -44,11 +40,7 @@ class FunctionTestInputData {
   FunctionTestInputData({this.userId, required this.command, this.data});
 
   Map<String, Object?> toMap() {
-    return {
-      'userId': userId,
-      'command': command,
-      'data': data,
-    };
+    return {'userId': userId, 'command': command, 'data': data};
   }
 
   @override
@@ -63,19 +55,22 @@ class FunctionTestInputData {
   }
 }
 
-void ffTest(
-    {required FirebaseFunctionsTestClientContext testContext,
-    HttpClientFactory? httpClientFactory,
-    String? baseUrl,
-    String? projectId}) {
+void ffTest({
+  required FirebaseFunctionsTestClientContext testContext,
+  HttpClientFactory? httpClientFactory,
+  String? baseUrl,
+  String? projectId,
+}) {
   late HttpClientFactory clientFactory;
   setUpAll(() async {
     clientFactory = httpClientFactory ??= testContext.httpClientFactory;
   });
   test('post', () async {
     var client = httpClientFactory!.newClient();
-    var response =
-        await client.post(Uri.parse(testContext.url('echo')), body: 'hello');
+    var response = await client.post(
+      Uri.parse(testContext.url('echo')),
+      body: 'hello',
+    );
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
     expect(response.body, equals('hello'));
@@ -85,11 +80,13 @@ void ffTest(
 
   test('echoBytes binary', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echobytes')),
-        body: Uint8List.fromList([1, 2, 3]),
+    var response = await client.post(
+      Uri.parse(testContext.url('echobytes')),
+      body: Uint8List.fromList([1, 2, 3]),
 
-        /// Needed for node
-        headers: {httpHeaderContentType: httpContentTypeBytes});
+      /// Needed for node
+      headers: {httpHeaderContentType: httpContentTypeBytes},
+    );
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
     expect(response.bodyBytes, [1, 2, 3]);
@@ -100,11 +97,13 @@ void ffTest(
   test('echoBytes test', () async {
     var content = 'éàö';
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echobytes')),
-        body: content,
+    var response = await client.post(
+      Uri.parse(testContext.url('echobytes')),
+      body: content,
 
-        /// Needed for node
-        headers: {httpHeaderContentType: httpContentTypeText});
+      /// Needed for node
+      headers: {httpHeaderContentType: httpContentTypeText},
+    );
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
     expect(utf8.decode(response.bodyBytes), content);
@@ -117,11 +116,13 @@ void ffTest(
   test('echoBytes json', () async {
     var map = {'test': 'éàö'};
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('echobytes')),
-        body: jsonEncode(map),
+    var response = await client.post(
+      Uri.parse(testContext.url('echobytes')),
+      body: jsonEncode(map),
 
-        /// Needed for node
-        headers: {httpHeaderContentType: httpContentTypeJson});
+      /// Needed for node
+      headers: {httpHeaderContentType: httpContentTypeJson},
+    );
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
     expect(jsonDecode(utf8.decode(response.bodyBytes)), map);
@@ -133,8 +134,9 @@ void ffTest(
 
   test('queryParams', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client
-        .get(Uri.parse(testContext.url('echoquery?dev&param=value')));
+    var response = await client.get(
+      Uri.parse(testContext.url('echoquery?dev&param=value')),
+    );
     expect(response.statusCode, 200);
     expect(response.body, 'dev&param=value');
 
@@ -143,8 +145,9 @@ void ffTest(
 
   test('fragment', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client
-        .get(Uri.parse(testContext.url('echofragment#some_fragment')));
+    var response = await client.get(
+      Uri.parse(testContext.url('echofragment#some_fragment')),
+    );
     expect(response.statusCode, 200);
     // Server has no fragment
     expect(response.body, '');
@@ -153,8 +156,9 @@ void ffTest(
 
   test('info', () async {
     var client = httpClientFactory!.newClient();
-    var response =
-        await client.get(Uri.parse(testContext.url('echoinfo?param#fragment')));
+    var response = await client.get(
+      Uri.parse(testContext.url('echoinfo?param#fragment')),
+    );
     expect(response.statusCode, 200);
     // Server has no fragment
     var decoded = jsonDecode(response.body);
@@ -164,8 +168,9 @@ void ffTest(
       // On node we have a leading /
       expect(decoded, {'method': 'GET', 'uri': '/?param'});
     }
-    response = await client
-        .post(Uri.parse(testContext.url('echoinfo/sub1/sub2?param#fragment')));
+    response = await client.post(
+      Uri.parse(testContext.url('echoinfo/sub1/sub2?param#fragment')),
+    );
     expect(response.statusCode, 200);
     // Server has no fragment
     decoded = jsonDecode(response.body);
@@ -192,8 +197,10 @@ void ffTest(
 
   test('headers', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.get(Uri.parse(testContext.url('echoheaders')),
-        headers: {'x-test1': 'value1'});
+    var response = await client.get(
+      Uri.parse(testContext.url('echoheaders')),
+      headers: {'x-test1': 'value1'},
+    );
     expect(response.statusCode, 200);
     // Server has no fragment
     // For http io we might have
@@ -203,14 +210,18 @@ void ffTest(
     //             'name: localhost:44295\n'
     //             ''
     expect(
-        response.body, contains('name: value1')); // don't care about line feed
+      response.body,
+      contains('name: value1'),
+    ); // don't care about line feed
     client.close();
   });
 
   test('redirect', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.post(Uri.parse(testContext.url('redirect')),
-        body: 'hello');
+    var response = await client.post(
+      Uri.parse(testContext.url('redirect')),
+      body: 'hello',
+    );
     expect(response.statusCode, 302);
     // no echo
     expect(response.body, '');
@@ -223,7 +234,8 @@ void ffTest(
       late CallFunctionTestClient client;
       setUpAll(() async {
         client = CallFunctionTestClient(
-            testContext.functionsCall!.callable(callableFunctionTestName));
+          testContext.functionsCall!.callable(callableFunctionTestName),
+        );
       });
 
       test('data', () async {
@@ -257,7 +269,7 @@ void ffTest(
           <String, Object?>{},
           <Object?>[],
           'test',
-          true
+          true,
         ]) {
           var result = await client.sendRaw(raw);
           expect(result, raw);
@@ -341,15 +353,25 @@ class HttpFunctionTestClient extends FunctionTestClient {
 
   @override
   Future<FunctionTestOutputData> send(FunctionTestInputData data) async {
-    var response = await httpClientSend(client, httpMethodPost, uri,
-        body: jsonEncode(data.toMap()), throwOnFailure: true);
+    var response = await httpClientSend(
+      client,
+      httpMethodPost,
+      uri,
+      body: jsonEncode(data.toMap()),
+      throwOnFailure: true,
+    );
     return FunctionTestOutputData.fromMap(response.bodyAsMap);
   }
 
   @override
   Future<Object?> rawSend(FunctionTestInputData data) async {
-    var response = await httpClientSend(client, httpMethodPost, uri,
-        body: jsonEncode(data.toMap()), throwOnFailure: true);
+    var response = await httpClientSend(
+      client,
+      httpMethodPost,
+      uri,
+      body: jsonEncode(data.toMap()),
+      throwOnFailure: true,
+    );
     return response.bodyBytes;
   }
 
@@ -390,7 +412,7 @@ abstract class FunctionTestClient {
       'test',
       [1, 2],
       {'test': 1},
-      true
+      true,
     ]) {
       try {
         var input = FunctionTestInputData(command: testCommandData, data: data);
