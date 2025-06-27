@@ -102,11 +102,10 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
       var uri = Uri.parse(p.url.join(baseUri.toString(), name));
 
       /// Find current auth user if any
-      var authUserId =
-          (functionsCallHttp.app as FirebaseAppMixin)
-              .getProduct<FirebaseAuth>()
-              ?.currentUser
-              ?.uid;
+      var authUserId = (functionsCallHttp.app as FirebaseAppMixin)
+          .getProduct<FirebaseAuth>()
+          ?.currentUser
+          ?.uid;
 
       var headers = <String, String>{
         if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId,

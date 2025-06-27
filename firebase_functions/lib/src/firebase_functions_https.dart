@@ -101,12 +101,11 @@ class HttpsError implements Exception {
   final Object? details;
 
   @override
-  String toString() =>
-      {
-        'code': code,
-        'message': message,
-        if (details != null) 'details': details,
-      }.toString();
+  String toString() => {
+    'code': code,
+    'message': message,
+    if (details != null) 'details': details,
+  }.toString();
 }
 
 /// FunctionsErrorCode: "ok" | "cancelled" | "unknown" | "invalid-argument" | "deadline-exceeded" | "not-found" | "already-exists" | "permission-denied" | "resource-exhausted" | "failed-precondition" | "aborted" | "out-of-range" | "unimplemented" | "internal" | "unavailable" | "data-loss" | "unauthenticated"

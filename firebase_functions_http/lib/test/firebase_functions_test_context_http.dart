@@ -16,10 +16,9 @@ class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
   });
 
   @override
-  String url(String path) =>
-      baseUrl != null
-          ? super.url(path)
-          : p.url.join(server.uri.toString(), path);
+  String url(String path) => baseUrl != null
+      ? super.url(path)
+      : p.url.join(server.uri.toString(), path);
 }
 
 mixin FirebaseFunctionsTestServerContextHttpMixin
