@@ -3,7 +3,7 @@
 ## Setup
 
 ```yaml
-  tekartik_firebase_functions_call_http:
+  tekartik_firebase_functions_call_sim:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
       path: functions_call_sim
