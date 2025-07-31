@@ -10,3 +10,5 @@ workspace:
   - functions_call
   - functions_call_http
   - repo_support
+  - firebase_functions_sim
+  - functions_call_sim

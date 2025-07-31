@@ -6,6 +6,10 @@ enable-beta-ecosystems: true
 
 updates:
   - package-ecosystem: "pub"
+    directory: "."
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "firebase_functions"
     schedule:
       interval: "monthly"
@@ -18,6 +22,10 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
+    directory: "firebase_functions_sim"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "firebase_functions_test"
     schedule:
       interval: "monthly"
@@ -27,6 +35,10 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "functions_call_http"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "functions_call_sim"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
