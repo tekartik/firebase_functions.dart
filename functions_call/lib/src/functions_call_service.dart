@@ -19,8 +19,8 @@ class FirebaseFunctionsCallOptions {
 /// Firebase functions call service
 abstract class FirebaseFunctionsCallService {
   /// Get the firebase functions call instance
-  @Deprecated('Use functionsCall2 instead')
-  FirebaseFunctionsCall functionsCall(
+  @Deprecated('Use functionsCall instead')
+  FirebaseFunctionsCall functionsCallObsolete(
     App app, {
     required String region,
 
@@ -29,7 +29,7 @@ abstract class FirebaseFunctionsCallService {
   });
 
   /// Get the firebase functions call instance
-  FirebaseFunctionsCall functionsCall2(
+  FirebaseFunctionsCall functionsCall(
     App app, {
     required FirebaseFunctionsCallOptions options,
   });
@@ -39,19 +39,19 @@ abstract class FirebaseFunctionsCallService {
 mixin FirebaseFunctionsCallServiceDefaultMixin
     implements FirebaseFunctionsCallService {
   @override
-  FirebaseFunctionsCall functionsCall(
+  FirebaseFunctionsCall functionsCallObsolete(
     App app, {
     required String region,
     Uri? baseUri,
   }) {
-    return functionsCall2(
+    return functionsCall(
       app,
       options: FirebaseFunctionsCallOptions(region: region),
     );
   }
 
   @override
-  FirebaseFunctionsCall functionsCall2(
+  FirebaseFunctionsCall functionsCall(
     App app, {
     required FirebaseFunctionsCallOptions options,
   }) {

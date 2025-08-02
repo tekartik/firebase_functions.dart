@@ -135,7 +135,19 @@ T setup<T extends FirebaseFunctionsTestServerContext>({
   String? testRedirectUrl,
 }) {
   firebaseFunctions ??= testContext.firebaseFunctions;
+  initTestFunctions(
+    firebaseFunctions: firebaseFunctions,
+    testRedirectUrl: testRedirectUrl,
+  );
 
+  return testContext;
+}
+
+void initTestFunctions({
+  required FirebaseFunctions firebaseFunctions,
+
+  String? testRedirectUrl,
+}) {
   /// Not working not tested yet
   void redirectFragmentHandler(ExpressHttpRequest request) {
     // print("request.url ${request.uri} ${request.uri.fragment}");
@@ -172,7 +184,7 @@ T setup<T extends FirebaseFunctionsTestServerContext>({
     echoInfoHandler,
   );
   firebaseFunctions['ffinfo'] = firebaseFunctions.https.onRequest(
-    (request) => infoHandler(firebaseFunctions!, request),
+    (request) => infoHandler(firebaseFunctions, request),
     httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
   );
 
@@ -206,8 +218,6 @@ T setup<T extends FirebaseFunctionsTestServerContext>({
     testHttpFunctionHandler,
     httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
   );
-
-  return testContext;
 }
 
 var testFunctionNames = [

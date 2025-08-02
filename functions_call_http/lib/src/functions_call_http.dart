@@ -4,7 +4,7 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
 import 'package:tekartik_firebase_functions/utils.dart';
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
+import 'package:tekartik_firebase_functions_call/functions_call_mixin.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http/http_client.dart';
@@ -39,13 +39,12 @@ class FirebaseFunctionsCallServiceHttp
   }
 
   @override
-  FirebaseFunctionsCallHttp functionsCall(
-    FirebaseApp app, {
-    required String region,
-    Uri? baseUri,
+  FirebaseFunctionsCall functionsCall(
+    App app, {
+    required FirebaseFunctionsCallOptions options,
   }) {
-    return _getInstance(app, region, () {
-      return FirebaseFunctionsCallHttp(this, app, baseUri);
+    return _getInstance(app, options.region, () {
+      return FirebaseFunctionsCallHttp(this, app, options);
     });
   }
 }
@@ -62,11 +61,14 @@ class FirebaseFunctionsCallHttp
   @override
   final FirebaseApp app;
 
+  /// Options
+  final FirebaseFunctionsCallOptions options;
+
   /// Base uri
-  final Uri? baseUri;
+  Uri? get baseUri => options.baseUri;
 
   /// Constructor
-  FirebaseFunctionsCallHttp(this.service, this.app, this.baseUri);
+  FirebaseFunctionsCallHttp(this.service, this.app, this.options);
 
   @override
   FirebaseFunctionsCallableHttp callable(

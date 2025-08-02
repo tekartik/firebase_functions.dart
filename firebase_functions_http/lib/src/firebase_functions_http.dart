@@ -66,7 +66,7 @@ class FirebaseFunctionsHttpBase
   Firestore? firebaseFirestore;
   @override
   late final firestore = FirestoreFunctionsHttp(this);
-  Map<String, dynamic> functions = {};
+  Map<String, Object?> functions = {};
 
   @override
   operator []=(String key, FirebaseFunction function) {

@@ -28,7 +28,7 @@ void main() {
   var firebaseFunctionsCallService = firebaseFunctionsCallServiceMemory;
   var firebaseFunctionsCall = firebaseFunctionsCallService.functionsCall(
     app,
-    region: 'dummy',
+    options: FirebaseFunctionsCallOptions(region: 'dummy'),
   );
   var httpClientFactory = httpClientFactoryMemory;
 
@@ -54,8 +54,10 @@ void main() {
         ffServer = await context.serve();
         var firebaseFunctionsCall = firebaseFunctionsCallService.functionsCall(
           app,
-          region: regionBelgium,
-          baseUri: ffServer.uri,
+          options: FirebaseFunctionsCallOptions(
+            region: regionBelgium,
+            baseUri: ffServer.uri,
+          ),
         );
         context.functionsCall = firebaseFunctionsCall;
       });

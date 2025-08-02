@@ -1,6 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
+import 'package:tekartik_firebase_functions_call/functions_call_mixin.dart';
+import 'package:tekartik_firebase_functions_call_sim/src/functions_callable_sim.dart';
+import 'package:tekartik_firebase_sim/firebase_sim.dart';
 
 import 'functions_call_service_sim.dart';
 
@@ -8,11 +10,17 @@ import 'functions_call_service_sim.dart';
 abstract class FirebaseFunctionsCallSim implements FirebaseFunctionsCall {
   /// Constructor
   @protected
-  factory FirebaseFunctionsCallSim(
-    FirebaseFunctionsCallServiceSim service,
-    FirebaseApp firebaseApp, {
+  factory FirebaseFunctionsCallSim({
+    required FirebaseFunctionsCallServiceSim service,
+    required FirebaseAppSim appSim,
     required FirebaseFunctionsCallOptions options,
-  }) => _FirebaseFunctionsCallSim(service, firebaseApp, options);
+  }) => _FirebaseFunctionsCallSim(service, appSim, options);
+
+  /// Call sim service
+  FirebaseFunctionsCallServiceSim get serviceSim;
+
+  /// App sim
+  FirebaseAppSim get appSim;
 }
 
 class _FirebaseFunctionsCallSim
@@ -22,9 +30,25 @@ class _FirebaseFunctionsCallSim
     implements FirebaseFunctionsCallSim {
   final FirebaseFunctionsCallOptions callOptions;
   @override
-  FirebaseApp get app => firebaseApp;
-  final FirebaseApp firebaseApp;
+  FirebaseApp get app => appSim;
   @override
-  final FirebaseFunctionsCallServiceSim service;
-  _FirebaseFunctionsCallSim(this.service, this.firebaseApp, this.callOptions);
+  final FirebaseAppSim appSim;
+  @override
+  final FirebaseFunctionsCallServiceSim serviceSim;
+  @override
+  FirebaseFunctionsCallService get service => serviceSim;
+
+  _FirebaseFunctionsCallSim(this.serviceSim, this.appSim, this.callOptions);
+
+  @override
+  FirebaseFunctionsCallable callable(
+    String name, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
+    return FirebaseFunctionsCallableSim(
+      name: name,
+      functionsCallSim: this,
+      options: options,
+    );
+  }
 }

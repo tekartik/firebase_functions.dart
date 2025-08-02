@@ -8,4 +8,6 @@ export 'src/utils.dart'
         anyExceptionToHttpsError,
         httpsErrorCodeToStatusCode,
         statusCodeToHttpsErrorCode,
-        HttpClientExceptionFirebaseFunctionsExt;
+        HttpClientExceptionFirebaseFunctionsExt,
+        httpsErrorFromJsonMap,
+        httpsErrorToJsonMap;

@@ -127,8 +127,29 @@ extension HttpClientExceptionFirebaseFunctionsExt on HttpClientException {
 }
 
 HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
+  if (e is HttpsError) {
+    return e;
+  }
   if (e is HttpClientException) {
     return e.toHttpsError(stackTrace: stackTrace);
   }
   return HttpsError(HttpsErrorCode.internal, '$e', stackTrace);
+}
+
+/// Https error to map
+Map<String, Object?> httpsErrorToJsonMap(HttpsError error) {
+  return {
+    'code': error.code,
+    'message': error.message,
+    'details': error.details,
+  };
+}
+
+/// Https error from map
+HttpsError httpsErrorFromJsonMap(Map map) {
+  return HttpsError(
+    map['code']?.toString() ?? HttpsErrorCode.unavailable,
+    map['message']?.toString() ?? 'no message',
+    map['details'],
+  );
 }

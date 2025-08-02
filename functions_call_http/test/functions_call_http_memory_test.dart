@@ -58,8 +58,10 @@ void testHttp({
 
         functionsCall = functionsCallService.functionsCall(
           app,
-          region: regionBelgium,
-          baseUri: httpServerGetUri(server!),
+          options: FirebaseFunctionsCallOptions(
+            region: regionBelgium,
+            baseUri: httpServerGetUri(server!),
+          ),
         );
       });
 
