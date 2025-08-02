@@ -1,6 +1,8 @@
 import 'package:tekartik_app_dev_menu/dev_menu.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/constants.dart';
+import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
+import 'package:tekartik_firebase_functions_test/src/firebase_functions_call_test.dart';
 
 export 'package:tekartik_app_dev_menu/dev_menu.dart';
 
@@ -16,10 +18,22 @@ void firebaseFunctionsCallMainMenu({
 }) {
   var functionsCall = context.functionsCall;
   var callable = functionsCall.callable(callableFunctionTestName);
+  var client = CallFunctionTestClient(callable);
   menu('call', () {
     item('simple string', () async {
-      var result = callable.call<Object>(['simple string sent']);
+      var input = FunctionTestInputData(
+        command: testCommandData,
+        data: 'simple string sent',
+      );
+      var output = await client.send(input);
+      var result = output.data;
       write(result);
+    });
+    item('current user', () async {
+      var input = FunctionTestInputData(command: testCommandUserId);
+      var output = await client.send(input);
+      var result = output.data;
+      write('uid: $result');
     });
   });
 }

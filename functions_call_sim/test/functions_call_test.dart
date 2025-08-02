@@ -3,7 +3,6 @@ library;
 
 // ignore_for_file: avoid_print
 import 'package:tekartik_app_web_socket/web_socket.dart';
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_call_sim/functions_call_sim.dart';
 import 'package:tekartik_firebase_functions_call_sim/functions_call_sim_server.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';

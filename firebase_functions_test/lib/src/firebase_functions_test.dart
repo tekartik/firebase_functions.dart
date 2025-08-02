@@ -345,6 +345,12 @@ abstract class FunctionTestClient {
     await send(data);
   }
 
+  Future<String?> getUserLoggedIn() async {
+    var data = FunctionTestInputData(command: testCommandNotFound, data: null);
+    var result = await send(data);
+    return result.data?.toString();
+  }
+
   Future<void> testData() async {
     for (var data in [
       null,

@@ -1,4 +1,3 @@
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_call_sim/functions_call_sim.dart';
 import 'package:tekartik_firebase_functions_test/menu/firebase_functions_call_client_menu.dart';
 import 'package:tekartik_firebase_sim/firebase_sim.dart';

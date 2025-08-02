@@ -12,6 +12,9 @@ const testCommandThrow = 'throw';
 /// Throws an a not found error
 const testCommandNotFound = 'notfound';
 
+/// Returns the current user id (in the call request context), null if none
+const testCommandUserId = 'uid';
+
 /// Returns incoming data as full response
 const testCommandRaw = 'raw';
 

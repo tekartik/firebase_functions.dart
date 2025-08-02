@@ -81,6 +81,8 @@ FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
       );
     case testCommandThrow:
       throw Exception('throw unsupported to throw on purpose');
+    case testCommandUserId:
+      return input.userId;
   }
   return UnsupportedError('unsupported command ${input.command}');
 }
