@@ -35,11 +35,6 @@ dependencies:
       url: https://github.com/tekartik/firebase_functions.dart
       ref: dart3a
       path: firebase_functions_io
-  tekartik_firebase_functions_sim:
-    git:
-      url: https://github.com/tekartik/firebase_functions.dart
-      path: firebase_functions_sim
-      ref: dart3a
   tekartik_firebase_functions_test:
     git:
       url: https://github.com/tekartik/firebase_functions.dart

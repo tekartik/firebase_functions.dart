@@ -22,10 +22,6 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
-    directory: "firebase_functions_sim"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "pub"
     directory: "firebase_functions_test"
     schedule:
       interval: "monthly"
