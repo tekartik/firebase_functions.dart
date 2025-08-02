@@ -8,6 +8,12 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  meta:
+  tekartik_firebase:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase
   tekartik_firebase_functions_call:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
@@ -18,6 +24,11 @@ dependencies:
       url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_sim
       ref: dart3a
+  tekartik_firebase_sim:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase_sim
 
 dev_dependencies:
   lints: ">=5.0.0"

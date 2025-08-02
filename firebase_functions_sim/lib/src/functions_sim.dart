@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_sim/src/functions_service_sim.dart';
 
@@ -13,8 +14,11 @@ abstract class FirebaseFunctionsSim implements FirebaseFunctions {
 }
 
 class _FirebaseFunctionsSim
-    with FirebaseFunctionsDefaultMixin
+    with
+        FirebaseAppProductMixin<FirebaseFunction>,
+        FirebaseFunctionsDefaultMixin
     implements FirebaseFunctionsSim {
+  @override
   FirebaseApp get app => firebaseApp;
   final FirebaseApp firebaseApp;
   final FirebaseFunctionsServiceSim service;

@@ -14,6 +14,11 @@ dependencies:
       url: https://github.com/tekartik/app_common_utils.dart
       ref: dart3a
       path: app_web_socket
+  tekartik_firebase:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase
   tekartik_firebase_functions:
     git:
       url: https://github.com/tekartik/firebase_functions.dart

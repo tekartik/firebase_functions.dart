@@ -1,6 +1,8 @@
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
+import 'functions_call_service.dart';
+
 /// Interface representing an HttpsCallable instance's options,
 class FirebaseFunctionsCallableOptions {
   /// Constructs a new [HttpsCallableOptions] instance with given `timeout` & `limitedUseAppCheckToken`
@@ -99,33 +101,6 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
   }
 }
 
-/// Firebase functions call service
-abstract class FirebaseFunctionsCallService {
-  /// Get the firebase functions call instance
-  FirebaseFunctionsCall functionsCall(
-    App app, {
-    required String region,
-
-    /// Not used in flutter
-    Uri? baseUri,
-  });
-}
-
-/// Firebase functions call service default mixin
-mixin FirebaseFunctionsCallServiceDefaultMixin
-    implements FirebaseFunctionsCallService {
-  @override
-  FirebaseFunctionsCall functionsCall(
-    App app, {
-    required String region,
-    Uri? baseUri,
-  }) {
-    throw UnimplementedError(
-      'FirebaseFunctionsCallService.functionsCall(${app.name}, $region${baseUri != null ? ', $baseUri' : ''})',
-    );
-  }
-}
-
 /// Firebase functions callable default mixin
 mixin FirebaseFunctionsCallableDefaultMixin
     implements FirebaseFunctionsCallable {
@@ -147,11 +122,6 @@ class _FirebaseFunctionsCallMock
   @override
   FirebaseApp get app => throw UnimplementedError();
 }
-
-// ignore: unused_element
-class _FirebaseFunctionsCallServiceMock
-    with FirebaseFunctionsCallServiceDefaultMixin
-    implements FirebaseFunctionsCallService {}
 
 // ignore: unused_element
 class _FirebaseFunctionsCallableMock
