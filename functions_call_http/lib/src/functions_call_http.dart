@@ -82,6 +82,7 @@ class FirebaseFunctionsCallHttp
 /// Firebase functions callable Http.
 class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
   /// The function name
+  @override
   final String name;
 
   /// Functions call Http

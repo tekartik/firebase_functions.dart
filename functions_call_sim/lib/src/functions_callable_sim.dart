@@ -26,6 +26,7 @@ abstract class FirebaseFunctionsCallableSim
 class _FirebaseFunctionsCallableSim
     with FirebaseFunctionsCallableDefaultMixin
     implements FirebaseFunctionsCallableSim {
+  @override
   final String name;
   FirebaseFunctionsCallableOptions? options;
   final FirebaseFunctionsCallSim functionsCallSim;

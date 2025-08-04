@@ -61,6 +61,9 @@ abstract class FirebaseFunctionsCallable {
   /// instance. If a user is logged in with Firebase Auth, an auth ID token for
   /// the user is also automatically included.
   Future<FirebaseFunctionsCallableResult<T>> call<T>([Object? parameters]);
+
+  /// Name
+  String get name;
 }
 
 /// Firebase functions callable result.
@@ -107,6 +110,20 @@ mixin FirebaseFunctionsCallableDefaultMixin
   @override
   Future<FirebaseFunctionsCallableResult<T>> call<T>([Object? parameters]) {
     throw UnimplementedError('FirebaseFunctionsCallable.call');
+  }
+
+  @override
+  String get name {
+    throw UnimplementedError('FirebaseFunctionsCallable.name');
+  }
+
+  @override
+  String toString() {
+    try {
+      return 'FirebaseFunctionsCallable($name)';
+    } catch (_) {
+      return super.toString();
+    }
   }
 }
 
