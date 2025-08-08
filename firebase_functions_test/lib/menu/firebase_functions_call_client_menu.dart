@@ -2,7 +2,6 @@ import 'package:tekartik_app_dev_menu/dev_menu.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/constants.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
-import 'package:tekartik_firebase_functions_test/src/firebase_functions_call_test.dart';
 
 export 'package:tekartik_app_dev_menu/dev_menu.dart';
 
@@ -34,6 +33,14 @@ void firebaseFunctionsCallMainMenu({
       var output = await client.send(input);
       var result = output.data;
       write('uid: $result');
+    });
+    item('current projectId', () async {
+      write('app projectId: $functionsCall.app.options.projectId');
+      var input = FunctionTestInputData(command: testCommandProjectId);
+      var output = await client.send(input);
+      var result = output.data;
+
+      write('functions projectId: $result');
     });
   });
 }

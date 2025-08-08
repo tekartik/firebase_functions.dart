@@ -12,14 +12,16 @@ class FirebaseFunctionsServiceMemory
   @override
   FirebaseFunctionsHttp functions(FirebaseApp app) =>
       getInstance(app, () {
-            return FirebaseFunctionsMemory._(app);
+            return FirebaseFunctionsMemory._(this, app);
           })
           as FirebaseFunctionsHttp;
 }
 
 class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
-  FirebaseFunctionsMemory._(FirebaseApp firebaseApp)
-    : super(firebaseApp, httpServerFactoryMemory);
+  FirebaseFunctionsMemory._(
+    FirebaseFunctionsServiceHttp firebaseFunctionsService,
+    FirebaseApp firebaseApp,
+  ) : super(firebaseFunctionsService, firebaseApp, httpServerFactoryMemory);
 }
 
 FirebaseFunctionsMemory? _firebaseFunctionsMemory;

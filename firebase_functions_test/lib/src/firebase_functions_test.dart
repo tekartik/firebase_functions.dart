@@ -35,21 +35,37 @@ class FunctionTestInputData {
   final String? userId;
   final String command;
   final Object? data;
+  final FirebaseApp? firebaseApp;
 
-  FunctionTestInputData({this.userId, required this.command, this.data});
+  FunctionTestInputData({
+    this.userId,
+    required this.command,
+    this.data,
+    this.firebaseApp,
+  });
 
   Map<String, Object?> toMap() {
-    return {'userId': userId, 'command': command, 'data': data};
+    return {
+      'userId': userId,
+      'command': command,
+      'data': data,
+      if (firebaseApp != null) 'projectId': firebaseApp!.options.projectId,
+    };
   }
 
   @override
   String toString() => toMap().toString();
 
-  factory FunctionTestInputData.fromMap(Map map, {String? userId}) {
+  factory FunctionTestInputData.fromMap(
+    Map map, {
+    String? userId,
+    FirebaseApp? firebaseApp,
+  }) {
     return FunctionTestInputData(
       userId: userId ?? map['userId'] as String?,
       command: map['command'] as String,
       data: map['data'],
+      firebaseApp: firebaseApp,
     );
   }
 }
@@ -346,7 +362,13 @@ abstract class FunctionTestClient {
   }
 
   Future<String?> getUserLoggedIn() async {
-    var data = FunctionTestInputData(command: testCommandNotFound, data: null);
+    var data = FunctionTestInputData(command: testCommandUserId, data: null);
+    var result = await send(data);
+    return result.data?.toString();
+  }
+
+  Future<String?> getProjectId() async {
+    var data = FunctionTestInputData(command: testCommandProjectId, data: null);
     var result = await send(data);
     return result.data?.toString();
   }

@@ -18,7 +18,9 @@ Future<void> main(List<String> args) async {
     FirebaseLocal(),
     webSocketChannelServerFactory: webSocketChannelServerFactoryIo,
     port: urlKvPort,
-    plugins: [FirebaseFunctionsCallSimPlugin(firebaseFunctions: functions)],
+    plugins: [
+      FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions: functions),
+    ],
   );
   print('url ${firebaseSimServer.url}');
 }

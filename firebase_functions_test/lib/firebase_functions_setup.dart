@@ -83,26 +83,14 @@ FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
       throw Exception('throw unsupported to throw on purpose');
     case testCommandUserId:
       return input.userId;
+    case testCommandProjectId:
+      return input.firebaseApp?.options.projectId;
   }
   return UnsupportedError('unsupported command ${input.command}');
 }
 
 Map<String, Object?> _outputData(Object? data) {
   return FunctionTestOutputData(data: data).toMap();
-}
-
-/// Test
-Future<Object?> testCallableFunctionHandler(CallRequest request) async {
-  var input = FunctionTestInputData.fromMap(
-    request.dataAsMap,
-    userId: request.context.auth?.uid,
-  );
-  switch (input.command) {
-    case testCommandRaw:
-      return input.data;
-  }
-  var result = await _testFunctionHandler(input);
-  return _outputData(result);
 }
 
 FutureOr<void> testHttpFunctionHandler(ExpressHttpRequest request) async {
@@ -207,6 +195,21 @@ void initTestFunctions({
       enforceAppCheck: true,
     ),
   );
+
+  /// Test
+  Future<Object?> testCallableFunctionHandler(CallRequest request) async {
+    var input = FunctionTestInputData.fromMap(
+      request.dataAsMap,
+      userId: request.context.auth?.uid,
+      firebaseApp: firebaseFunctions.app,
+    );
+    switch (input.command) {
+      case testCommandRaw:
+        return input.data;
+    }
+    var result = await _testFunctionHandler(input);
+    return _outputData(result);
+  }
 
   firebaseFunctions[callableFunctionTestName] = firebaseFunctions.https.onCall(
     testCallableFunctionHandler,

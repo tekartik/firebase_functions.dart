@@ -26,6 +26,12 @@ mixin FirebaseFunctionsServiceDefaultMixin {
 
 /// Global namespace for Firebase Cloud Functions functionality.
 abstract class FirebaseFunctions {
+  /// Firebase app.
+  FirebaseApp get app;
+
+  /// Firebase functions service.
+  FirebaseFunctionsService get service;
+
   /// HTTPS functions.
   HttpsFunctions get https;
 
@@ -67,6 +73,15 @@ abstract class FirebaseFunctions {
 }
 
 mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
+  /// Firebase functions service
+  @override
+  FirebaseApp get app => throw UnimplementedError('FirebaseFunction.app');
+
+  /// Firebase functions service
+  @override
+  FirebaseFunctionsService get service =>
+      throw UnimplementedError('FirebaseFunction.service');
+
   /// Scheduler functions.
   @override
   SchedulerFunctions get scheduler =>

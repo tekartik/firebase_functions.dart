@@ -15,6 +15,9 @@ const testCommandNotFound = 'notfound';
 /// Returns the current user id (in the call request context), null if none
 const testCommandUserId = 'uid';
 
+/// Returns the current project id (in the call request context), null if none
+const testCommandProjectId = 'projectid';
+
 /// Returns incoming data as full response
 const testCommandRaw = 'raw';
 

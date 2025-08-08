@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cv/cv.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:tekartik_firebase_functions/utils.dart';
-import 'package:tekartik_firebase_functions_call_sim/functions_call_sim_server.dart';
+import 'package:tekartik_firebase_functions_call_sim/src/functions_call_sim_plugin.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
 
 import 'functions_call_sim_message.dart';
@@ -35,12 +35,16 @@ class _CallRequestSim with CallRequestMixin implements CallRequest {
 
 /// Sim plugin server implementation
 class FirebaseFunctionsCallSimPluginServer {
+  /// Firebase app
+  final FirebaseFunctionsHttp firebaseFunctions;
+
   /// Firebase auth sim server
   final FirebaseFunctionsCallSimPlugin firebaseFunctionsCallSimPlugin;
 
   /// Constructor
   FirebaseFunctionsCallSimPluginServer({
     required this.firebaseFunctionsCallSimPlugin,
+    required this.firebaseFunctions,
   });
 
   /// Get user
@@ -50,8 +54,7 @@ class FirebaseFunctionsCallSimPluginServer {
     var userId = callRequest.userId.v;
 
     var function =
-        firebaseFunctionsCallSimPlugin.firebaseFunctions.functions[name]
-            as HttpsCallableFunctionHttp;
+        firebaseFunctions.functions[name] as HttpsCallableFunctionHttp;
 
     var data = jsonDecode(callRequest.body.v!);
     try {

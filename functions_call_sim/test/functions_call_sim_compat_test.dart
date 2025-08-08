@@ -15,7 +15,9 @@ import 'package:test/scaffolding.dart';
 
 Future<void> main() async {
   var firebaseServer = FirebaseLocal();
-  var serverApp = firebaseServer.initializeApp();
+  var serverApp = firebaseServer.initializeApp(
+    options: FirebaseAppOptions(projectId: firebaseSimDefaultProjectId),
+  );
   var serverFunctionsService = firebaseFunctionsServiceMemory;
   var serverFunctions = serverFunctionsService.functions(serverApp);
   initTestFunctions(firebaseFunctions: serverFunctions);
@@ -24,13 +26,13 @@ Future<void> main() async {
     webSocketChannelServerFactory: webSocketChannelServerFactoryMemory,
 
     plugins: [
-      FirebaseFunctionsCallSimPlugin(firebaseFunctions: serverFunctions),
+      FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions: serverFunctions),
     ],
   );
-  var clientApp = await (getFirebaseSim(
+  var clientApp = (getFirebaseSim(
     clientFactory: webSocketChannelClientFactoryMemory,
     uri: firebaseSimServer.uri,
-  )).initializeAppAsync();
+  )).initializeApp();
   var clientFunctionsCallService = FirebaseFunctionsCallServiceSim();
   var clientFunctions = clientFunctionsCallService.functionsCall(
     clientApp,

@@ -15,19 +15,22 @@ class FirebaseFunctionsServiceIo
     implements FirebaseFunctionsServiceHttp {
   @override
   FirebaseFunctionsHttp functions(FirebaseApp app) => getInstance(app, () {
-    return FirebaseFunctionsIo._(app);
+    return FirebaseFunctionsIo._(this, app);
   });
 }
 
 class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
-  FirebaseFunctionsIo._(FirebaseApp firebaseApp)
-    : super(firebaseApp, httpServerFactoryIo);
+  FirebaseFunctionsIo._(
+    FirebaseFunctionsServiceHttp firebaseFunctionsService,
+    FirebaseApp firebaseApp,
+  ) : super(firebaseFunctionsService, firebaseApp, httpServerFactoryIo);
 }
 
 FirebaseFunctionsIo? _firebaseFunctionsIo;
 
-FirebaseFunctionsIo get firebaseFunctionsIo =>
-    _firebaseFunctionsIo ??= FirebaseFunctionsIo._(newFirebaseAppLocal());
+final _firebaseFunctionsServiceIo = FirebaseFunctionsServiceIo();
+FirebaseFunctionsIo get firebaseFunctionsIo => _firebaseFunctionsIo ??=
+    FirebaseFunctionsIo._(_firebaseFunctionsServiceIo, newFirebaseAppLocal());
 
 // TODO: etags, last-modified-since support
 Future onFileRequest(HttpRequest request) async {

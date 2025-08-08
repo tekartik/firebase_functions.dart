@@ -6,10 +6,14 @@ var urlKv = 'firestore_sim_example.url'.kvFromVar(
   defaultValue: 'ws://localhost:${firebaseSimDefaultPort.toString()}',
 );
 
+const exampleProjectId = 'example_project_id';
 int? get urlKvPort => int.tryParse((urlKv.value ?? '').split(':').last);
 Future<void> main(List<String> args) async {
   var firebase = getFirebaseSim(uri: Uri.parse(urlKv.value!));
-  var app = firebase.initializeApp();
+  var app = firebase.initializeApp(
+    options: FirebaseAppOptions(projectId: exampleProjectId),
+  );
+
   var functionsCallService = FirebaseFunctionsCallServiceSim();
   var functionsCall = functionsCallService.functionsCall(
     app,

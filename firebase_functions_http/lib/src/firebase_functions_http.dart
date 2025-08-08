@@ -47,13 +47,19 @@ class FirebaseFunctionsHttpBase
         FirebaseFunctionsDefaultMixin,
         FirebaseFunctionsHttpDefaultMixin
     implements FirebaseFunctionsHttp {
+  final FirebaseFunctionsServiceHttp firebaseFunctionsServiceHttp;
+
   @override
   FirebaseApp get app => firebaseApp;
   final FirebaseApp firebaseApp;
   HttpServerFactory httpServerFactory;
   GlobalOptions? globalOptions;
 
-  FirebaseFunctionsHttpBase(this.firebaseApp, this.httpServerFactory) : super();
+  FirebaseFunctionsHttpBase(
+    this.firebaseFunctionsServiceHttp,
+    this.firebaseApp,
+    this.httpServerFactory,
+  ) : super();
 
   @override
   late final https = HttpsHttp();
@@ -156,6 +162,9 @@ class FirebaseFunctionsHttpBase
 
   @override
   late final params = ParamsHttp(this);
+
+  @override
+  FirebaseFunctionsService get service => firebaseFunctionsServiceHttp;
 }
 
 class ParamsHttp extends Params {

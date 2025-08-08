@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 import 'package:tekartik_firebase_sim/firebase_sim_mixin.dart';
 import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
 
@@ -29,9 +30,27 @@ class FirebaseFunctionsCallSimServerService
     RpcMethodCall methodCall,
   ) async {
     try {
+      var simServerChannel = firebaseSimServerExpando[channel]!;
       var firebaseAuthSimPluginServer = _expando[channel] ??= () {
+        var app = simServerChannel.app!;
+        var firebaseFunctionsService =
+            firebaseFunctionsCallSimPlugin.firebaseFunctionsService;
+        late FirebaseFunctionsHttp firebaseFunctions;
+        var options = firebaseFunctionsCallSimPlugin.options;
+
+        var initFunction = options.initFunctions[app.options.projectId];
+        if (initFunction == null) {
+          // ignore: avoid_print
+          print('compat mode');
+          // ignore: deprecated_member_use_from_same_package
+          firebaseFunctions = firebaseFunctionsCallSimPlugin.firebaseFunctions;
+        } else {
+          firebaseFunctions = firebaseFunctionsService.functions(app);
+          initFunction(firebaseApp: app);
+        }
         return FirebaseFunctionsCallSimPluginServer(
           firebaseFunctionsCallSimPlugin: firebaseFunctionsCallSimPlugin,
+          firebaseFunctions: firebaseFunctions,
         );
       }();
       var parameters = methodCall.arguments;

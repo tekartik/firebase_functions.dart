@@ -76,7 +76,12 @@ void ffCallTestGroup({
           expect(result, raw);
         }
       }, skip: true);
-
+      test('projectId', () async {
+        expect(
+          await client.getProjectId(),
+          testContext.functionsCall.app.options.projectId,
+        );
+      });
       Future<void> checkRaw(Object? raw) async {
         var result = await client.sendRaw(raw);
         expect(result, raw);
