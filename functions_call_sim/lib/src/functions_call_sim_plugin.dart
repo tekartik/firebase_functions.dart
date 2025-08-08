@@ -4,16 +4,22 @@ import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
 import 'functions_call_sim_server_service.dart';
 
 /// Initialization callback for the Firebase Functions Call Sim Plugin
-typedef FirebaseFunctionSimAppInitCallback =
+typedef FirebaseFunctionSimAppInitFunction =
     void Function({required FirebaseApp firebaseApp});
 
 /// Options for the Firebase Functions Call Sim Plugin
 class FirebaseFunctionsCallSimPluginOptions {
   /// Init functions map
-  final Map<String, FirebaseFunctionSimAppInitCallback> initFunctions;
+  final Map<String, FirebaseFunctionSimAppInitFunction>? initFunctions;
+
+  /// Global init function
+  final FirebaseFunctionSimAppInitFunction? initFunction;
 
   /// Constructor
-  FirebaseFunctionsCallSimPluginOptions({required this.initFunctions});
+  FirebaseFunctionsCallSimPluginOptions({
+    this.initFunctions,
+    this.initFunction,
+  });
 }
 
 /// Service plugin

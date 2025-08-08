@@ -35,7 +35,7 @@ void firebaseFunctionsCallMainMenu({
       write('uid: $result');
     });
     item('current projectId', () async {
-      write('app projectId: $functionsCall.app.options.projectId');
+      write('app projectId: ${functionsCall.app.options.projectId}');
       var input = FunctionTestInputData(command: testCommandProjectId);
       var output = await client.send(input);
       var result = output.data;

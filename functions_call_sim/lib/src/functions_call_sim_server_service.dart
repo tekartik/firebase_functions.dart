@@ -38,7 +38,9 @@ class FirebaseFunctionsCallSimServerService
         late FirebaseFunctionsHttp firebaseFunctions;
         var options = firebaseFunctionsCallSimPlugin.options;
 
-        var initFunction = options.initFunctions[app.options.projectId];
+        var initFunction =
+            options.initFunctions?[app.options.projectId] ??
+            options.initFunction;
         if (initFunction == null) {
           // ignore: avoid_print
           print('compat mode');
