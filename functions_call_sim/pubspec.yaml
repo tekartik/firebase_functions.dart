@@ -13,51 +13,41 @@ dependencies:
   tekartik_firebase:
     git:
       url: https://github.com/tekartik/firebase.dart
-      ref: dart3a
       path: firebase
   tekartik_firebase_functions:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
-      ref: dart3a
       path: firebase_functions
   tekartik_firebase_functions_call:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
-      ref: dart3a
       path: functions_call
   tekartik_firebase_functions_http:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
-      ref: dart3a
       path: firebase_functions_http
   tekartik_firebase_functions_io:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
-      ref: dart3a
       path: firebase_functions_io
   tekartik_firebase_functions_test:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
-      ref: dart3a
       path: firebase_functions_test
   tekartik_firebase_local:
     git:
       url: https://github.com/tekartik/firebase.dart
-      ref: dart3a
       path: firebase_local
   tekartik_firebase_sim:
     git:
       url: https://github.com/tekartik/firebase.dart
-      ref: dart3a
       path: firebase_sim
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
   tekartik_firebase_auth_sim:
     git:
       url: https://github.com/tekartik/firebase_auth.dart
-      ref: dart3a
       path: auth_sim
 
 dev_dependencies:
@@ -65,7 +55,6 @@ dev_dependencies:
   tekartik_app_web_socket:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_web_socket
   test: ">=1.24.0"
 resolution: workspace
