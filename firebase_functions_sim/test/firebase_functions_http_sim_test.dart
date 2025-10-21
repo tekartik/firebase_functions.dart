@@ -5,8 +5,9 @@ import 'dart:async';
 
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_http.dart';
-import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
-import 'package:tekartik_firebase_functions_io/src/version.dart';
+import 'package:tekartik_firebase_functions_sim/firebase_functions_sim.dart';
+import 'package:tekartik_firebase_functions_sim/src/version.dart';
+
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
     as common;
@@ -29,7 +30,7 @@ Future main() async {
   );
   var firestoreService = firestoreServiceMemory;
   var firestore = firestoreService.firestore(app);
-  var functions = firebaseFunctionsServiceIo.functions(app);
+  var functions = firebaseFunctionsServiceSim.functions(app);
   var context = FirebaseFunctionsTestContextHttpIo(
     firebaseFunctions: functions,
   );
@@ -40,7 +41,7 @@ Future main() async {
     firestore: firestore,
     version: packageVersion,
   );
-  var server = await context.serve(port: 0);
+  var server = await context.serve();
   //server.baseUrl = 'http://localhost:${server.port}';
 
   group('firebase_functions_http_io', () {

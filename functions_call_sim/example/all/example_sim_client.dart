@@ -1,15 +1,17 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_firebase_functions_call_sim/functions_call_sim.dart';
 import 'package:tekartik_firebase_functions_test/menu/firebase_functions_call_client_menu.dart';
 import 'package:tekartik_firebase_sim/firebase_sim.dart';
 
-var urlKv = 'firestore_sim_example.url'.kvFromVar(
-  defaultValue: 'ws://localhost:${firebaseSimDefaultPort.toString()}',
-);
+import 'vars_menu.dart';
 
 const exampleProjectId = 'example_project_id';
-int? get urlKvPort => int.tryParse((urlKv.value ?? '').split(':').last);
+
 Future<void> main(List<String> args) async {
-  var firebase = getFirebaseSim(uri: Uri.parse(urlKv.value!));
+  var simUri = getFirebaseSimLocalhostUri(port: simPortKvValue);
+  print('Using Firebase Sim URI: $simUri');
+  var firebase = getFirebaseSim(uri: simUri);
   var app = firebase.initializeApp(
     options: FirebaseAppOptions(projectId: exampleProjectId),
   );
@@ -25,6 +27,6 @@ Future<void> main(List<String> args) async {
         functionsCall: functionsCall,
       ),
     );
-    keyValuesMenu('kv', [urlKv]);
+    varsMenu();
   });
 }

@@ -25,11 +25,15 @@ mixin FirebaseFunctionsTestServerContextHttpMixin
     on FirebaseFunctionsTestServerContext {
   // To set when ready
   late FfServer server;
+  int? _port;
+
+  /// Port used to serve
+  int? get port => _port;
 
   /// Serve locally
   @override
-  Future<FfServer> serve() async {
-    return server = await firebaseFunctions.serve();
+  Future<FfServer> serve({int? port}) async {
+    return server = await firebaseFunctions.serve(port: port);
   }
 }
 mixin FirebaseFunctionsTestClientContextHttpMixin

@@ -183,9 +183,9 @@ void ffTest({
 
   test('info', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.get(
-      Uri.parse(testContext.url('echoinfo?param#fragment')),
-    );
+    var uri = Uri.parse(testContext.url('echoinfo?param#fragment'));
+    print('uri: $uri');
+    var response = await client.get(uri);
     expect(response.statusCode, 200);
     // Server has no fragment
     var decoded = jsonDecode(response.body);

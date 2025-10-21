@@ -1,2 +1,7 @@
 # tekartik recommended lints (extension over google lints and pedantic)
-include: package:tekartik_lints/strict.yaml
+include: package:tekartik_lints/package.yaml
+
+linter:
+  rules:
+    public_member_api_docs: false
+    avoid_print: false

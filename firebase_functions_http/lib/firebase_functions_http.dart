@@ -5,3 +5,4 @@ export 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dar
         FirebaseFunctionsHttpBase,
         FirebaseFunctionsServiceHttp,
         FirebaseFunctionsHttpDefaultMixin;
+export 'src/constant.dart' show firebaseFunctionsHttpDefaultPort;

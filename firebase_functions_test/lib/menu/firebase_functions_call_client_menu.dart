@@ -24,9 +24,10 @@ void firebaseFunctionsCallMainMenu({
         command: testCommandData,
         data: 'simple string sent',
       );
+      write('Sending ${input.toMap()}');
       var output = await client.send(input);
       var result = output.data;
-      write(result);
+      write('Result: $result');
     });
     item('current user', () async {
       var input = FunctionTestInputData(command: testCommandUserId);

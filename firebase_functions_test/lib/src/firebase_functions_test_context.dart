@@ -34,7 +34,7 @@ abstract class FirebaseFunctionsTestServerContext {
 
   FirebaseFunctionsTestServerContext({required this.firebaseFunctions});
 
-  Future<FfServer> serve();
+  Future<FfServer> serve({int? port});
 }
 
 /// Test

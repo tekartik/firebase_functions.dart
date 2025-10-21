@@ -1,14 +1,20 @@
 // ignore_for_file: avoid_print
 
 import 'package:tekartik_firebase_functions_call_sim/functions_call_sim_server.dart';
-import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
+import 'package:tekartik_firebase_functions_sim/firebase_functions_sim.dart';
+
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
 
-import 'example_io_client.dart';
+import 'vars_menu.dart';
 
-Future<void> main(List<String> args) async {
+Future<void> main() async {
+  // var env = ShellEnvironment();
+  var httpPort = httpPortKvValue;
+  var firebase = FirebaseLocal();
+  var app = firebase.initializeApp();
+
   var functionsService = firebaseFunctionsServiceIo;
 
   void initFunctions({required FirebaseApp firebaseApp}) {
@@ -19,7 +25,7 @@ Future<void> main(List<String> args) async {
   var firebaseSimServer = await firebaseSimServe(
     FirebaseLocal(),
     webSocketChannelServerFactory: webSocketChannelServerFactoryIo,
-    port: urlKvPort,
+    port: simPortKvValue,
     plugins: [
       FirebaseFunctionsCallSimPlugin(
         firebaseFunctionsService: functionsService,
@@ -30,5 +36,10 @@ Future<void> main(List<String> args) async {
       //FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions: functions),
     ],
   );
-  print('url ${firebaseSimServer.url}');
+  // var server = await firebaseSimServe(firebase, port: simPortKvValue);
+  print('Firebase Sim Server running at ${firebaseSimServer.uri}');
+  var ff = firebaseFunctionsServiceSim.functions(app);
+  ff['echo'] = ff.https.onRequestV2(HttpsOptions(cors: true), echoHandler);
+  var httpServer = await ff.serveHttp(port: httpPort);
+  print(httpServerGetUri(httpServer));
 }

@@ -6,6 +6,7 @@ workspace:
   - firebase_functions
   - firebase_functions_http
   - firebase_functions_io
+  - firebase_functions_sim
   - firebase_functions_test
   - functions_call
   - functions_call_http

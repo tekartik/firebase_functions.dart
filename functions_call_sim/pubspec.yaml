@@ -52,9 +52,21 @@ dependencies:
 
 dev_dependencies:
   lints: ">=5.0.0"
+  tekartik_app_dev_menu:
+    git:
+      url: https://github.com/tekartik/app_common_utils.dart
+      path: app_dev_menu
   tekartik_app_web_socket:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_web_socket
+  tekartik_firebase_functions_sim:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      path: firebase_functions_sim
+  tekartik_http_io:
+    git:
+      url: https://github.com/tekartik/http.dart
+      path: http_io
   test: ">=1.24.0"
 resolution: workspace

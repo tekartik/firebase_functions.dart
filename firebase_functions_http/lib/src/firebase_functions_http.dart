@@ -4,6 +4,7 @@ import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_http/ff_server.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 import 'package:tekartik_firebase_functions_http/src/firestore_functions_firestore_http.dart';
 
 import 'express_http_request_http.dart';
@@ -91,7 +92,7 @@ class FirebaseFunctionsHttpBase
 
   @override
   Future<HttpServer> serveHttp({int? port}) async {
-    port ??= 4999;
+    port ??= firebaseFunctionsHttpDefaultPort;
     var requestServer = await httpServerFactory.bind(
       InternetAddress.anyIPv4,
       port,
