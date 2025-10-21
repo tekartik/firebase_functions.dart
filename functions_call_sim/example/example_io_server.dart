@@ -9,17 +9,25 @@ import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
 import 'example_io_client.dart';
 
 Future<void> main(List<String> args) async {
-  var firebaseLocal = FirebaseLocal();
-  var app = firebaseLocal.initializeApp();
   var functionsService = firebaseFunctionsServiceIo;
-  var functions = functionsService.functions(app);
-  initTestFunctions(firebaseFunctions: functions);
+
+  void initFunctions({required FirebaseApp firebaseApp}) {
+    var functions = functionsService.functions(firebaseApp);
+    initTestFunctions(firebaseFunctions: functions);
+  }
+
   var firebaseSimServer = await firebaseSimServe(
     FirebaseLocal(),
     webSocketChannelServerFactory: webSocketChannelServerFactoryIo,
     port: urlKvPort,
     plugins: [
-      FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions: functions),
+      FirebaseFunctionsCallSimPlugin(
+        firebaseFunctionsService: functionsService,
+        options: FirebaseFunctionsCallSimPluginOptions(
+          initFunction: initFunctions,
+        ),
+      ),
+      //FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions: functions),
     ],
   );
   print('url ${firebaseSimServer.url}');
