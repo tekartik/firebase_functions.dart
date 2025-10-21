@@ -70,6 +70,16 @@ class FirebaseFunctionsHttpBase
   }
 
   Firestore? firebaseFirestore;
+  Firestore get firebaseFirestoreOrThrow {
+    var firestore = firebaseFirestore;
+    if (firestore != null) {
+      return firestore;
+    }
+    throw StateError(
+      'Firestore instance not initialized in function, call functions.init(firestore: firestore) first',
+    );
+  }
+
   @override
   late final firestore = FirestoreFunctionsHttp(this);
   Map<String, Object?> functions = {};

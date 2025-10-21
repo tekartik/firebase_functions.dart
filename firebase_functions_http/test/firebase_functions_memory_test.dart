@@ -1,10 +1,12 @@
 library;
 
 import 'package:path/path.dart' as p;
+import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions_call_http/functions_call_memory.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
 import 'package:tekartik_firebase_functions_http/src/import.dart';
+import 'package:tekartik_firebase_functions_http/src/version.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_memory.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
@@ -25,11 +27,15 @@ void main() {
   );
 
   var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
+  var firestoreService = firestoreServiceMemory;
   var firebaseFunctionsCallService = firebaseFunctionsCallServiceMemory;
   var firebaseFunctionsCall = firebaseFunctionsCallService.functionsCall(
     app,
     options: FirebaseFunctionsCallOptions(region: 'dummy'),
   );
+  var firestore = firestoreService.firestore(app);
+  // TODO check how to avoid that in the future
+  firebaseFunctions.init(firestore: firestore);
   var httpClientFactory = httpClientFactoryMemory;
 
   group('firebase_functions_memory', () {
@@ -45,7 +51,11 @@ void main() {
         functionsCall: firebaseFunctionsCall,
       );
 
-      context = setup(testContext: context);
+      context = setupFirebaseFunctionsTestServer(
+        testContext: context,
+        firestore: firestore,
+        version: packageVersion,
+      );
 
       //server.baseUrl = 'http://localhost:${server.port}';
 
@@ -63,6 +73,12 @@ void main() {
       });
 
       ffTest(testContext: context, projectId: dummyProjectId);
+      ffFsTest(
+        testContext: context,
+        projectId: dummyProjectId,
+        version: packageVersion,
+        firestore: firestore,
+      );
       tearDownAll(() async {
         await ffServer.close();
       });

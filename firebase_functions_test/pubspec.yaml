@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   meta: ">=1.15.0"
+  cv: ">=1.1.10"
   http:
   tekartik_firebase_functions:
     git:
@@ -28,6 +29,10 @@ dependencies:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_dev_menu
+  tekartik_firebase_firestore:
+    git:
+      url: https://github.com/tekartik/firebase_firestore.dart
+      path: firestore
 
 dev_dependencies:
   test: ">=1.24.0"

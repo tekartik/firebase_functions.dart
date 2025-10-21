@@ -16,7 +16,8 @@ class DocumentBuilderHttp with DocumentBuilderDefaultMixin {
   final FirestoreFunctionsHttp firestoreFunctionsHttp;
   final String path;
 
-  Firestore get firestore => firestoreFunctionsHttp.httpBase.firebaseFirestore!;
+  Firestore get firestore =>
+      firestoreFunctionsHttp.httpBase.firebaseFirestoreOrThrow;
 
   DocumentBuilderHttp(this.firestoreFunctionsHttp, this.path);
 

@@ -1,10 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
+import 'package:tekartik_firebase_functions_test/src/trigger_fs_functions.dart';
 
 import 'constants.dart';
 import 'firebase_functions_test.dart';
+
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 void echoBytesHandler(ExpressHttpRequest request) {
@@ -118,16 +121,39 @@ class TestContext {
   String? baseUrl;
 }
 
+// @deprecated use setupFirebaseFunctionsTestServer
 T setup<T extends FirebaseFunctionsTestServerContext>({
   required T testContext,
   FirebaseFunctions? firebaseFunctions,
   TestContext? context,
   String? testRedirectUrl,
 }) {
+  return setupFirebaseFunctionsTestServer<T>(
+    testContext: testContext,
+    firebaseFunctions: firebaseFunctions,
+    context: context,
+    testRedirectUrl: testRedirectUrl,
+  );
+}
+
+/// Setup test server with common test functions
+T
+setupFirebaseFunctionsTestServer<T extends FirebaseFunctionsTestServerContext>({
+  required T testContext,
+  FirebaseFunctions? firebaseFunctions,
+  TestContext? context,
+  String? testRedirectUrl,
+
+  /// Needed both for ds testing
+  Firestore? firestore,
+  Version? version,
+}) {
   firebaseFunctions ??= testContext.firebaseFunctions;
   initTestFunctions(
     firebaseFunctions: firebaseFunctions,
     testRedirectUrl: testRedirectUrl,
+    firestore: firestore,
+    version: version,
   );
 
   return testContext;
@@ -135,6 +161,8 @@ T setup<T extends FirebaseFunctionsTestServerContext>({
 
 void initTestFunctions({
   required FirebaseFunctions firebaseFunctions,
+  Firestore? firestore,
+  Version? version,
 
   String? testRedirectUrl,
 }) {
@@ -223,6 +251,14 @@ void initTestFunctions({
     testHttpFunctionHandler,
     httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
   );
+  if (firestore != null && version != null) {
+    var setupTrigger = FirestoreTriggerSetup(
+      functions: firebaseFunctions,
+      firestore: firestore,
+      version: version,
+    );
+    setupTrigger.initFunctionsFs();
+  }
 }
 
 var testFunctionNames = [

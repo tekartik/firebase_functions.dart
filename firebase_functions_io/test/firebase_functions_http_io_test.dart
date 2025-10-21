@@ -3,8 +3,10 @@ library;
 
 import 'dart:async';
 
+import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_http.dart';
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
+import 'package:tekartik_firebase_functions_io/src/version.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
     as common;
@@ -25,12 +27,19 @@ Future main() async {
   var app = newFirebaseAppLocal(
     options: FirebaseAppOptions(projectId: projectId),
   );
+  var firestoreService = firestoreServiceMemory;
+  var firestore = firestoreService.firestore(app);
   var functions = firebaseFunctionsServiceIo.functions(app);
   var context = FirebaseFunctionsTestContextHttpIo(
     firebaseFunctions: functions,
   );
 
-  context = setup(testContext: context);
+  functions.init(firestore: firestore);
+  context = setupFirebaseFunctionsTestServer(
+    testContext: context,
+    firestore: firestore,
+    version: packageVersion,
+  );
   var server = await context.serve();
   //server.baseUrl = 'http://localhost:${server.port}';
 
@@ -39,6 +48,12 @@ Future main() async {
       setUpAll(() async {});
 
       common.ffTest(testContext: context, projectId: projectId);
+      common.ffFsTest(
+        testContext: context,
+        projectId: projectId,
+        firestore: firestore,
+        version: packageVersion,
+      );
       tearDownAll(() async {
         await server.close();
       });
