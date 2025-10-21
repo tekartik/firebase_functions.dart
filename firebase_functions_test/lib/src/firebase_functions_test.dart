@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:cv/cv_json.dart';
-import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_call_test.dart';
 import 'package:tekartik_firebase_functions_test/src/firebase_functions_test_context.dart';
@@ -311,8 +310,7 @@ void ffFsTest({
   String? projectId,
 
   /// If testing firestore triggers
-  Firestore? firestore,
-  Version? version,
+  required Version version,
 }) {
   late HttpClientFactory clientFactory;
   setUpAll(() async {
@@ -358,62 +356,56 @@ void ffFsTest({
     tearDownAll(() async {
       client.close();
     });
-    if (firestore != null) {
-      test('trigger and version', () async {
-        var uriGet = Uri.parse(testContext.url(functionGetOutTrigger));
-        var body = await client.read(uriGet);
-        var inValueInitial = getInValue(body);
-        var versionInitial = getVersion(body);
-        print(
-          'inValue: $inValueInitial (will be bumped twice), version: $versionInitial',
-        );
-        if (version != null) {
-          expect(versionInitial, greaterThanOrEqualTo(version));
+
+    test('trigger and version', () async {
+      var uriGet = Uri.parse(testContext.url(functionGetOutTrigger));
+      var body = await client.read(uriGet);
+      var inValueInitial = getInValue(body);
+      var versionInitial = getVersion(body);
+      print(
+        'inValue: $inValueInitial (will be bumped twice), version: $versionInitial',
+      );
+      expect(versionInitial, greaterThanOrEqualTo(version));
+
+      // print('Initial body: $body');
+      var uriSet = Uri.parse(testContext.url(functionSetInTrigger));
+      print('url: $uriSet');
+      var response = await client.get(uriSet);
+      expect(response.statusCode, 200);
+      expect(response.contentLength, greaterThan(0));
+      body = response.body;
+      var inValue1 = getInValue(body)!;
+      expect(inValue1, isNotNull);
+      // var outValue1 = getOutValue(body);
+      print('inValue: $inValue1');
+      // print('outValue1: $outValue1');
+
+      body = await client.read(uriSet);
+
+      var inValue2 = getInValue(body);
+      // var outValue2 = getOutValue(body);
+      // print('inValue2: $inValue2');
+      expect(inValue2, greaterThan(inValue1));
+      // print('outValue2: $outValue2');
+      var sw = Stopwatch()..start();
+
+      while (sw.elapsedMilliseconds < 30000) {
+        body = await client.read(uriGet);
+        // var inValue = getInValue(body);
+        var outValue = getOutValue(body);
+        // print('inValue: $inValue');
+        // print('outValue: $outValue');
+        if (outValue != null && outValue >= inValue1) {
+          var triggerVersion = getTriggerVersion(body)!;
+          print('outValue: $outValue, triggerVersion: $triggerVersion');
+
+          expect(triggerVersion, greaterThanOrEqualTo(version));
+
+          return;
         }
-
-        // print('Initial body: $body');
-        var uriSet = Uri.parse(testContext.url(functionSetInTrigger));
-        print('url: $uriSet');
-        var response = await client.get(uriSet);
-        expect(response.statusCode, 200);
-        expect(response.contentLength, greaterThan(0));
-        body = response.body;
-        var inValue1 = getInValue(body)!;
-        expect(inValue1, isNotNull);
-        // var outValue1 = getOutValue(body);
-        print('inValue: $inValue1');
-        // print('outValue1: $outValue1');
-
-        body = await client.read(uriSet);
-
-        var inValue2 = getInValue(body);
-        // var outValue2 = getOutValue(body);
-        // print('inValue2: $inValue2');
-        expect(inValue2, greaterThan(inValue1));
-        // print('outValue2: $outValue2');
-        var sw = Stopwatch()..start();
-
-        while (sw.elapsedMilliseconds < 30000) {
-          body = await client.read(uriGet);
-          // var inValue = getInValue(body);
-          var outValue = getOutValue(body);
-          // print('inValue: $inValue');
-          // print('outValue: $outValue');
-          if (outValue != null && outValue >= inValue1) {
-            var triggerVersion = getTriggerVersion(body)!;
-            print('outValue: $outValue, triggerVersion: $triggerVersion');
-
-            if (version != null) {
-              expect(triggerVersion, greaterThanOrEqualTo(version));
-            } else {
-              print('version not checked');
-            }
-            return;
-          }
-          await sleep(100);
-        }
-      }, timeout: Timeout(Duration(minutes: 2)));
-    }
+        await sleep(100);
+      }
+    }, timeout: Timeout(Duration(minutes: 2)));
   });
 }
 

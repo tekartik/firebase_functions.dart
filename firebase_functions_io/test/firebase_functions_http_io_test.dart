@@ -51,7 +51,6 @@ Future main() async {
       common.ffFsTest(
         testContext: context,
         projectId: projectId,
-        firestore: firestore,
         version: packageVersion,
       );
       tearDownAll(() async {

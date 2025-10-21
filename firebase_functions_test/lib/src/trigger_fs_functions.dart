@@ -1,7 +1,7 @@
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/json_utils.dart';
+import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
 
-import '../firebase_functions_setup.dart';
 import 'import.dart';
 
 const functionSetInTrigger = 'setintriggerv1';
@@ -11,20 +11,22 @@ const functionOnTrigger = 'ontriggerv1';
 const triggerPath = 'test/ffprv/trigger/in';
 const triggerPathOut = 'test/ffprv/trigger/out';
 
-class FirestoreTriggerSetup {
+class FirestoreTriggerServerTestSetup {
   final Version version;
   final FirebaseFunctions functions;
   final Firestore firestore;
 
-  FirestoreTriggerSetup({
+  FirestoreTriggerServerTestSetup({
     required this.functions,
     required this.firestore,
     required this.version,
   });
+
   HttpsFunction get setInTriggerFunction => functions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     setInTriggerHandler,
   );
+
   HttpsFunction get getOutTriggerFunction => functions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     getOutTriggerHandler,
@@ -32,6 +34,7 @@ class FirestoreTriggerSetup {
 
   FirestoreFunction get triggerFunction =>
       functions.firestore.document(triggerPath).onWrite(triggerHandler);
+
   Future<void> setInTriggerHandler(ExpressHttpRequest request) async {
     var doc = await firestore.doc(triggerPath).get();
     var value = 1;
@@ -120,6 +123,9 @@ class FirestoreTriggerSetup {
 
   void initFunctionsFs() {
     var globalOptions = GlobalOptions(region: regionBelgium);
+    if (functions is FirebaseFunctionsHttp) {
+      (functions as FirebaseFunctionsHttp).init(firestore: firestore);
+    }
     functions.globalOptions = globalOptions;
 
     functions[functionSetInTrigger] = setInTriggerFunction;

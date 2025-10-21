@@ -9,6 +9,12 @@ import 'constants.dart';
 import 'firebase_functions_test.dart';
 
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
+export 'src/trigger_fs_functions.dart'
+    show
+        functionGetOutTrigger,
+        functionSetInTrigger,
+        functionOnTrigger,
+        FirestoreTriggerServerTestSetup;
 
 void echoBytesHandler(ExpressHttpRequest request) {
   var body = request.body;
@@ -252,7 +258,7 @@ void initTestFunctions({
     httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
   );
   if (firestore != null && version != null) {
-    var setupTrigger = FirestoreTriggerSetup(
+    var setupTrigger = FirestoreTriggerServerTestSetup(
       functions: firebaseFunctions,
       firestore: firestore,
       version: version,

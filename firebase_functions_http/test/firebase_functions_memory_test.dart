@@ -77,7 +77,6 @@ void main() {
         testContext: context,
         projectId: dummyProjectId,
         version: packageVersion,
-        firestore: firestore,
       );
       tearDownAll(() async {
         await ffServer.close();
