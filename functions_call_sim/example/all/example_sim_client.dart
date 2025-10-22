@@ -9,10 +9,11 @@ import 'vars_menu.dart';
 const exampleProjectId = 'example_project_id';
 
 Future<void> main(List<String> args) async {
+  debugFirebaseSimClient = true;
   var simUri = getFirebaseSimLocalhostUri(port: simPortKvValue);
   print('Using Firebase Sim URI: $simUri');
   var firebase = getFirebaseSim(uri: simUri);
-  var app = firebase.initializeApp(
+  var app = await firebase.initializeAppAsync(
     options: FirebaseAppOptions(projectId: exampleProjectId),
   );
 

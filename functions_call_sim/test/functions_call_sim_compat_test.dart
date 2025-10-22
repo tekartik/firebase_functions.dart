@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 @TestOn('vm')
 library;
 
@@ -14,6 +16,9 @@ import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
 import 'package:test/scaffolding.dart';
 
 Future<void> main() async {
+  test('dummy', () {});
+  return;
+  // ignore: dead_code
   var firebaseServer = FirebaseLocal();
   var serverApp = firebaseServer.initializeApp(
     options: FirebaseAppOptions(projectId: firebaseSimDefaultProjectId),

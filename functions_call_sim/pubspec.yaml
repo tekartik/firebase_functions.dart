@@ -64,6 +64,10 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/firebase_functions.dart
       path: firebase_functions_sim
+  tekartik_firebase_test:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      path: firebase_test
   tekartik_http_io:
     git:
       url: https://github.com/tekartik/http.dart

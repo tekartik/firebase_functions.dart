@@ -1,3 +1,4 @@
+import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
@@ -48,8 +49,40 @@ abstract class FirebaseFunctionsTestClientContext {
     required this.httpClientFactory,
     this.baseUrl,
   });
+  factory FirebaseFunctionsTestClientContext.baseUrl({
+    required HttpClientFactory httpClientFactory,
+    required String baseUrl,
+    FirebaseFunctionsCall? functionsCall,
+  }) {
+    return _FirebaseFunctionsTestClientContextBaseUrl(
+      httpClientFactory: httpClientFactory,
+      baseUrl: baseUrl,
+      functionsCall: functionsCall,
+    );
+  }
 
   String url(String path);
+}
+
+class _FirebaseFunctionsTestClientContextBaseUrl
+    implements FirebaseFunctionsTestClientContext {
+  @override
+  final HttpClientFactory httpClientFactory;
+  @override
+  final String baseUrl;
+  @override
+  FirebaseFunctionsCall? functionsCall;
+
+  _FirebaseFunctionsTestClientContextBaseUrl({
+    required this.httpClientFactory,
+    required this.baseUrl,
+    required this.functionsCall,
+  });
+
+  @override
+  String url(String path) {
+    return p.url.join(baseUrl, path);
+  }
 }
 
 mixin FirebaseFunctionsTestClientContextMixin

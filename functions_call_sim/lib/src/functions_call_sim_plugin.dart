@@ -1,5 +1,5 @@
 import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
-import 'package:tekartik_firebase_sim/firebase_sim_server.dart';
+import 'package:tekartik_firebase_sim/firebase_sim_server_mixin.dart';
 
 import 'functions_call_sim_server_service.dart';
 
@@ -9,6 +9,9 @@ typedef FirebaseFunctionSimAppInitFunction =
 
 /// Options for the Firebase Functions Call Sim Plugin
 class FirebaseFunctionsCallSimPluginOptions {
+  /// HTTP port for the http functions
+  final int? httpPort;
+
   /// Init functions map
   final Map<String, FirebaseFunctionSimAppInitFunction>? initFunctions;
 
@@ -19,6 +22,7 @@ class FirebaseFunctionsCallSimPluginOptions {
   FirebaseFunctionsCallSimPluginOptions({
     this.initFunctions,
     this.initFunction,
+    this.httpPort,
   });
 }
 
@@ -31,6 +35,7 @@ abstract class FirebaseFunctionsCallSimPlugin implements FirebaseSimPlugin {
   FirebaseFunctionsServiceHttp get firebaseFunctionsService;
 
   /// Constructor
+  @Deprecated('Use FirebaseFunctionsCallSimPlugin constructor instead')
   factory FirebaseFunctionsCallSimPlugin.compat({
     required FirebaseFunctionsHttp firebaseFunctions,
   }) => _FirebaseFunctionsCallSimPlugin.compat(
@@ -50,22 +55,49 @@ abstract class FirebaseFunctionsCallSimPlugin implements FirebaseSimPlugin {
   FirebaseSimServerService get simService;
 }
 
+/// Current Firebase Functions HTTP server URI
+Uri get firebaseSimHttpServerUri =>
+    _FirebaseFunctionsCallSimPlugin._httpServer!.clientUri;
+
 /// Service plugin
 class _FirebaseFunctionsCallSimPlugin
+    with FirebaseSimPluginDefaultMixin
     implements FirebaseFunctionsCallSimPlugin {
+  static HttpServer? _httpServer;
   @override
   late final FirebaseFunctionsCallSimPluginOptions options;
   @override
   late final FirebaseFunctionsServiceHttp firebaseFunctionsService;
 
   /// functions call implementation (compat)
-  late final FirebaseFunctionsHttp? firebaseFunctions;
+  late FirebaseFunctionsHttp? firebaseFunctions;
+  @override
+  Future<void> initForApp(FirebaseApp app) async {
+    var firebaseFunctionsService = this.firebaseFunctionsService;
+    //late FirebaseFunctionsHttp firebaseFunctions;
+    var options = this.options;
+
+    var initFunction =
+        options.initFunctions?[app.options.projectId] ?? options.initFunction;
+    if (initFunction != null) {
+      firebaseFunctions = firebaseFunctionsService.functions(app);
+      initFunction(firebaseApp: app);
+      if (_httpServer == null) {
+        var httpServer = await firebaseFunctions!.serveHttp(
+          port: options.httpPort,
+        );
+        // print('http: ${httpServerGetUri(httpServer)}');
+        _httpServer = httpServer;
+      }
+    }
+  }
 
   /// Sim server service
   final firebaseFunctionsCallSimServerService =
       FirebaseFunctionsCallSimServerService();
 
   /// Constructor
+  @Deprecated('Use FirebaseFunctionsCallSimPlugin constructor instead')
   _FirebaseFunctionsCallSimPlugin.compat({
     required FirebaseFunctionsHttp firebaseFunctions,
   }) {

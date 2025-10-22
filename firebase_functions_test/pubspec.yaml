@@ -9,6 +9,7 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
+  path:
   meta: ">=1.15.0"
   cv: ">=1.1.10"
   http:
