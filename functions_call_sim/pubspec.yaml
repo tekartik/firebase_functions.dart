@@ -60,6 +60,10 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_web_socket
+  tekartik_firebase_firestore_sembast:
+    git:
+      url: https://github.com/tekartik/firebase_firestore.dart
+      path: firestore_sembast
   tekartik_firebase_functions_sim:
     git:
       url: https://github.com/tekartik/firebase_functions.dart

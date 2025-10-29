@@ -13,7 +13,8 @@ class FirebaseFunctionsCallSimServerService
     extends FirebaseSimServerServiceBase {
   /// Firebase auth sim plugin
   late FirebaseFunctionsCallSimPlugin firebaseFunctionsCallSimPlugin;
-  final _expando = Expando<FirebaseFunctionsCallSimPluginServer>();
+  final _apps =
+      <FirebaseSimServerProjectApp, FirebaseFunctionsCallSimPluginServer>{};
 
   /// Service name
   static final serviceName = 'firebase_functions';
@@ -24,32 +25,19 @@ class FirebaseFunctionsCallSimServerService
   }
 
   @override
-  FutureOr<Object?> onCall(
+  FutureOr<Object?> onAppCall(
+    FirebaseSimServerProjectApp projectApp,
+
     RpcServerChannel channel,
     RpcMethodCall methodCall,
   ) async {
     try {
-      var simServerChannel = simServer.channel(channel);
-      var firebaseAuthSimPluginServer = _expando[channel] ??= () {
-        var app = simServerChannel.app!;
+      var firebaseAuthSimPluginServer = _apps[projectApp] ??= () {
+        var app = projectApp.app!;
         var firebaseFunctionsService =
             firebaseFunctionsCallSimPlugin.firebaseFunctionsService;
         var firebaseFunctions = firebaseFunctionsService.functions(app);
-        /*
-        var options = firebaseFunctionsCallSimPlugin.options;
 
-        var initFunction =
-            options.initFunctions?[app.options.projectId] ??
-            options.initFunction;
-        if (initFunction == null) {
-          // ignore: avoid_print
-          print('compat mode');
-          // ignore: deprecated_member_use_from_same_package
-          firebaseFunctions = firebaseFunctionsCallSimPlugin.firebaseFunctions;
-        } else {
-          firebaseFunctions = firebaseFunctionsService.functions(app);
-          initFunction(firebaseApp: app);
-        }*/
         return FirebaseFunctionsCallSimPluginServer(
           firebaseFunctionsCallSimPlugin: firebaseFunctionsCallSimPlugin,
           firebaseFunctions: firebaseFunctions,
@@ -63,7 +51,7 @@ class FirebaseFunctionsCallSimServerService
             map,
           );
       }
-      return super.onCall(channel, methodCall);
+      return super.onAppCall(projectApp, channel, methodCall);
     } catch (e, st) {
       if (isDebug) {
         // ignore: avoid_print

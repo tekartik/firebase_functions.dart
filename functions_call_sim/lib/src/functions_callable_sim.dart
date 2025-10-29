@@ -40,7 +40,7 @@ class _FirebaseFunctionsCallableSim
     Object? parameters,
   ]) async {
     var currentUserId = (await firebaseAuthSim?.onCurrentUser.first)?.uid;
-    var simClient = await appSim.simClient;
+    var simClient = await appSim.simAppClient;
     var callRequest = CallSimRequest()
       ..name.v = name
       ..userId.setValue(currentUserId)
