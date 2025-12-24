@@ -92,6 +92,18 @@ void ffTest({
   setUpAll(() async {
     clientFactory = httpClientFactory ??= testContext.httpClientFactory;
   });
+  test('app', () {
+    var functionsCall = testContext.functionsCall;
+    if (functionsCall == null) {
+      return;
+    }
+    var app = functionsCall.app;
+    expect(testContext.functionsCall!.app, app);
+    expect(
+      app.getProduct<FirebaseFunctionsCall>(),
+      isNull,
+    ); // Not registered as a service!
+  });
   test('post', () async {
     var client = httpClientFactory!.newClient();
     var response = await client.post(
