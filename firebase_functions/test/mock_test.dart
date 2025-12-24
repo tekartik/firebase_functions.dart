@@ -1,3 +1,4 @@
+import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:test/test.dart';
 
@@ -14,7 +15,9 @@ class FirestoreFunctionsMock
     implements FirestoreFunctions {}
 
 class FirebaseFunctionsMock
-    with FirebaseFunctionsDefaultMixin
+    with
+        FirebaseAppProductMixin<FirebaseFunctions>,
+        FirebaseFunctionsDefaultMixin
     implements FirebaseFunctions {}
 
 class DocumentBuilderMock

@@ -25,8 +25,10 @@ mixin FirebaseFunctionsServiceDefaultMixin {
 }
 
 /// Global namespace for Firebase Cloud Functions functionality.
-abstract class FirebaseFunctions {
+abstract class FirebaseFunctions
+    implements FirebaseAppProduct<FirebaseFunctions> {
   /// Firebase app.
+  @override
   FirebaseApp get app;
 
   /// Firebase functions service.
