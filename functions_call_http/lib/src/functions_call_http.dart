@@ -111,7 +111,7 @@ class FirebaseFunctionsCallableHttp implements FirebaseFunctionsCallable {
           ?.uid;
 
       var headers = <String, String>{
-        if (authUserId != null) firebaseFunctionsHttpHeaderUid: authUserId,
+        firebaseFunctionsHttpHeaderUid: ?authUserId,
       };
       try {
         var text = await httpClientRead(

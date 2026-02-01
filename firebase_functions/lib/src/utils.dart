@@ -37,11 +37,7 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
 
       await response.send(
         jsonEncode({
-          'error': {
-            'code': errorCode,
-            'message': message,
-            if (details != null) 'details': details,
-          },
+          'error': {'code': errorCode, 'message': message, 'details': ?details},
         }),
       );
     }
