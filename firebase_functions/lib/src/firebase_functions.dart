@@ -46,7 +46,11 @@ abstract class FirebaseFunctions
   /// Scheduler functions.
   SchedulerFunctions get scheduler;
 
+  /// register a function
   void operator []=(String key, FirebaseFunction function);
+
+  /// register a function
+  void registerFunction(String name, FirebaseFunction function);
 
   /// Configures the regions to which to deploy and run a function.
   ///
@@ -102,6 +106,11 @@ mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
   @override
   void operator []=(String key, FirebaseFunction function) {
     throw UnimplementedError('FirebaseFunction.[]=');
+  }
+
+  @override
+  void registerFunction(String name, FirebaseFunction function) {
+    throw UnimplementedError('FirebaseFunction.registerFunction');
   }
 
   @override
