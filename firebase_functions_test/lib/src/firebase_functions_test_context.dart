@@ -22,11 +22,14 @@ abstract class FirebaseFunctionsTestContext
   @override
   final String? baseUrl;
 
+  @override
+  final String? functionNamePrefix;
   FirebaseFunctionsTestContext({
     required this.firebaseFunctions,
     required this.httpClientFactory,
     this.functionsCall,
     this.baseUrl,
+    this.functionNamePrefix,
   });
 }
 
@@ -44,20 +47,24 @@ abstract class FirebaseFunctionsTestClientContext {
   final HttpClientFactory httpClientFactory;
   final String? baseUrl;
   FirebaseFunctionsCall? get functionsCall;
+  final String? functionNamePrefix;
 
   FirebaseFunctionsTestClientContext({
     required this.httpClientFactory,
     this.baseUrl,
+    this.functionNamePrefix,
   });
   factory FirebaseFunctionsTestClientContext.baseUrl({
     required HttpClientFactory httpClientFactory,
     required String baseUrl,
     FirebaseFunctionsCall? functionsCall,
+    String? functionNameSuffix,
   }) {
     return _FirebaseFunctionsTestClientContextBaseUrl(
       httpClientFactory: httpClientFactory,
       baseUrl: baseUrl,
       functionsCall: functionsCall,
+      functionNamePrefix: functionNameSuffix,
     );
   }
 
@@ -72,16 +79,25 @@ class _FirebaseFunctionsTestClientContextBaseUrl
   final String baseUrl;
   @override
   FirebaseFunctionsCall? functionsCall;
-
+  @override
+  final String? functionNamePrefix;
   _FirebaseFunctionsTestClientContextBaseUrl({
     required this.httpClientFactory,
     required this.baseUrl,
     required this.functionsCall,
+    this.functionNamePrefix,
   });
+
+  String _fixName(String name) {
+    if (functionNamePrefix != null) {
+      return '$functionNamePrefix$name';
+    }
+    return name;
+  }
 
   @override
   String url(String path) {
-    return p.url.join(baseUrl, path);
+    return p.url.join(baseUrl, _fixName(path));
   }
 }
 

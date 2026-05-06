@@ -167,6 +167,7 @@ setupFirebaseFunctionsTestServer<T extends FirebaseFunctionsTestServerContext>({
 
 void initTestFunctions({
   required FirebaseFunctions firebaseFunctions,
+  String? functionNamePrefix,
   Firestore? firestore,
   Version? version,
 
@@ -178,10 +179,18 @@ void initTestFunctions({
     request.response.redirect(Uri.parse(testRedirectUrl!));
   }
 
-  firebaseFunctions['echo'] = firebaseFunctions.https.onRequestV2(
+  String fixName(String name) {
+    if (functionNamePrefix != null) {
+      return '$functionNamePrefix$name';
+    }
+    return name;
+  }
+
+  firebaseFunctions[fixName('echo')] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     echoHandler,
   );
+  return;
 
   firebaseFunctions['redirect'] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),

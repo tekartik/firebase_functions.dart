@@ -106,16 +106,15 @@ void ffTest({
   });
   test('post', () async {
     var client = httpClientFactory!.newClient();
-    var response = await client.post(
-      Uri.parse(testContext.url('echo')),
-      body: 'hello',
-    );
+    var url = Uri.parse(testContext.url('echo'));
+    print('url: $url');
+    var response = await client.post(url, body: 'hello');
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
     expect(response.body, equals('hello'));
 
     client.close();
-  });
+  }, solo: true);
 
   test('echoBytes binary', () async {
     var client = httpClientFactory!.newClient();

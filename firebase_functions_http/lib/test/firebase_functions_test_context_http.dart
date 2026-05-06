@@ -38,8 +38,16 @@ mixin FirebaseFunctionsTestServerContextHttpMixin
 }
 mixin FirebaseFunctionsTestClientContextHttpMixin
     on FirebaseFunctionsTestClientContext {
+  String _fixName(String name) {
+    if (functionNamePrefix != null) {
+      return '$functionNamePrefix$name';
+    }
+    return name;
+  }
+
   @override
   String url(String path) {
+    path = _fixName(path);
     var baseUrl = this.baseUrl!;
     if (baseUrl.contains('{{function}}')) {
       var function = path.split('/').first.split('?').first.split('#').first;
@@ -71,5 +79,6 @@ class FirebaseFunctionsTestClientContextHttp
     /// external client factory
     required super.httpClientFactory,
     required super.baseUrl,
+    super.functionNamePrefix,
   });
 }
