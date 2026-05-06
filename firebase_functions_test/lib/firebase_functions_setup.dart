@@ -190,38 +190,40 @@ void initTestFunctions({
     HttpsOptions(cors: true, region: regionBelgium),
     echoHandler,
   );
-  return;
 
-  firebaseFunctions['redirect'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions[fixName('redirect')] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     redirectFragmentHandler,
   );
-  firebaseFunctions['echoquery'] = firebaseFunctions.https.onRequestV2(
+
+  firebaseFunctions[fixName('echoquery')] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     echoQueryHandler,
   );
-  firebaseFunctions['echobytes'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions[fixName('echobytes')] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     echoBytesHandler,
   );
-  firebaseFunctions['echofragment'] = firebaseFunctions.https.onRequestV2(
-    HttpsOptions(cors: true, region: regionBelgium),
-    echoFragmentHandler,
-  );
-  firebaseFunctions['echoheaders'] = firebaseFunctions.https.onRequestV2(
-    HttpsOptions(cors: true, region: regionBelgium),
-    echoHeadersHandler,
-  );
-  firebaseFunctions['echoinfo'] = firebaseFunctions.https.onRequestV2(
+  firebaseFunctions[fixName('echofragment')] = firebaseFunctions.https
+      .onRequestV2(
+        HttpsOptions(cors: true, region: regionBelgium),
+        echoFragmentHandler,
+      );
+  firebaseFunctions[fixName('echoheaders')] = firebaseFunctions.https
+      .onRequestV2(
+        HttpsOptions(cors: true, region: regionBelgium),
+        echoHeadersHandler,
+      );
+  firebaseFunctions[fixName('echoinfo')] = firebaseFunctions.https.onRequestV2(
     HttpsOptions(cors: true, region: regionBelgium),
     echoInfoHandler,
   );
-  firebaseFunctions['ffinfo'] = firebaseFunctions.https.onRequest(
+  firebaseFunctions[fixName('ffinfo')] = firebaseFunctions.https.onRequest(
     (request) => infoHandler(firebaseFunctions, request),
     httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
   );
 
-  firebaseFunctions[functionCallName] = firebaseFunctions.https.onCall(
+  firebaseFunctions[fixName(functionCallName)] = firebaseFunctions.https.onCall(
     callHandler,
     callableOptions: HttpsCallableOptions(
       cors: true,
@@ -230,14 +232,15 @@ void initTestFunctions({
     ),
   );
 
-  firebaseFunctions[functionCallAppCheckName] = firebaseFunctions.https.onCall(
-    callHandler,
-    callableOptions: HttpsCallableOptions(
-      cors: true,
-      region: regionBelgium,
-      enforceAppCheck: true,
-    ),
-  );
+  firebaseFunctions[fixName(functionCallAppCheckName)] = firebaseFunctions.https
+      .onCall(
+        callHandler,
+        callableOptions: HttpsCallableOptions(
+          cors: true,
+          region: regionBelgium,
+          enforceAppCheck: true,
+        ),
+      );
 
   /// Test
   Future<Object?> testCallableFunctionHandler(CallRequest request) async {
@@ -254,18 +257,20 @@ void initTestFunctions({
     return _outputData(result);
   }
 
-  firebaseFunctions[callableFunctionTestName] = firebaseFunctions.https.onCall(
-    testCallableFunctionHandler,
-    callableOptions: HttpsCallableOptions(
-      cors: true,
-      region: regionBelgium,
-      enforceAppCheck: false,
-    ),
-  );
-  firebaseFunctions[httpFunctionTestName] = firebaseFunctions.https.onRequest(
-    testHttpFunctionHandler,
-    httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
-  );
+  firebaseFunctions[fixName(callableFunctionTestName)] = firebaseFunctions.https
+      .onCall(
+        testCallableFunctionHandler,
+        callableOptions: HttpsCallableOptions(
+          cors: true,
+          region: regionBelgium,
+          enforceAppCheck: false,
+        ),
+      );
+  firebaseFunctions[fixName(httpFunctionTestName)] = firebaseFunctions.https
+      .onRequest(
+        testHttpFunctionHandler,
+        httpsOptions: HttpsOptions(cors: true, region: regionBelgium),
+      );
   if (firestore != null && version != null) {
     var setupTrigger = FirestoreTriggerServerTestSetup(
       functions: firebaseFunctions,
