@@ -17,12 +17,26 @@ export 'package:tekartik_firebase_firestore/firestore.dart'
 /// Firebase functions service.
 abstract class FirebaseFunctionsService {
   FirebaseFunctions functions(FirebaseApp app);
+
+  /// Call this and setup global options and functions in the callback
+  /// Only needed for firebase_admin_sdk, if just call the runner otherwise
+  Future<void> fireUp(TekartikFirebaseFunctionsFireUpRunner runner);
 }
 
 mixin FirebaseFunctionsServiceDefaultMixin {
   FirebaseFunctions functions(FirebaseApp app) =>
       throw UnimplementedError('FirebaseFunctions.function(app)');
+
+  Future<void> fireUp(TekartikFirebaseFunctionsFireUpRunner runner) async {
+    var app = FirebaseApp.instance;
+    var functions = this.functions(app);
+    await runner(functions);
+  }
 }
+
+/// Callback type for the Admin SDK function registration.
+typedef TekartikFirebaseFunctionsFireUpRunner =
+    FutureOr<void> Function(FirebaseFunctions functions);
 
 /// Global namespace for Firebase Cloud Functions functionality.
 abstract class FirebaseFunctions
@@ -260,9 +274,11 @@ class RuntimeOptions {
 
 // https://cloud.google.com/compute/docs/regions-zones
 /// Belgium location, V2 ok
+/// Preferred for cloud function
 const regionBelgium = 'europe-west1';
 
 /// Frankfurt location
+/// Preferred for Firestore
 const regionFrankfurt = 'europe-west3';
 
 /// Us central 1, default region for firebase serve.
@@ -294,11 +310,14 @@ class GlobalOptions {
   /// Timeout for the function in sections, possible values are 0 to 540. HTTPS functions can specify a higher timeout.
   final int? timeoutSeconds;
 
+  /// Max number of instances
+  final int? maxInstances;
   GlobalOptions({
     this.timeoutSeconds,
     this.region,
     this.regions,
     this.memory,
     this.concurrency,
+    this.maxInstances,
   });
 }

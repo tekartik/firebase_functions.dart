@@ -65,6 +65,7 @@ class HttpsCallableOptions extends HttpsOptions {
     super.region,
     super.regions,
     super.timeoutSeconds,
+    super.maxInstances,
   });
 }
 
@@ -80,6 +81,7 @@ class HttpsOptions extends GlobalOptions {
     super.region,
     super.regions,
     super.timeoutSeconds,
+    super.maxInstances,
   });
 }
 
