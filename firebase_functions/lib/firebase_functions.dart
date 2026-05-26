@@ -40,8 +40,7 @@ export 'package:tekartik_firebase_functions/src/firebase_functions.dart'
         runtimeOptionsMemory512MB,
         runtimeOptionsMemory1GB,
         runtimeOptionsMemory2GB,
-        GlobalOptions,
-        TekartikFirebaseFunctionsFireUpRunner;
+        GlobalOptions;
 export 'package:tekartik_firebase_functions/src/firebase_functions_https.dart'
     show
         HttpsFunction,

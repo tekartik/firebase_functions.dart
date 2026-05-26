@@ -17,26 +17,12 @@ export 'package:tekartik_firebase_firestore/firestore.dart'
 /// Firebase functions service.
 abstract class FirebaseFunctionsService {
   FirebaseFunctions functions(FirebaseApp app);
-
-  /// Call this and setup global options and functions in the callback
-  /// Only needed for firebase_admin_sdk, if just call the runner otherwise
-  Future<void> fireUp(TekartikFirebaseFunctionsFireUpRunner runner);
 }
 
 mixin FirebaseFunctionsServiceDefaultMixin {
   FirebaseFunctions functions(FirebaseApp app) =>
       throw UnimplementedError('FirebaseFunctions.function(app)');
-
-  Future<void> fireUp(TekartikFirebaseFunctionsFireUpRunner runner) async {
-    var app = FirebaseApp.instance;
-    var functions = this.functions(app);
-    await runner(functions);
-  }
 }
-
-/// Callback type for the Admin SDK function registration.
-typedef TekartikFirebaseFunctionsFireUpRunner =
-    FutureOr<void> Function(FirebaseFunctions functions);
 
 /// Global namespace for Firebase Cloud Functions functionality.
 abstract class FirebaseFunctions
