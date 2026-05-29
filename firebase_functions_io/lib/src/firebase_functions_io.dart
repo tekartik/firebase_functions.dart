@@ -38,19 +38,21 @@ Future onFileRequest(HttpRequest request) async {
   final targetFile = io.File(path);
 
   if (targetFile.existsSync()) {
-    print('Serving ${targetFile.path}.');
+    // print('Serving ${targetFile.path}.');
     request.response.headers.contentType = ContentType.parse(
       httpContentTypeHtml,
     ); // ContentType.html;
     try {
       await targetFile.openRead().cast<List<int>>().pipe(request.response);
     } catch (e) {
+      // ignore: avoid_print
       print("Couldn't read file: $e");
       // exit(-1);
       request.response.statusCode = io.HttpStatus.forbidden;
       await request.response.close();
     }
   } else {
+    // ignore: avoid_print
     print("Can't open ${targetFile.path}.");
     request.response.statusCode = io.HttpStatus.notFound;
     await request.response.close();
@@ -66,9 +68,11 @@ Future<HttpServer> serve({int? port}) async {
     port,
   );
   for (final key in firebaseFunctionsIo.functions.keys) {
+    // ignore: avoid_print
     print('$key http://localhost:$port/$key');
   }
 
+  // ignore: avoid_print
   print('listening on http://localhost:${requestServer.port}');
   var handled = false;
   // Launch in background

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/json_utils.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http.dart';
@@ -104,6 +106,7 @@ class FirestoreTriggerServerTestSetup {
           'datetime': DateTime.now(),
           'triggerVersion': version.toString(),
         }); //FieldValue.serverTimestamp});
+
         print('error $e updating datetime $triggerPathOut');
       } catch (e) {
         try {
@@ -117,7 +120,6 @@ class FirestoreTriggerServerTestSetup {
         }
       }
     }
-
     print('Tracking change $change');
   }
 

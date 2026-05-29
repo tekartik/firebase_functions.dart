@@ -1,3 +1,4 @@
+import 'package:process_run/stdio.dart';
 import 'package:tekartik_firebase_functions_sim/firebase_functions_sim.dart';
 
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
@@ -17,5 +18,5 @@ Future<void> main() async {
   var ff = functionsService.functions(app);
   ff['echo'] = ff.https.onRequestV2(HttpsOptions(cors: true), echoHandler);
   var httpServer = await ff.serveHttp(port: port);
-  print(httpServerGetUri(httpServer));
+  stdout.writeln(httpServerGetUri(httpServer));
 }

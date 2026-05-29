@@ -107,7 +107,7 @@ void ffTest({
   test('post', () async {
     var client = httpClientFactory!.newClient();
     var url = Uri.parse(testContext.url('echo'));
-    print('url: $url');
+    // print('url: $url');
     var response = await client.post(url, body: 'hello');
     expect(response.statusCode, 200);
     expect(response.contentLength, greaterThan(0));
@@ -195,7 +195,7 @@ void ffTest({
   test('info', () async {
     var client = httpClientFactory!.newClient();
     var uri = Uri.parse(testContext.url('echoinfo?param#fragment'));
-    print('uri: $uri');
+    // print('uri: $uri');
     var response = await client.get(uri);
     expect(response.statusCode, 200);
     // Server has no fragment
@@ -383,6 +383,7 @@ void ffFsTest({
       var body = await client.read(uriGet);
       var inValueInitial = getInValue(body);
       var versionInitial = getVersion(body);
+      // ignore: avoid_print
       print(
         'inValue: $inValueInitial (will be bumped twice), version: $versionInitial',
       );
@@ -390,6 +391,7 @@ void ffFsTest({
 
       // print('Initial body: $body');
       var uriSet = Uri.parse(testContext.url(functionSetInTrigger));
+      // ignore: avoid_print
       print('url: $uriSet');
       var response = await client.get(uriSet);
       expect(response.statusCode, 200);
@@ -398,6 +400,7 @@ void ffFsTest({
       var inValue1 = getInValue(body)!;
       expect(inValue1, isNotNull);
       // var outValue1 = getOutValue(body);
+      // ignore: avoid_print
       print('inValue: $inValue1');
       // print('outValue1: $outValue1');
 
@@ -418,6 +421,7 @@ void ffFsTest({
         // print('outValue: $outValue');
         if (outValue != null && outValue >= inValue1) {
           var triggerVersion = getTriggerVersion(body)!;
+          // ignore: avoid_print
           print('outValue: $outValue, triggerVersion: $triggerVersion');
 
           expect(triggerVersion, greaterThanOrEqualTo(version));
@@ -519,7 +523,9 @@ abstract class FunctionTestClient {
 
         expect(output.data, data);
       } catch (e) {
+        // ignore: avoid_print
         print('Error for $data');
+        // ignore: avoid_print
         print('Error: $e');
         rethrow;
       }

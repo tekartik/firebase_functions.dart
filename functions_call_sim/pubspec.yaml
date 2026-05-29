@@ -4,11 +4,11 @@ version: 1.0.0
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 # Add regular dependencies here.
 dependencies:
-  meta: ">=1.15.0"
+  meta: ">=1.18.0"
   cv: ">=1.1.0+4"
   tekartik_firebase:
     git:
@@ -51,7 +51,7 @@ dependencies:
       path: auth_sim
 
 dev_dependencies:
-  lints: ">=5.0.0"
+  lints: ">=6.1.0"
   tekartik_app_dev_menu:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
@@ -76,5 +76,5 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/http.dart
       path: http_io
-  test: ">=1.24.0"
+  test: ">=1.31.0"
 resolution: workspace

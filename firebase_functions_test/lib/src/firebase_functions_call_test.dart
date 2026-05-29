@@ -46,9 +46,11 @@ void ffCallTestGroup({
         try {
           await client.sendThrow();
         } on HttpsError catch (e) {
+          // ignore: avoid_print
           print('error: $e');
           expect(e.code, 'internal');
         } catch (e) {
+          // ignore: avoid_print
           print('error: $e (${e.runtimeType})');
           rethrow;
         }
@@ -60,6 +62,7 @@ void ffCallTestGroup({
         } on HttpsError catch (e) {
           expect(e.code, HttpsErrorCode.notFound);
         } catch (e) {
+          // ignore: avoid_print
           print('error: $e (${e.runtimeType})');
           rethrow;
         }

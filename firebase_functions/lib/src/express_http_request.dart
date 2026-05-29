@@ -15,7 +15,7 @@ String requestBodyAsText(dynamic body) {
   } else if (body is List) {
     return jsonEncode(body);
   }
-  throw 'body $body not text';
+  throw UnsupportedError('body $body not text');
 }
 
 Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
@@ -32,7 +32,7 @@ Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
   } else if (body is List) {
     return requestBodyAsJsonObject(requestBodyAsText(body));
   }
-  throw 'body $body not json object';
+  throw UnsupportedError('body $body not json object');
 }
 
 abstract class ExpressHttpRequest {
@@ -125,7 +125,7 @@ abstract mixin class HttpResponseWrapperMixin implements ExpressHttpResponse {
       } else if (body is Map || body is List) {
         implHttpResponse.write(jsonEncode(body));
       } else {
-        throw '${body.runtimeType} not supported';
+        throw UnsupportedError('${body.runtimeType} not supported');
       }
     }
     return implHttpResponse.close();
