@@ -2,11 +2,13 @@ import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase_functions/ff_server.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'; // ignore: depend_on_referenced_packages
 
+/// HTTP test context implementation for Firebase Functions.
 class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
     with
         //FirebaseFunctionsTestClientContextMixin,
         FirebaseFunctionsTestServerContextHttpMixin,
         FirebaseFunctionsTestClientContextHttpMixin {
+  /// Creates a new [FirebaseFunctionsTestContextHttp] instance.
   FirebaseFunctionsTestContextHttp({
     /// external client factory
     required super.httpClientFactory,
@@ -21,9 +23,11 @@ class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
       : p.url.join(server.uri.toString(), path);
 }
 
+/// Server context mixin for HTTP Firebase Functions tests.
 mixin FirebaseFunctionsTestServerContextHttpMixin
     on FirebaseFunctionsTestServerContext {
   // To set when ready
+  /// The running Firebase Functions server instance.
   late FfServer server;
   int? _port;
 
@@ -36,6 +40,8 @@ mixin FirebaseFunctionsTestServerContextHttpMixin
     return server = await firebaseFunctions.serve(port: port);
   }
 }
+
+/// Client context mixin for HTTP Firebase Functions tests.
 mixin FirebaseFunctionsTestClientContextHttpMixin
     on FirebaseFunctionsTestClientContext {
   String _fixName(String name) {
@@ -61,20 +67,24 @@ mixin FirebaseFunctionsTestClientContextHttpMixin
   }
 }
 
+/// Server context implementation for HTTP Firebase Functions tests.
 class FirebaseFunctionsTestServerContextHttp
     extends FirebaseFunctionsTestServerContext
     with FirebaseFunctionsTestServerContextHttpMixin {
+  /// Creates a new [FirebaseFunctionsTestServerContextHttp] instance.
   FirebaseFunctionsTestServerContextHttp({
     /// external client factory
     required super.firebaseFunctions,
   });
 }
 
+/// Client context implementation for HTTP Firebase Functions tests.
 class FirebaseFunctionsTestClientContextHttp
     extends FirebaseFunctionsTestClientContext
     with
         FirebaseFunctionsTestClientContextMixin,
         FirebaseFunctionsTestClientContextHttpMixin {
+  /// Creates a new [FirebaseFunctionsTestClientContextHttp] instance.
   FirebaseFunctionsTestClientContextHttp({
     /// external client factory
     required super.httpClientFactory,

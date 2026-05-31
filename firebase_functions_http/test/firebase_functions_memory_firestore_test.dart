@@ -21,7 +21,7 @@ void main() {
       firebaseFunctions['trigger'] = firebaseFunctions.firestore
           .document('test/in')
           .onWrite((event, context) async {
-            print('triggered $event $context');
+            // print('triggered $event $context');
             await firestore.doc(_outPath).set({'value': 1});
           });
       server = await firebaseFunctions.serveHttp(port: 0);

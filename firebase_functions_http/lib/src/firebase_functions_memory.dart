@@ -17,6 +17,7 @@ class FirebaseFunctionsServiceMemory
           as FirebaseFunctionsHttp;
 }
 
+/// Memory implementation of Firebase Functions.
 class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
   FirebaseFunctionsMemory._(
     FirebaseFunctionsServiceHttp firebaseFunctionsService,
@@ -26,6 +27,7 @@ class FirebaseFunctionsMemory extends FirebaseFunctionsHttpBase {
 
 FirebaseFunctionsMemory? _firebaseFunctionsMemory;
 
+/// The global memory instance of [FirebaseFunctionsMemory].
 FirebaseFunctionsMemory get firebaseFunctionsMemory =>
     _firebaseFunctionsMemory ??=
         firebaseFunctionsServiceMemory.functions(newFirebaseAppLocal())

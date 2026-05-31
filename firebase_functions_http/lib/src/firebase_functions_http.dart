@@ -17,6 +17,7 @@ abstract class FirebaseFunctionsServiceHttp
   FirebaseFunctionsHttp functions(FirebaseApp app);
 }
 
+/// Default mixin for [FirebaseFunctionsHttp].
 mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
   @override
   void init({Firestore? firestore}) {
@@ -42,20 +43,29 @@ mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
   }
 }
 
+/// Base class for HTTP Firebase functions.
 class FirebaseFunctionsHttpBase
     with
         FirebaseAppProductMixin<FirebaseFunctions>,
         FirebaseFunctionsDefaultMixin,
         FirebaseFunctionsHttpDefaultMixin
     implements FirebaseFunctionsHttp {
+  /// The associated HTTP Firebase Functions service.
   final FirebaseFunctionsServiceHttp firebaseFunctionsServiceHttp;
 
   @override
   FirebaseApp get app => firebaseApp;
+
+  /// The associated [FirebaseApp] instance.
   final FirebaseApp firebaseApp;
+
+  /// The HTTP server factory to bind servers.
   HttpServerFactory httpServerFactory;
+
+  /// Optional global options.
   GlobalOptions? globalOptions;
 
+  /// Creates a new [FirebaseFunctionsHttpBase] instance.
   FirebaseFunctionsHttpBase(
     this.firebaseFunctionsServiceHttp,
     this.firebaseApp,
@@ -70,7 +80,10 @@ class FirebaseFunctionsHttpBase
     firebaseFirestore = firestore;
   }
 
+  /// The Firestore instance, if initialized.
   Firestore? firebaseFirestore;
+
+  /// Returns the Firestore instance or throws a StateError if not initialized.
   Firestore get firebaseFirestoreOrThrow {
     var firestore = firebaseFirestore;
     if (firestore != null) {
@@ -83,6 +96,8 @@ class FirebaseFunctionsHttpBase
 
   @override
   late final firestore = FirestoreFunctionsHttp(this);
+
+  /// The registered functions map.
   Map<String, Object?> functions = {};
 
   @override
@@ -98,9 +113,11 @@ class FirebaseFunctionsHttpBase
       port,
     );
     for (final key in functions.keys) {
+      // ignore: avoid_print
       print('$key http://localhost:$port/$key');
     }
 
+    // ignore: avoid_print
     print('listening on http://localhost:${requestServer.port}');
 
     // Launch in background
@@ -112,6 +129,7 @@ class FirebaseFunctionsHttpBase
           // /test
           var functionKey = listFirst(uri.pathSegments);
           if (functionKey == null) {
+            // ignore: avoid_print
             print('No functions key found for $uri');
           } else {
             var function = functions[functionKey];
@@ -178,9 +196,12 @@ class FirebaseFunctionsHttpBase
   FirebaseFunctionsService get service => firebaseFunctionsServiceHttp;
 }
 
+/// Parameters implementation for HTTP Firebase functions.
 class ParamsHttp extends Params {
+  /// The associated Firebase functions instance.
   final FirebaseFunctionsHttpBase functions;
 
+  /// Creates a new [ParamsHttp] instance.
   ParamsHttp(this.functions);
 
   @override
@@ -193,17 +214,21 @@ class ParamsHttp extends Params {
   }
 }
 
+/// Interface for HTTP Firebase functions.
 abstract class FirebaseFunctionsHttp implements FirebaseFunctions {
+  /// Initializes the functions environment.
   void init({Firestore? firestore});
 
   /// To implement
   Future<HttpServer> serveHttp({int? port});
 
-  // To implement
+  /// Handles serving local files over HTTP.
   Future onFileRequestHttp(HttpRequest request);
 }
 
+/// HTTPS functions implementation for HTTP Firebase functions.
 class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
+  /// Creates a new [HttpsHttp] instance.
   HttpsHttp();
 
   @override
@@ -228,12 +253,16 @@ class HttpsHttp with HttpsFunctionsDefaultMixin implements HttpsFunctions {
   }
 }
 
+/// HTTPS function HTTP implementation interface.
 abstract class HttpsFunctionHttp implements HttpsFunction {
+  /// Optional HTTPS options.
   HttpsOptions? get options;
 
   // ignore: unused_field
+  /// The request handler.
   RequestHandler get handler;
 
+  /// Creates a new [HttpsFunctionHttp] instance.
   factory HttpsFunctionHttp(HttpsOptions? options, RequestHandler handler) =>
       _HttpsFunctionImpl(options, handler);
 }
@@ -252,19 +281,24 @@ abstract class _HttpsFunctionBase implements HttpsFunction {
   _HttpsFunctionBase(this.options, this.handler);
 }
 
+/// HTTPS callable function HTTP implementation interface.
 abstract class HttpsCallableFunctionHttp
     implements HttpsCallableFunction, HttpsFunctionHttp {
+  /// Optional HTTPS callable options.
   HttpsCallableOptions? get callableOptions;
 
   // ignore: unused_field
+  /// The call handler.
   CallHandler get callHandler;
 
+  /// Creates a new [HttpsCallableFunctionHttp] instance.
   factory HttpsCallableFunctionHttp(
     HttpsCallableOptions? callableOptions,
     CallHandler callHandler,
   ) => HttpsCallableFunctionHttpImpl(callableOptions, callHandler);
 }
 
+/// Implementation of [HttpsCallableFunctionHttp].
 class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
     implements HttpsCallableFunctionHttp {
   @override
@@ -274,6 +308,7 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
   @override
   final CallHandler callHandler;
 
+  /// Creates a new [HttpsCallableFunctionHttpImpl] instance.
   HttpsCallableFunctionHttpImpl(this.callableOptions, this.callHandler)
     : super(callableOptions, (ExpressHttpRequest request) async {
         try {
@@ -307,6 +342,7 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
       });
 }
 
+/// Rewrites a URL path for serving local files.
 String rewritePath(String path) {
   var newPath = path;
 
@@ -327,6 +363,7 @@ String rewritePath(String path) {
   }
 
   //peek into how it's rewriting the paths
+  // ignore: avoid_print
   print('$path -> $newPath');
 
   return newPath;
