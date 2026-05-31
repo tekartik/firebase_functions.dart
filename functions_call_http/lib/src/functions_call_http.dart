@@ -51,7 +51,9 @@ class FirebaseFunctionsCallServiceHttp
 
 /// Firebase functions call Http
 class FirebaseFunctionsCallHttp
-    with FirebaseAppProductMixin<FirebaseFunctionsCall>
+    with
+        FirebaseAppProductMixin<FirebaseFunctionsCall>,
+        FirebaseFunctionsCallDefaultMixin
     implements FirebaseFunctionsCall {
   /// Service
   @override

@@ -35,6 +35,11 @@ abstract class FirebaseFunctionsCall
     FirebaseFunctionsCallableOptions? options,
   });
 
+  FirebaseFunctionsCallable callableFromUri(
+    Uri uri, {
+    FirebaseFunctionsCallableOptions? options,
+  });
+
   /// Default Firebase functions call instance.
   static FirebaseFunctionsCall get instance =>
       (FirebaseApp.instance as FirebaseAppMixin)
@@ -101,6 +106,14 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
     FirebaseFunctionsCallableOptions? options,
   }) {
     throw UnimplementedError('FirebaseFunctionsCall.callable');
+  }
+
+  @override
+  FirebaseFunctionsCallable callableFromUri(
+    Uri uri, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
+    throw UnimplementedError('FirebaseFunctionsCall.callableFromUri');
   }
 }
 
