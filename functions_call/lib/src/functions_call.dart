@@ -35,6 +35,9 @@ abstract class FirebaseFunctionsCall
     FirebaseFunctionsCallableOptions? options,
   });
 
+  /// A reference to the Callable HTTPS trigger with the given Uri.
+  ///
+  /// Should be Uri of the 2nd gen Callable function in Firebase.
   FirebaseFunctionsCallable callableFromUri(
     Uri uri, {
     FirebaseFunctionsCallableOptions? options,
