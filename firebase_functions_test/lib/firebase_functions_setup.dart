@@ -6,7 +6,7 @@ import 'package:tekartik_firebase_functions_test/src/import.dart';
 import 'package:tekartik_firebase_functions_test/src/trigger_fs_functions.dart';
 
 import 'constants.dart';
-import 'firebase_functions_test.dart';
+import 'firebase_functions_test_runner.dart';
 
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
 export 'src/trigger_fs_functions.dart'

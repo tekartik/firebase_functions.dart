@@ -1,7 +1,7 @@
 import 'package:tekartik_app_dev_menu/dev_menu.dart';
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/constants.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart';
 
 export 'package:tekartik_app_dev_menu/dev_menu.dart';
 

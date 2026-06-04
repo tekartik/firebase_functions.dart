@@ -46,13 +46,14 @@ abstract class FirebaseFunctionsTestClientContext {
   /// External client factory.
   final HttpClientFactory httpClientFactory;
   final String? baseUrl;
-  FirebaseFunctionsCall? get functionsCall;
+  final FirebaseFunctionsCall? functionsCall;
   final String? functionNamePrefix;
 
   FirebaseFunctionsTestClientContext({
     required this.httpClientFactory,
     this.baseUrl,
     this.functionNamePrefix,
+    this.functionsCall,
   });
   factory FirebaseFunctionsTestClientContext.baseUrl({
     required HttpClientFactory httpClientFactory,
@@ -67,11 +68,25 @@ abstract class FirebaseFunctionsTestClientContext {
       functionNamePrefix: functionNameSuffix,
     );
   }
+  factory FirebaseFunctionsTestClientContext.urlTemplate({
+    required HttpClientFactory httpClientFactory,
+    required String urlTemplate,
+    FirebaseFunctionsCall? functionsCall,
+  }) {
+    return _FirebaseFunctionsTestClientContextUrlTemplate(
+      httpClientFactory: httpClientFactory,
+      urlTemplate: urlTemplate,
+      functionsCall: functionsCall,
+    );
+  }
 
   String url(String path);
+
+  Future<void> close();
 }
 
 class _FirebaseFunctionsTestClientContextBaseUrl
+    with FirebaseFunctionsTestClientContextMixin
     implements FirebaseFunctionsTestClientContext {
   @override
   final HttpClientFactory httpClientFactory;
@@ -101,8 +116,38 @@ class _FirebaseFunctionsTestClientContextBaseUrl
   }
 }
 
+class _FirebaseFunctionsTestClientContextUrlTemplate
+    with FirebaseFunctionsTestClientContextMixin
+    implements FirebaseFunctionsTestClientContext {
+  @override
+  final HttpClientFactory httpClientFactory;
+
+  final String urlTemplate;
+  @override
+  FirebaseFunctionsCall? functionsCall;
+
+  _FirebaseFunctionsTestClientContextUrlTemplate({
+    required this.httpClientFactory,
+    required this.urlTemplate,
+    required this.functionsCall,
+  });
+
+  @override
+  String url(String path) {
+    return urlTemplate.replaceAll('{{function}}', path);
+  }
+}
+
 mixin FirebaseFunctionsTestClientContextMixin
     implements FirebaseFunctionsTestClientContext {
   @override
   FirebaseFunctionsCall? get functionsCall => null;
+
+  @override
+  String? get functionNamePrefix => '';
+
+  @override
+  String? get baseUrl => null;
+  @override
+  Future<void> close() async {}
 }

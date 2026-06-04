@@ -107,6 +107,33 @@ int httpsErrorCodeToStatusCode(String errorCode) {
   return _httpsErrorCodeMap[errorCode] ?? httpStatusCodeInternalServerError;
 }
 
+var _statusHttpCodeMap = {
+  'NOT_FOUND': HttpsErrorCode.notFound,
+  'UNAUTHENTICATED': HttpsErrorCode.permissionDenied,
+  'INTERNAL': HttpsErrorCode.internal,
+};
+var _statusCodeHttpMap = {
+  for (var e in _statusHttpCodeMap.entries) e.value: e.key,
+};
+
+String statusErrorCodeToHttpStatusCode(String errorCode) {
+  return _statusCodeHttpMap[errorCode] ?? 'INTERNAL';
+}
+
+String httpStatusCodeToStatusErrorCode(String errorCode) {
+  return _statusHttpCodeMap[errorCode] ?? HttpsErrorCode.internal;
+}
+
+extension HttpsErrorHttpExt on HttpsError {
+  Map<String, Object?> toHttpJson() {
+    return {
+      'status': statusErrorCodeToHttpStatusCode(code),
+      'message': message,
+      'details': details,
+    };
+  }
+}
+
 String statusCodeToHttpsErrorCode(int statusCode) {
   return _statusCodeMap[statusCode] ?? HttpsErrorCode.internal;
 }
@@ -133,18 +160,18 @@ HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
 }
 
 /// Https error to map
+@Deprecated('Use toHttpJson instead')
 Map<String, Object?> httpsErrorToJsonMap(HttpsError error) {
-  return {
-    'code': error.code,
-    'message': error.message,
-    'details': error.details,
-  };
+  return error.toHttpJson();
 }
 
 /// Https error from map
 HttpsError httpsErrorFromJsonMap(Map map) {
+  var httpStatusCode = httpStatusCodeToStatusErrorCode(
+    map['status']?.toString() ?? '',
+  );
   return HttpsError(
-    map['code']?.toString() ?? HttpsErrorCode.unavailable,
+    httpStatusCode,
     map['message']?.toString() ?? 'no message',
     map['details'],
   );

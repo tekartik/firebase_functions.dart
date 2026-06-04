@@ -11,9 +11,9 @@ import 'package:tekartik_firebase_functions_call_sim/src/version.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_memory.dart';
 import 'package:tekartik_firebase_functions_test/constants.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart'
     as common;
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:tekartik_firebase_sim/firebase_sim.dart';
 import 'package:tekartik_firebase_sim/firebase_sim_server.dart';

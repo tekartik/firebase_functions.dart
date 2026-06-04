@@ -8,7 +8,7 @@ import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_co
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:tekartik_firebase_functions_io/src/version.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart'
     as common;
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:tekartik_http_io/http_client_io.dart';

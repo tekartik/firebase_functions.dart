@@ -70,8 +70,7 @@ class FirebaseFunctionsCallSimPluginServer {
         print(st);
       }
       var httpsError = anyExceptionToHttpsError(e);
-      return (CallSimResult()..error.v = httpsErrorToJsonMap(httpsError))
-          .toMap();
+      return (CallSimResult()..error.v = httpsError.toHttpJson()).toMap();
     }
   }
 }

@@ -9,7 +9,7 @@ import 'package:tekartik_firebase_functions_http/src/import.dart';
 import 'package:tekartik_firebase_functions_http/src/version.dart';
 import 'package:tekartik_firebase_functions_http/test/firebase_functions_test_context_memory.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart';
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:test/test.dart';
 

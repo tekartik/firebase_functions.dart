@@ -110,7 +110,7 @@ mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
 
   @override
   void registerFunction(String name, FirebaseFunction function) {
-    throw UnimplementedError('FirebaseFunction.registerFunction');
+    throw UnimplementedError('FirebaseFunction.registerFunction ($this)');
   }
 
   @override

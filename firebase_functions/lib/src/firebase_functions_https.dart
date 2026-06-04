@@ -87,7 +87,7 @@ class HttpsOptions extends GlobalOptions {
 
 /// Error thrown
 class HttpsError implements Exception {
-  HttpsError(this.code, this.message, this.details);
+  HttpsError(this.code, this.message, [this.details]);
 
   /// A status error code to include in the response.
   final String code;
@@ -103,11 +103,8 @@ class HttpsError implements Exception {
   final Object? details;
 
   @override
-  String toString() => {
-    'code': code,
-    'message': message,
-    if (details != null) 'details': details,
-  }.toString();
+  String toString() =>
+      {'code': code, 'message': message, 'details': ?details}.toString();
 }
 
 /// FunctionsErrorCode: "ok" | "cancelled" | "unknown" | "invalid-argument" | "deadline-exceeded" | "not-found" | "already-exists" | "permission-denied" | "resource-exhausted" | "failed-precondition" | "aborted" | "out-of-range" | "unimplemented" | "internal" | "unavailable" | "data-loss" | "unauthenticated"

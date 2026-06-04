@@ -8,6 +8,9 @@ export 'src/utils.dart'
         anyExceptionToHttpsError,
         httpsErrorCodeToStatusCode,
         statusCodeToHttpsErrorCode,
+        statusErrorCodeToHttpStatusCode,
         HttpClientExceptionFirebaseFunctionsExt,
+        HttpsErrorHttpExt,
         httpsErrorFromJsonMap,
+        // ignore: deprecated_member_use_from_same_package
         httpsErrorToJsonMap;

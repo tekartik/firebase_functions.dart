@@ -4,7 +4,7 @@ import 'package:tekartik_firebase_functions_test/constants.dart';
 import 'package:test/test.dart';
 
 import 'constants.dart';
-import 'firebase_functions_test.dart';
+import 'firebase_functions_test_runner.dart';
 
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
 export 'package:tekartik_http/http_utils.dart';
@@ -15,15 +15,26 @@ abstract class FirebaseFunctionsCallTestClientContext {
 
   factory FirebaseFunctionsCallTestClientContext({
     required FirebaseFunctionsCall functionsCall,
-  }) => _FirebaseFunctionsCallTestClientContext(functionsCall: functionsCall);
+    Uri? testCallUri,
+  }) => _FirebaseFunctionsCallTestClientContext(
+    functionsCall: functionsCall,
+    testCallUri: testCallUri,
+  );
 }
+
+mixin FirebaseFunctionsCallTestClientContextMixin
+    on FirebaseFunctionsCallTestClientContext {}
 
 class _FirebaseFunctionsCallTestClientContext
     implements FirebaseFunctionsCallTestClientContext {
   @override
   final FirebaseFunctionsCall functionsCall;
+  final Uri? testCallUri;
 
-  _FirebaseFunctionsCallTestClientContext({required this.functionsCall});
+  _FirebaseFunctionsCallTestClientContext({
+    required this.functionsCall,
+    this.testCallUri,
+  });
 }
 
 void ffCallTestGroup({
@@ -67,6 +78,7 @@ void ffCallTestGroup({
           rethrow;
         }
       });
+
       test('raw all', () async {
         for (var raw in [
           <String, Object?>{'test': 1},

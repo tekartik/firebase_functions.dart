@@ -107,6 +107,11 @@ class FirebaseFunctionsHttpBase
   }
 
   @override
+  void registerFunction(String name, FirebaseFunction function) {
+    functions[name] = function;
+  }
+
+  @override
   Future<HttpServer> serveHttp({int? port}) async {
     port ??= firebaseFunctionsHttpDefaultPort;
     var requestServer = await httpServerFactory.bind(
@@ -312,14 +317,10 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
   /// Creates a new [HttpsCallableFunctionHttpImpl] instance.
   HttpsCallableFunctionHttpImpl(this.callableOptions, this.callHandler)
     : super(callableOptions, (ExpressHttpRequest request) async {
-        try {
-          var result = await callHandler(CallRequestHttp(request));
-          var response = request.response;
-          response.headers.set(httpHeaderContentType, httpContentTypeJson);
-          var reponseString = {'result': result}.cvToJson();
-          await response.send(reponseString);
-        } on HttpsError catch (e) {
-          var response = request.response;
+        Future<void> sendError(
+          ExpressHttpResponse response,
+          HttpsError e,
+        ) async {
           try {
             response.statusCode = httpsErrorCodeToStatusCode(e.code);
             response.headers.set(httpHeaderContentType, httpContentTypeJson);
@@ -327,18 +328,36 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
             // ignore: avoid_print
             print('error setting status code');
           }
-          await response.send(jsonEncode({'error': '$e'}));
-        } catch (e) {
+          await response.send(jsonEncode({'error': e.toHttpJson()}));
+        }
+
+        try {
+          var contentType = request.headers.contentType?.toString();
+          if (!(contentType?.toString().contains('application/json') ??
+              false)) {
+            throw HttpsError(
+              HttpsErrorCode.invalidArgument,
+              'Request has incorrect Content-Type. $contentType',
+              null,
+            );
+          }
+          var result = await callHandler(CallRequestHttp(request));
+          var response = request.response;
+          response.headers.set(httpHeaderContentType, httpContentTypeJson);
+          var reponseString = {'result': result}.cvToJson();
+          await response.send(reponseString);
+        } on HttpsError catch (e) {
           var response = request.response;
 
-          try {
-            response.statusCode = httpStatusCodeInternalServerError;
-            response.headers.set(httpHeaderContentType, httpContentTypeJson);
-          } catch (_) {
-            // ignore: avoid_print
-            print('error setting status code');
-          }
-          await response.send(jsonEncode({'error': '$e'}));
+          await sendError(response, e);
+        } catch (e) {
+          var httpsError = HttpsError(
+            HttpsErrorCode.internal,
+            'Internal error',
+            {'exception': '$e'},
+          );
+          var response = request.response;
+          await sendError(response, httpsError);
         }
       });
 }

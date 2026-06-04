@@ -295,9 +295,31 @@ void ffTest({
         client = HttpFunctionTestClient(httpClient, uri);
       });
 
+      test('data raw http', () async {
+        var uri = Uri.parse(testContext.url(callableFunctionTestName));
+        var result = (await httpClientRead(
+          client.client,
+          httpMethodPost,
+          uri,
+          headers: {httpHeaderContentType: httpContentTypeJson},
+          body: jsonEncode({
+            'data': {'command': testCommandData, 'data': 'hello'},
+          }),
+        )).jsonToMap();
+        expect(result, {'data': 'hello'});
+      }, skip: true);
+
       test('data', () async {
         await client.testData();
       });
+
+      /*
+      test('data raw call', () async {
+        var uri = Uri.parse(testContext.url(callableFunctionTestName));
+        var result = await httpClientRead(client.client.post(uri, body: jsonEncode({
+          'command': testCommandData,
+          'data': 'hello',
+      });*/
       test('throw', () async {
         try {
           await client.sendThrow();

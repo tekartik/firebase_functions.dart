@@ -1,11 +1,12 @@
 import 'package:path/path.dart' as p;
 import 'package:tekartik_firebase_functions/ff_server.dart';
-import 'package:tekartik_firebase_functions_test/firebase_functions_test.dart'; // ignore: depend_on_referenced_packages
+// ignore: depend_on_referenced_packages
+import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart';
 
 /// HTTP test context implementation for Firebase Functions.
 class FirebaseFunctionsTestContextHttp extends FirebaseFunctionsTestContext
     with
-        //FirebaseFunctionsTestClientContextMixin,
+        FirebaseFunctionsTestClientContextMixin,
         FirebaseFunctionsTestServerContextHttpMixin,
         FirebaseFunctionsTestClientContextHttpMixin {
   /// Creates a new [FirebaseFunctionsTestContextHttp] instance.
@@ -89,6 +90,7 @@ class FirebaseFunctionsTestClientContextHttp
     /// external client factory
     required super.httpClientFactory,
     required super.baseUrl,
+    super.functionsCall,
     super.functionNamePrefix,
   });
 }

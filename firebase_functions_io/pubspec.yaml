@@ -56,5 +56,9 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/firebase_firestore.dart
       path: firestore_sembast
+  tekartik_firebase_functions_call_http:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      path: functions_call_http
 
 resolution: workspace
