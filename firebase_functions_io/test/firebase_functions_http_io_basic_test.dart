@@ -1,3 +1,4 @@
+@TestOn('vm')
 library;
 
 import 'package:tekartik_firebase_functions_call_http/functions_call_memory.dart';

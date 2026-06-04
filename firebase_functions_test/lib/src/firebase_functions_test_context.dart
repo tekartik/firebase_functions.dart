@@ -136,6 +136,12 @@ class _FirebaseFunctionsTestClientContextUrlTemplate
   String url(String path) {
     return urlTemplate.replaceAll('{{function}}', path);
   }
+
+  @override
+  String? get baseUrl => throw UnimplementedError();
+
+  @override
+  String? get functionNamePrefix => throw UnimplementedError();
 }
 
 mixin FirebaseFunctionsTestClientContextMixin
@@ -143,11 +149,6 @@ mixin FirebaseFunctionsTestClientContextMixin
   @override
   FirebaseFunctionsCall? get functionsCall => null;
 
-  @override
-  String? get functionNamePrefix => '';
-
-  @override
-  String? get baseUrl => null;
   @override
   Future<void> close() async {}
 }
