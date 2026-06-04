@@ -1,3 +1,4 @@
+import 'package:cv/cv_json.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
@@ -315,7 +316,7 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
           var result = await callHandler(CallRequestHttp(request));
           var response = request.response;
           response.headers.set(httpHeaderContentType, httpContentTypeJson);
-          var reponseString = result is String ? result : jsonEncode(result);
+          var reponseString = {'result': result}.cvToJson();
           await response.send(reponseString);
         } on HttpsError catch (e) {
           var response = request.response;

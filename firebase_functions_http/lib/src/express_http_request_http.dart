@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cv/cv_json.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
 
 import 'import.dart';
@@ -49,7 +50,7 @@ class CallRequestHttp with CallRequestMixin implements CallRequest {
   /// User ID.
   String? get uid => httpRequest.headers.value(firebaseFunctionsHttpHeaderUid);
   @override
-  late final Object? data = jsonDecode(httpRequest.bodyAsString);
+  late final Object? data = httpRequest.bodyAsString.jsonToMap()['data'];
 
   @override
   late final CallContext context = CallContextNode(this);
