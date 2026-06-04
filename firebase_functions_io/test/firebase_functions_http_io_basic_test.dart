@@ -13,10 +13,8 @@ void main() async {
   late HttpServer server;
   late Uri uri;
   setUpAll(() async {
-    var dummyProjectId = 'dummyproject';
-    var app = newFirebaseAppLocal(
-      options: FirebaseAppOptions(projectId: dummyProjectId),
-    );
+    var app = newFirebaseAppMemory();
+
     var httpFactory = httpFactoryIo;
 
     var prefix = 'http';

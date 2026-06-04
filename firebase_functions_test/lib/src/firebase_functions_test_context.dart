@@ -134,7 +134,9 @@ class _FirebaseFunctionsTestClientContextUrlTemplate
 
   @override
   String url(String path) {
-    return urlTemplate.replaceAll('{{function}}', path);
+    return urlTemplate
+        .replaceAll('{{function}}', path)
+        .replaceAll('__function__', path);
   }
 
   @override

@@ -12,10 +12,7 @@ void main() async {
   late HttpServer server;
   late FirebaseFunctionsTestClientContext testClientContext;
   setUpAll(() async {
-    var dummyProjectId = 'dummyproject';
-    var app = newFirebaseAppLocal(
-      options: FirebaseAppOptions(projectId: dummyProjectId),
-    );
+    var app = newFirebaseAppMemory();
     var httpClientFactory = httpClientFactoryMemory;
     var prefix = 'memory';
     var firebaseFunctions = firebaseFunctionsServiceMemory.functions(app);
