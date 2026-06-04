@@ -1,25 +1,43 @@
 import 'package:path/path.dart' as p;
+import 'package:tekartik_app_http/app_http.dart';
 // ignore: depend_on_referenced_packages
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
 import 'package:tekartik_firebase_auth/auth.dart';
-import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_call/functions_call_mixin.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
-import 'package:tekartik_http/http.dart';
-import 'package:tekartik_http/http_client.dart';
+
+import 'functions_call_http_helper.dart';
+
+/// Global service instance.
+final firebaseFunctionsCallServiceHttp = FirebaseFunctionsCallServiceHttp(
+  httpClientFactory: httpClientFactoryUniversal,
+);
 
 /// Firebase functions call service Http
-class FirebaseFunctionsCallServiceHttp
+abstract class FirebaseFunctionsCallServiceHttp
+    implements FirebaseFunctionsCallService {
+  /// Factory constructor.
+  factory FirebaseFunctionsCallServiceHttp({
+    required HttpClientFactory httpClientFactory,
+  }) => _FirebaseFunctionsCallServiceHttp(httpClientFactory: httpClientFactory);
+
+  /// Http client factory.
+  HttpClientFactory get httpClientFactory;
+}
+
+/// Firebase functions call service Http implementation.
+class _FirebaseFunctionsCallServiceHttp
     with
         FirebaseProductServiceMixin<FirebaseFunctionsCall>,
         FirebaseFunctionsCallServiceDefaultMixin
-    implements FirebaseFunctionsCallService {
+    implements FirebaseFunctionsCallServiceHttp {
   /// Http client factory
+  @override
   final HttpClientFactory httpClientFactory;
 
   /// Constructor
-  FirebaseFunctionsCallServiceHttp({required this.httpClientFactory});
+  _FirebaseFunctionsCallServiceHttp({required this.httpClientFactory});
 
   /// Most implementation need a single instance, keep it in memory!
   final _instances = <String, FirebaseFunctionsCallHttp>{};
@@ -77,14 +95,44 @@ class FirebaseFunctionsCallHttp
     String name, {
     FirebaseFunctionsCallableOptions? options,
   }) {
-    return FirebaseFunctionsCallableHttp(this, name);
+    return _FirebaseFunctionsCallableHttp(this, name);
+  }
+
+  @override
+  FirebaseFunctionsCallable callableFromUri(
+    Uri uri, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
+    return _FirebaseFunctionsCallableHttpFromUri(this, uri);
   }
 }
 
 /// Firebase functions callable Http.
-class FirebaseFunctionsCallableHttp
+abstract class FirebaseFunctionsCallableHttp
+    implements FirebaseFunctionsCallable {}
+
+/// Firebase functions callable Http.
+class _FirebaseFunctionsCallableHttpFromUri
+    extends _FirebaseFunctionsCallableHttp {
+  final Uri uri;
+
+  _FirebaseFunctionsCallableHttpFromUri(
+    FirebaseFunctionsCallHttp functionsCallHttp,
+    this.uri,
+  ) : super(functionsCallHttp, uri.toString());
+
+  @override
+  Future<FirebaseFunctionsCallableResult<T>> call<T>([
+    Object? parameters,
+  ]) async {
+    return await _callUri(uri, parameters: parameters);
+  }
+}
+
+/// Firebase functions callable Http.
+class _FirebaseFunctionsCallableHttp
     with FirebaseFunctionsCallableDefaultMixin
-    implements FirebaseFunctionsCallable {
+    implements FirebaseFunctionsCallableHttp {
   /// The function name
   @override
   final String name;
@@ -93,21 +141,15 @@ class FirebaseFunctionsCallableHttp
   final FirebaseFunctionsCallHttp functionsCallHttp;
 
   /// Constructor
-  FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
+  _FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
 
-  @override
-  Future<FirebaseFunctionsCallableResultHttp<T>> call<T>([
+  Future<FirebaseFunctionsCallableResult<T>> _callUri<T>(
+    Uri uri, {
     Object? parameters,
-  ]) async {
+  }) async {
     var service = functionsCallHttp.service;
     var httpClient = service.httpClientFactory.newClient();
     try {
-      var baseUri = functionsCallHttp.baseUri;
-      if (baseUri == null) {
-        throw StateError('FirebaseFunctionsCallable.baseUri required');
-      }
-      var uri = Uri.parse(p.url.join(baseUri.toString(), name));
-
       /// Find current auth user if any
       var authUserId = (functionsCallHttp.app as FirebaseAppMixin)
           .getProduct<FirebaseAuth>()
@@ -117,43 +159,29 @@ class FirebaseFunctionsCallableHttp
       var headers = <String, String>{
         firebaseFunctionsHttpHeaderUid: ?authUserId,
       };
-      try {
-        var text = await httpClientRead(
-          httpClient,
-          httpMethodPost,
-          uri,
-          headers: headers,
-          body: jsonEncode(parameters),
-        );
-        FirebaseFunctionsCallableResultHttp<T> result;
-        if (text.isEmpty) {
-          result = FirebaseFunctionsCallableResultHttp<T>(null as T);
-        } else {
-          var data = jsonDecode(text) as T;
-          result = FirebaseFunctionsCallableResultHttp<T>(data);
-        }
-        return result;
-      } catch (e, st) {
-        var httpsError = anyExceptionToHttpsError(e, stackTrace: st);
-        //devPrint('e: $e, httpsError: $httpsError');
-        throw httpsError;
-      }
+      return await firebaseFunctionsHttpCallUri(
+        httpClient,
+        uri,
+        headers: headers,
+        parameters: parameters,
+      );
     } finally {
       httpClient.close();
     }
   }
 
   @override
-  String toString() => 'CallableHttp($name)';
-}
-
-/// Firebase functions callable result Http.
-class FirebaseFunctionsCallableResultHttp<T>
-    with FirebaseFunctionsCallableResultDefaultMixin<T>
-    implements FirebaseFunctionsCallableResult<T> {
-  /// Constructor
-  FirebaseFunctionsCallableResultHttp(this.data);
+  Future<FirebaseFunctionsCallableResult<T>> call<T>([
+    Object? parameters,
+  ]) async {
+    var baseUri = functionsCallHttp.baseUri;
+    if (baseUri == null) {
+      throw StateError('FirebaseFunctionsCallable.baseUri required');
+    }
+    var uri = Uri.parse(p.url.join(baseUri.toString(), name));
+    return await _callUri(uri, parameters: parameters);
+  }
 
   @override
-  final T data;
+  String toString() => 'CallableHttp($name)';
 }

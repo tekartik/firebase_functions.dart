@@ -9,7 +9,9 @@ import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:test/test.dart';
 
 Future<Object?> callHandler(CallRequest request) async {
-  return {'uid': request.context.auth?.uid};
+  return {
+    'result': {'uid': request.context.auth?.uid},
+  };
 }
 
 void main() {

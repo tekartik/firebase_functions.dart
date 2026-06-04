@@ -78,6 +78,18 @@ abstract class FirebaseFunctionsCallable {
 abstract class FirebaseFunctionsCallableResult<T> {
   /// The data that was returned from the Callable HTTPS trigger.
   T get data;
+
+  /// Creates a new [FirebaseFunctionsCallableResult] instance.
+  factory FirebaseFunctionsCallableResult(T data) =>
+      _FirebaseFunctionsCallableResult<T>(data);
+}
+
+class _FirebaseFunctionsCallableResult<T>
+    implements FirebaseFunctionsCallableResult<T> {
+  @override
+  final T data;
+
+  _FirebaseFunctionsCallableResult(this.data);
 }
 
 /// Firebase functions callable result helper extension
@@ -108,7 +120,7 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
     String name, {
     FirebaseFunctionsCallableOptions? options,
   }) {
-    throw UnimplementedError('FirebaseFunctionsCall.callable');
+    throw UnimplementedError('FirebaseFunctionsCall.callable ($runtimeType)');
   }
 
   @override
@@ -116,7 +128,9 @@ mixin FirebaseFunctionsCallDefaultMixin implements FirebaseFunctionsCall {
     Uri uri, {
     FirebaseFunctionsCallableOptions? options,
   }) {
-    throw UnimplementedError('FirebaseFunctionsCall.callableFromUri');
+    throw UnimplementedError(
+      'FirebaseFunctionsCall.callableFromUri ($runtimeType)',
+    );
   }
 }
 
@@ -125,7 +139,7 @@ mixin FirebaseFunctionsCallableDefaultMixin
     implements FirebaseFunctionsCallable {
   @override
   Future<FirebaseFunctionsCallableResult<T>> call<T>([Object? parameters]) {
-    throw UnimplementedError('FirebaseFunctionsCallable.call');
+    throw UnimplementedError('FirebaseFunctionsCallable.call ($runtimeType)');
   }
 
   @override
@@ -162,6 +176,6 @@ class _FirebaseFunctionsCallableMock
     implements FirebaseFunctionsCallable {}
 
 // ignore: unused_element
-class _FirebaseFunctionsCallableResultsMock
-    with FirebaseFunctionsCallableResultDefaultMixin
-    implements FirebaseFunctionsCallableResult {}
+class _FirebaseFunctionsCallableResultsMock<T>
+    with FirebaseFunctionsCallableResultDefaultMixin<T>
+    implements FirebaseFunctionsCallableResult<T> {}

@@ -56,8 +56,8 @@ class _FirebaseFunctionsCallableSim
     if (error != null) {
       throw httpsErrorFromJsonMap(error);
     }
-    return FirebaseFunctionsCallableResultSim(
-      data: jsonDecode(callSimResult.success.v!) as T,
+    return FirebaseFunctionsCallableResult(
+      jsonDecode(callSimResult.success.v!) as T,
     );
   }
 }

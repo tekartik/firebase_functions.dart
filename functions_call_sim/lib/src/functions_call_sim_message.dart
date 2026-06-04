@@ -1,5 +1,4 @@
 import 'package:cv/cv.dart';
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
 
 /// Init cv builders
 void initFunctionsCallSimBuilders() {
@@ -34,14 +33,4 @@ class CallSimResult extends CvModelBase {
 
   @override
   CvFields get fields => [success, error];
-}
-
-/// Callable sim implementation
-class FirebaseFunctionsCallableResultSim<T>
-    implements FirebaseFunctionsCallableResult<T> {
-  @override
-  final T data;
-
-  /// Constructor
-  FirebaseFunctionsCallableResultSim({required this.data});
 }
