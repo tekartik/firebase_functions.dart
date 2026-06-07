@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cv/cv.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
 Future<Object?> basicCallHandler(CallRequest request) async {
@@ -19,12 +22,38 @@ Future<Object?> basicCallHandler(CallRequest request) async {
   return {'no': 'data'};
 }
 
-void initFunctionsBasic(FirebaseFunctions functions, {required String prefix}) {
+/// Init builders
+void testFunctionsApiInitBuilders() {
+  cvAddConstructors([TestApiRequest.new, TestApiResult.new]);
+}
+
+void initFunctionsBasic(
+  FirebaseFunctions functions, {
+  required String prefix,
+  CallHandler? callHandler,
+}) {
   functions.registerFunction(
     '${prefix}basic',
     functions.https.onCall(
-      basicCallHandler,
+      callHandler ?? basicCallHandler,
       callableOptions: HttpsCallableOptions(region: regionBelgium),
     ),
   );
+}
+
+/// Test Api request
+class TestApiRequest extends CvModelBase {
+  /// Command name.
+  final command = CvField<String>('command');
+
+  @override
+  List<CvField<Object?>> get fields => [command];
+}
+
+class TestApiResult extends CvModelBase {
+  /// Result data.
+  final data = CvField<Object>('data');
+
+  @override
+  List<CvField<Object?>> get fields => [data];
 }
