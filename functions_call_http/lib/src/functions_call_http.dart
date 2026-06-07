@@ -152,7 +152,7 @@ class _FirebaseFunctionsCallableHttp
     try {
       var firebaseAuth = (functionsCallHttp.app as FirebaseAppMixin)
           .getProduct<FirebaseAuth>();
-      var currentUser = (firebaseAuth as FirebaseAuthMixin).currentUser;
+      var currentUser = (firebaseAuth as FirebaseAuthMixin?)?.currentUser;
 
       /// Find current auth user if any
       var authUserId = currentUser?.uid;
