@@ -3,7 +3,7 @@ import 'package:tekartik_app_http/app_http.dart';
 // ignore: depend_on_referenced_packages
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_firebase/firebase_mixin.dart';
-import 'package:tekartik_firebase_auth/auth.dart';
+import 'package:tekartik_firebase_auth/auth_mixin.dart';
 import 'package:tekartik_firebase_functions_call/functions_call_mixin.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
 
@@ -150,11 +150,12 @@ class _FirebaseFunctionsCallableHttp
     var service = functionsCallHttp.service;
     var httpClient = service.httpClientFactory.newClient();
     try {
+      var firebaseAuth = (functionsCallHttp.app as FirebaseAppMixin)
+          .getProduct<FirebaseAuth>();
+      var currentUser = (firebaseAuth as FirebaseAuthMixin).currentUser;
+
       /// Find current auth user if any
-      var authUserId = (functionsCallHttp.app as FirebaseAppMixin)
-          .getProduct<FirebaseAuth>()
-          ?.currentUser
-          ?.uid;
+      var authUserId = currentUser?.uid;
 
       var headers = <String, String>{
         firebaseFunctionsHttpHeaderUid: ?authUserId,
