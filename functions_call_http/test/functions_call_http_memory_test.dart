@@ -56,6 +56,10 @@ void testHttp({
           httpClientFactory: httpClientFactory,
         );
 
+        await firebaseAuth.getOrCreateUserWithEmailAndPassword(
+          email: 'email',
+          password: 'password',
+        );
         functionsCall = functionsCallService.functionsCall(
           app,
           options: FirebaseFunctionsCallOptions(
