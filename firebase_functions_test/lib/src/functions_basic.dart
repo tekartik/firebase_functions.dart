@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:cv/cv.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 
-Future<Object?> basicCallHandler(CallRequest request) async {
+Future<Object?> basicCallHandler(
+  FirebaseFunctions functions,
+  CallRequest request,
+) async {
   var data = request.data;
   if (data is Map) {
     var command = data['command'];
@@ -16,6 +19,8 @@ Future<Object?> basicCallHandler(CallRequest request) async {
           'Not found',
           'command $command',
         );
+      case 'project-id':
+        return functions.app.projectId;
     }
     return {'no': 'command'};
   }
@@ -35,7 +40,7 @@ void initFunctionsBasic(
   functions.registerFunction(
     '${prefix}basic',
     functions.https.onCall(
-      callHandler ?? basicCallHandler,
+      callHandler ?? (request) => basicCallHandler(functions, request),
       callableOptions: HttpsCallableOptions(region: regionBelgium),
     ),
   );

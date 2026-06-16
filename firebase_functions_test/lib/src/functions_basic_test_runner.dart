@@ -80,4 +80,8 @@ void basicTestGroup(
     });
     client.close();
   });
+  test('basic project-id', () async {
+    var result = await callable.call<String>({'command': 'project-id'});
+    expect(result.data, functionsCall.app.options.projectId);
+  });
 }

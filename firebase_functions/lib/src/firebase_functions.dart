@@ -81,48 +81,48 @@ abstract class FirebaseFunctions
 mixin FirebaseFunctionsDefaultMixin implements FirebaseFunctions {
   /// Firebase functions service
   @override
-  FirebaseApp get app => throw UnimplementedError('FirebaseFunction.app');
+  FirebaseApp get app => throw UnimplementedError('FirebaseFunctions.app');
 
   /// Firebase functions service
   @override
   FirebaseFunctionsService get service =>
-      throw UnimplementedError('FirebaseFunction.service');
+      throw UnimplementedError('FirebaseFunctions.service');
 
   /// Scheduler functions.
   @override
   SchedulerFunctions get scheduler =>
-      throw UnimplementedError('FirebaseFunction.scheduler');
+      throw UnimplementedError('FirebaseFunctions.scheduler');
 
   /// Firestore functions.
   @override
   FirestoreFunctions get firestore =>
-      throw UnimplementedError('FirebaseFunction.firestore');
+      throw UnimplementedError('FirebaseFunctions.firestore');
 
   @override
   set globalOptions(GlobalOptions options) {
-    throw UnimplementedError('FirebaseFunction.globalOptions');
+    throw UnimplementedError('FirebaseFunctions.globalOptions');
   }
 
   @override
   void operator []=(String key, FirebaseFunction function) {
-    throw UnimplementedError('FirebaseFunction.[]=');
+    throw UnimplementedError('FirebaseFunctions.[]=');
   }
 
   @override
   void registerFunction(String name, FirebaseFunction function) {
-    throw UnimplementedError('FirebaseFunction.registerFunction ($this)');
+    throw UnimplementedError('FirebaseFunctions.registerFunction ($this)');
   }
 
   @override
   HttpsFunctions get https =>
-      throw UnimplementedError('FirebaseFunction.https');
+      throw UnimplementedError('FirebaseFunctions.https');
 
   @override
-  Params get params => throw UnimplementedError('FirebaseFunction.params');
+  Params get params => throw UnimplementedError('FirebaseFunctions.params');
 
   @override
   PubsubFunctions get pubsub =>
-      throw UnimplementedError('FirebaseFunction.pubsub');
+      throw UnimplementedError('FirebaseFunctions.pubsub');
 
   /// Deprecated use setGlobalOptions
   @override
