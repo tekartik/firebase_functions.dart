@@ -81,7 +81,10 @@ void basicTestGroup(
     client.close();
   });
   test('basic project-id', () async {
+    // if failing it might just be a type error (if the result is a map)
     var result = await callable.call<String>({'command': 'project-id'});
+    // var result = await callable.call<Object>({'command': 'project-id'});
+    // print('result $result (${result.runtimeType})');
     expect(result.data, functionsCall.app.options.projectId);
   });
 }
