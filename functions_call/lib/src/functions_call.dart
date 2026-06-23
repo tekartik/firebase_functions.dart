@@ -90,6 +90,9 @@ class _FirebaseFunctionsCallableResult<T>
   final T data;
 
   _FirebaseFunctionsCallableResult(this.data);
+
+  @override
+  String toString() => 'CallableResult<$T>($data)';
 }
 
 /// Firebase functions callable result helper extension
