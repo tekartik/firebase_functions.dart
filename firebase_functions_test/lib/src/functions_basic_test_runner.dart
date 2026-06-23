@@ -57,6 +57,7 @@ void basicTestGroup(
       expect(e.details, 'command not-found');
     }
   });
+
   test('raw basic not-found', () async {
     var client = testContext.httpClientFactory.newClient();
     var response = (await httpClientSend(

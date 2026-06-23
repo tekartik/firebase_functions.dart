@@ -334,6 +334,7 @@ void ffTest({
           expect(e.statusCode, httpStatusCodeNotFound);
         }
       });
+
       test('raw', () async {
         var result = await client.sendRaw(null);
         expect(result, isA<Uint8List>());
