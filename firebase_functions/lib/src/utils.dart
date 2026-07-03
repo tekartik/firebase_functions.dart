@@ -96,7 +96,8 @@ abstract class HttpsErrorCode {
 
 var _map = {
   httpStatusCodeNotFound: HttpsErrorCode.notFound,
-  httpStatusCodeUnauthorized: HttpsErrorCode.permissionDenied,
+  httpStatusCodeUnauthorized: HttpsErrorCode.unauthenticated,
+  httpStatusCodeForbidden: HttpsErrorCode.permissionDenied,
   httpStatusCodeInternalServerError: HttpsErrorCode.internal,
 };
 
