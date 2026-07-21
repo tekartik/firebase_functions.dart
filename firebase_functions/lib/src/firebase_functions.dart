@@ -263,6 +263,10 @@ class RuntimeOptions {
 /// Preferred for cloud function
 const regionBelgium = 'europe-west1';
 
+/// Europe West 9 location Paris
+/// Preferred for Firestore/functions
+const regionParisEuropeWest9 = 'europe-west9';
+
 /// Frankfurt location
 /// Preferred for Firestore
 const regionFrankfurt = 'europe-west3';
