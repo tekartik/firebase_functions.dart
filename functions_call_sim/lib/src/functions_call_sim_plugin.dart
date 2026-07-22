@@ -81,6 +81,7 @@ class _FirebaseFunctionsCallSimPlugin
         options.initFunctions?[app.options.projectId] ?? options.initFunction;
     if (initFunction != null) {
       firebaseFunctions = firebaseFunctionsService.functions(app);
+
       initFunction(firebaseApp: app);
       if (_httpServer == null) {
         var httpServer = await firebaseFunctions!.serveHttp(

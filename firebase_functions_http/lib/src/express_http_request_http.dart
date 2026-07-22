@@ -39,6 +39,7 @@ Future<ExpressHttpRequestHttp> asExpressHttpRequestHttp(
   if (httpRequest.contentLength != 0) {
     body = await httpStreamGetBytes(httpRequest);
   }
+
   return ExpressHttpRequestHttp(body, httpRequest, rewrittenUri);
 }
 

@@ -31,6 +31,7 @@ class _FirebaseFunctionsCallServiceSim
   FirebaseFunctionsCallSim _getInstance(
     App app,
     String region,
+
     FirebaseFunctionsCallSim Function() createIfNotFound,
   ) {
     var key = '${app.name}_$region';

@@ -45,6 +45,7 @@ class _FirebaseFunctionsCallServiceHttp
   FirebaseFunctionsCallHttp _getInstance(
     App app,
     String region,
+
     FirebaseFunctionsCallHttp Function() createIfNotFound,
   ) {
     var key = '${app.name}_$region';

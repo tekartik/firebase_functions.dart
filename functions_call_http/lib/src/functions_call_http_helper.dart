@@ -51,5 +51,6 @@ HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
   if (e is HttpClientException) {
     return e.toHttpsError(stackTrace: stackTrace);
   }
+
   return HttpsError(HttpsErrorCode.internal, '$e', stackTrace);
 }

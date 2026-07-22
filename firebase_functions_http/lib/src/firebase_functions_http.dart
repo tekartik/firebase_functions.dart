@@ -28,6 +28,7 @@ mixin FirebaseFunctionsHttpDefaultMixin implements FirebaseFunctionsHttp {
   @override
   Future<FfServer> serve({int? port}) async {
     var server = await serveHttp(port: port);
+
     return FfServerHttp(server);
   }
 
@@ -216,6 +217,7 @@ class ParamsHttp extends Params {
     if (projectId != null) {
       return projectId;
     }
+
     throw StateError('Define a default projectId for the memory functions');
   }
 }
@@ -357,6 +359,7 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
             {'exception': '$e'},
           );
           var response = request.response;
+
           await sendError(response, httpsError);
         }
       });
