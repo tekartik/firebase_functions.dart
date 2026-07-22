@@ -1,3 +1,5 @@
+/// Public API for calling Firebase Cloud Functions callable (HTTPS
+/// callable) triggers from Dart.
 library;
 
 export 'package:tekartik_firebase/firebase.dart';

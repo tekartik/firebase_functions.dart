@@ -5,6 +5,12 @@ import 'dart:typed_data';
 import 'package:tekartik_http/http.dart';
 import 'package:tekartik_http/src/utils.dart'; // ignore: implementation_imports
 
+/// Converts a raw request/response [body] to its text representation.
+///
+/// [body] must be one of `String` (returned as-is), `Uint8List` (decoded
+/// as UTF-8), or `Map`/`List` (JSON-encoded).
+///
+/// Throws an [UnsupportedError] if [body] is of any other type.
 String requestBodyAsText(dynamic body) {
   if (body is String) {
     return body;
@@ -18,6 +24,17 @@ String requestBodyAsText(dynamic body) {
   throw UnsupportedError('body $body not text');
 }
 
+/// Converts a raw request/response [body] to a `Map<String, Object?>`, if
+/// possible.
+///
+/// [body] can be `null` (returns `null`), a `Map` (cast as-is), a `String`
+/// (parsed as JSON; returns `null` if it does not decode to a JSON
+/// object), or a `List` (converted to text first, then parsed as JSON).
+///
+/// Returns `null` when [body] is `null` or is a `String` that does not
+/// decode to a JSON object.
+///
+/// Throws an [UnsupportedError] if [body] is of any other type.
 Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
   if (body == null) {
     return null;
@@ -35,61 +52,106 @@ Map<String, Object?>? requestBodyAsJsonObject(dynamic body) {
   throw UnsupportedError('body $body not json object');
 }
 
+/// An incoming HTTPS request as delivered to a [RequestHandler], wrapping
+/// the underlying platform request (e.g. an Express-style request on
+/// Node.js).
 abstract class ExpressHttpRequest {
   // String, List<int>, Map
+  /// The raw request body, typically a `String`, `List<int>` or `Map`
+  /// depending on how the platform decoded it, or `null` if there is no
+  /// body.
   Object? get body;
 
+  /// The request [Uri], including path and query parameters.
   Uri get uri;
 
+  /// The [ExpressHttpResponse] used to write the response for this
+  /// request.
   ExpressHttpResponse get response;
 
+  /// The HTTP method of the request (e.g. `'GET'`, `'POST'`).
   String get method;
 
+  /// The HTTP request headers.
   HttpHeaders get headers;
 
+  /// The requested [Uri]. Deprecated, use [uri] instead.
   @Deprecated('Use uri')
   Uri get requestedUri;
 }
 
-/// Extension to get the body as a map
+/// Convenience accessors to interpret an [ExpressHttpRequest.body] as JSON
+/// or text.
 extension ExpressHttpRequestExt on ExpressHttpRequest {
-  /// Get the body as a map
+  /// The request [ExpressHttpRequest.body] as a `Map<String, Object?>`.
+  ///
+  /// Throws if the body is `null` or cannot be interpreted as a JSON
+  /// object.
   Map<String, Object?> get bodyAsMap => bodyAsMapOrNull!;
 
-  /// Get the body as a text
+  /// The request [ExpressHttpRequest.body] as a `Map<String, Object?>`, or
+  /// `null` if the body is missing or cannot be interpreted as a JSON
+  /// object.
   Map<String, Object?>? get bodyAsMapOrNull => httpDataAsMapOrNull(body);
 
-  /// Get the body as a text - DEPRECATED
+  /// The request [ExpressHttpRequest.body] converted to text, or `null` if
+  /// unavailable. Deprecated, use [bodyAsString] instead.
+  @Deprecated('Use bodyAsString')
   String? get bodyAsText => requestBodyAsText(body);
 
-  /// Get the body as a text
+  /// The request [ExpressHttpRequest.body] converted to its text
+  /// representation.
+  ///
+  /// Throws if the body is `null`.
   String get bodyAsString => httpDataAsString(body!);
 }
 
+/// The response side of an HTTPS request, used by [RequestHandler]s to
+/// write and finish the response to an [ExpressHttpRequest].
 abstract class ExpressHttpResponse {
-  /// send closes too
-  /// Node only supports this.
+  /// Writes [body] (if any) and closes the response, in a single step.
+  ///
+  /// [body] can be a `String`, `Uint8List`/`List<int>`, `Map` or `List`
+  /// (the latter two are JSON-encoded); if omitted, only [close] is
+  /// effectively performed. Node only supports this method to terminate a
+  /// response.
+  ///
+  /// The returned [Future] completes once the response has been sent.
   Future send([Object? body]);
 
-  // redirect
+  /// Redirects the response to [location].
+  ///
+  /// [status] is the HTTP redirect status code to use; if omitted, an
+  /// implementation-defined default (typically 302) is used.
+  ///
+  /// The returned [Future] completes once the redirect response has been
+  /// sent.
   Future redirect(Uri location, {int? status});
 
-  // Write a string
+  /// Writes [content] to the response body without closing the response.
   void write(String content);
 
+  /// Writes [content] followed by a newline to the response body without
+  /// closing the response.
   void writeln(String content);
 
-  // Add bytes
+  /// Appends raw [bytes] to the response body without closing the
+  /// response.
   void add(Uint8List bytes);
 
-  // get and set status code
+  /// The HTTP status code of the response.
   int get statusCode;
 
+  /// Sets the HTTP status code of the response.
   set statusCode(int statusCode);
 
-  /// To call if not using send
+  /// Closes the response. Call this if the response was written using
+  /// [write]/[writeln]/[add] rather than [send].
+  ///
+  /// The returned [Future] completes once the response has been closed.
   Future close();
 
+  /// The HTTP response headers.
   HttpHeaders get headers;
 }
 
