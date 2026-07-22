@@ -4,8 +4,15 @@ import 'package:cv/cv_json.dart';
 import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_http/http.dart';
 
+/// Convenience accessor to decode a [CallRequest] payload.
 extension CallRequestFfExt on CallRequest {
-  /// Get the request as a map
+  /// Returns the request payload as a `Map<String, Object?>`.
+  ///
+  /// If [CallRequest.data] is already a `Map`, it is cast directly;
+  /// otherwise [CallRequest.text] is JSON-decoded and cast.
+  ///
+  /// Throws if the data is neither a `Map` nor JSON-decodable to a `Map`,
+  /// or if [CallRequest.text] is `null`.
   Map<String, Object?> getRequestAsMap() {
     Map map;
     if (data is Map) {
@@ -17,8 +24,22 @@ extension CallRequestFfExt on CallRequest {
   }
 }
 
+/// Convenience adapter to invoke a [CallHandler] from a raw
+/// [ExpressHttpRequest] (as opposed to a real callable-function
+/// invocation), mainly useful for HTTP-based testing.
 extension ExpressHttpRequestFfExt on ExpressHttpRequest {
-  /// Wrap http request (mainly for http test)
+  /// Invokes [handler] with a [CallRequest] built from this request's body,
+  /// then writes the result (or any thrown error) as a JSON response.
+  ///
+  /// On success, the handler's return value is written as the response
+  /// body (as a JSON string, or as-is if it is already a `String`) with a
+  /// `application/json` content type.
+  ///
+  /// On failure, an [HttpsError] (or any other exception, wrapped as an
+  /// internal error) is written as a JSON `{'error': {...}}` body with a
+  /// 500 status code.
+  ///
+  /// The returned [Future] completes once the response has been sent.
   Future<void> handleWithCallHandler(CallHandler handler) async {
     var result = await handler(CallRequestFromExpress(request: this));
     try {
@@ -45,25 +66,40 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
   }
 }
 
-/// Call request from http request
+/// A [CallRequest] adapted from a raw [ExpressHttpRequest], used to run a
+/// [CallHandler] against a plain HTTP request (mainly for testing).
 class CallRequestFromExpress with CallRequestMixin {
+  /// The underlying HTTP request this [CallRequest] is adapted from.
   final ExpressHttpRequest request;
+
+  /// The request payload, taken from [request]'s body.
   @override
   late final Object? data;
 
+  /// The string representation of [data], or `null` if [data] is `null`.
   @override
   String? get text => data?.toString();
 
+  /// Creates a [CallRequest] wrapping [request], reading [data] from its
+  /// body.
   CallRequestFromExpress({required this.request}) {
     data = request.body;
   }
 
+  /// Always throws, since a [CallContext] (Firebase Auth context) is not
+  /// available when a call is adapted from a plain HTTP request.
   @override
   CallContext get context =>
       throw UnimplementedError('Cannot call context in a http call');
 }
 
-/// Handler call handler as request handler
+/// Adapts [callHandler] into a [RequestHandler] usable with
+/// [HttpsFunctions.onRequest], by delegating to
+/// [ExpressHttpRequestFfExt.handleWithCallHandler].
+///
+/// Returns a [RequestHandler] that, when invoked, calls [callHandler] with
+/// a [CallRequest] built from the incoming raw request and writes its
+/// result (or error) as the HTTP response.
 RequestHandler onCallHandlerAsRequestHandler(CallHandler callHandler) {
   Future httpRequestHandler(ExpressHttpRequest request) async {
     return request.handleWithCallHandler(callHandler);
@@ -106,6 +142,12 @@ var _httpsErrorCodeMap = Map<String, int>.from(
   _map.map((k, v) => MapEntry(v, k)),
 )..addAll({});
 
+/// Converts an [HttpsErrorCode] value to an HTTP status code.
+///
+/// [errorCode] is expected to be one of the [HttpsErrorCode] constants.
+/// Returns the matching HTTP status code, or `httpStatusCodeInternalServerError`
+/// (500, from `package:tekartik_http`) if [errorCode] has no known
+/// mapping.
 int httpsErrorCodeToStatusCode(String errorCode) {
   return _httpsErrorCodeMap[errorCode] ?? httpStatusCodeInternalServerError;
 }
@@ -119,6 +161,12 @@ var _statusCodeHttpMap = {
   for (var e in _statusHttpCodeMap.entries) e.value: e.key,
 };
 
+/// Converts an [HttpsErrorCode] value to the canonical uppercase status
+/// name used in the wire format of function-to-function HTTP error
+/// responses (e.g. `'NOT_FOUND'`, `'UNAUTHENTICATED'`, `'INTERNAL'`).
+///
+/// [errorCode] is expected to be one of the [HttpsErrorCode] constants.
+/// Returns `'INTERNAL'` if [errorCode] has no known mapping.
 String statusErrorCodeToHttpStatusCode(String errorCode) {
   return _statusCodeHttpMap[errorCode] ?? 'INTERNAL';
 }
@@ -127,7 +175,12 @@ String httpStatusCodeToStatusErrorCode(String errorCode) {
   return _statusHttpCodeMap[errorCode] ?? HttpsErrorCode.internal;
 }
 
+/// Converts an [HttpsError] to the wire JSON format used for error
+/// responses between functions.
 extension HttpsErrorHttpExt on HttpsError {
+  /// Returns a `{'status': ..., 'message': ..., 'details': ...}` map,
+  /// where `status` is the canonical uppercase status name (see
+  /// [statusErrorCodeToHttpStatusCode]) matching [HttpsError.code].
   Map<String, Object?> toHttpJson() {
     return {
       'status': statusErrorCodeToHttpStatusCode(code),
@@ -137,15 +190,29 @@ extension HttpsErrorHttpExt on HttpsError {
   }
 }
 
+/// Converts an HTTP status code to an [HttpsErrorCode] value.
+///
+/// [statusCode] is a standard HTTP status code (e.g. 404, 401, 403, 500).
+/// Returns the matching [HttpsErrorCode] constant, or
+/// [HttpsErrorCode.internal] if [statusCode] has no known mapping.
 String statusCodeToHttpsErrorCode(int statusCode) {
   return _statusCodeMap[statusCode] ?? HttpsErrorCode.internal;
 }
 
-/// Convert to http exception
-
-/// Convert to http exception
+/// Converts an [HttpClientException] (a failed HTTP call to another
+/// function or service) into an [HttpsError].
 extension HttpClientExceptionFirebaseFunctionsExt on HttpClientException {
-  /// Convert to https error
+  /// Converts this exception to an [HttpsError].
+  ///
+  /// If the response body decodes to the standard
+  /// `{'error': {'status': ..., 'message': ..., 'details': ...}}` JSON
+  /// error format, the resulting [HttpsError] uses that status/message/
+  /// details. Otherwise it falls back to an [HttpsError] derived from the
+  /// HTTP status code, this exception's string representation, and the raw
+  /// response body as details.
+  ///
+  /// [stackTrace] is currently unused but accepted for future use /
+  /// call-site context.
   HttpsError toHttpsError({StackTrace? stackTrace}) {
     try {
       var body = response.body;
@@ -172,6 +239,14 @@ extension HttpClientExceptionFirebaseFunctionsExt on HttpClientException {
   }
 }
 
+/// Converts any exception [e] into an [HttpsError], so it can be reported
+/// as a well-formed callable/HTTPS function error response.
+///
+/// If [e] is already an [HttpsError], it is returned as-is. If [e] is an
+/// [HttpClientException], it is converted via
+/// [HttpClientExceptionFirebaseFunctionsExt.toHttpsError]. Otherwise, an
+/// [HttpsError] with [HttpsErrorCode.internal] is returned, using [e]'s
+/// string representation as the message and [stackTrace] as the details.
 HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
   if (e is HttpsError) {
     return e;
@@ -182,13 +257,21 @@ HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
   return HttpsError(HttpsErrorCode.internal, '$e', stackTrace);
 }
 
-/// Https error to map
+/// Converts [error] to its wire JSON map representation.
+///
+/// Deprecated, use [HttpsErrorHttpExt.toHttpJson] instead.
 @Deprecated('Use toHttpJson instead')
 Map<String, Object?> httpsErrorToJsonMap(HttpsError error) {
   return error.toHttpJson();
 }
 
-/// Https error from map
+/// Builds an [HttpsError] from a decoded wire JSON [map] (as produced by
+/// [HttpsErrorHttpExt.toHttpJson]).
+///
+/// [map] is expected to contain `'status'`, `'message'` and `'details'`
+/// entries; each is optional. A missing/non-string `'status'` maps to
+/// [HttpsErrorCode.internal], and a missing `'message'` defaults to
+/// `'no message'`.
 HttpsError httpsErrorFromJsonMap(Map map) {
   var httpStatusCode = httpStatusCodeToStatusErrorCode(
     map['status']?.toString() ?? '',
