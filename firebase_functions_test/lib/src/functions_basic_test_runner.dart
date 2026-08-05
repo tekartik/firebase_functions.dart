@@ -4,6 +4,24 @@ import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_test_runner.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
 
+/// Normalizes the `details` part of an error to the raw value thrown by the
+/// function.
+///
+/// Implementations based on `firebase_functions` 0.7.0 and above serialize
+/// errors through `HttpResponseException` from `package:google_cloud_shelf`,
+/// which only supports a list of string keyed maps as details, so a raw value
+/// is wrapped in a single `{'details': value}` map. Other implementations send
+/// the raw value as is.
+Object? _normalizeErrorDetails(Object? details) {
+  if (details is List &&
+      details.length == 1 &&
+      details.first is Map &&
+      (details.first as Map).keys.join() == 'details') {
+    return (details.first as Map)['details'];
+  }
+  return details;
+}
+
 void basicTestGroup(
   FirebaseFunctionsTestClientContext Function() getTestContext,
 ) {
@@ -54,7 +72,7 @@ void basicTestGroup(
     } on HttpsError catch (e) {
       expect(e.code, HttpsErrorCode.notFound);
       expect(e.message, 'Not found');
-      expect(e.details, 'command not-found');
+      expect(_normalizeErrorDetails(e.details), 'command not-found');
     }
   });
 
@@ -72,13 +90,16 @@ void basicTestGroup(
     var body = response.body;
     var map = body.jsonToMap();
     expect(response.statusCode, 404);
-    expect(map, {
-      'error': {
-        'details': 'command not-found',
-        'message': 'Not found',
-        'status': 'NOT_FOUND',
-      },
-    });
+    var error = map['error'] as Map;
+    expect(error['status'], 'NOT_FOUND');
+    expect(error['message'], 'Not found');
+    expect(_normalizeErrorDetails(error['details']), 'command not-found');
+    // `code` is only sent by implementations serializing through
+    // `HttpResponseException` (see [_normalizeErrorDetails]).
+    expect(
+      error.keys,
+      everyElement(isIn(const ['status', 'message', 'details', 'code'])),
+    );
     client.close();
   });
   test('basic project-id', () async {
