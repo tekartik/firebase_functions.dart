@@ -54,7 +54,14 @@ void basicTestGroup(
     } on HttpsError catch (e) {
       expect(e.code, HttpsErrorCode.notFound);
       expect(e.message, 'Not found');
-      expect(e.details, 'command not-found');
+      try {
+        expect(e.details, 'command not-found');
+      } catch (_) {
+        // on admin sdk, details is a list of map...
+        expect(e.details, [
+          {'details': 'command not-found'},
+        ]);
+      }
     }
   });
 
