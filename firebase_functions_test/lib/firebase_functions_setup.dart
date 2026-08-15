@@ -111,7 +111,7 @@ FutureOr<void> testHttpFunctionHandler(ExpressHttpRequest request) async {
   }
   try {
     var result = await _testFunctionHandler(input);
-    return response.send(_outputData(result));
+    return await response.send(_outputData(result));
   } on HttpsError catch (e) {
     var statusCode = httpsErrorCodeToStatusCode(e.code);
     response.statusCode = statusCode;
