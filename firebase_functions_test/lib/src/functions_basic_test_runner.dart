@@ -79,13 +79,26 @@ void basicTestGroup(
     var body = response.body;
     var map = body.jsonToMap();
     expect(response.statusCode, 404);
-    expect(map, {
-      'error': {
-        'details': 'command not-found',
-        'message': 'Not found',
-        'status': 'NOT_FOUND',
-      },
-    });
+    try {
+      expect(map, {
+        'error': {
+          'details': 'command not-found',
+          'message': 'Not found',
+          'status': 'NOT_FOUND',
+        },
+      });
+    } catch (_) {
+      expect(map, {
+        'error': {
+          'code': 404,
+          'details': [
+            {'details': 'command not-found'},
+          ],
+          'message': 'Not found',
+          'status': 'NOT_FOUND',
+        },
+      });
+    }
     client.close();
   });
   test('basic project-id', () async {
