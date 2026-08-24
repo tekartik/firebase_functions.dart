@@ -48,8 +48,12 @@ class CallRequestHttp with CallRequestMixin implements CallRequest {
   /// The underlying HTTP request.
   final ExpressHttpRequest httpRequest;
 
-  /// User ID.
-  String? get uid => httpRequest.headers.value(firebaseFunctionsHttpHeaderUid);
+  /// User ID, from the unauthenticated simulation header.
+  ///
+  /// Null unless [debugFirebaseFunctionsHttpAllowCallUidHeader] is set.
+  String? get uid => debugFirebaseFunctionsHttpAllowCallUidHeader
+      ? httpRequest.headers.value(firebaseFunctionsHttpHeaderUid)
+      : null;
   @override
   late final Object? data = httpRequest.bodyAsString.jsonToMap()['data'];
 
