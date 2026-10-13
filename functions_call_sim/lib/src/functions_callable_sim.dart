@@ -46,11 +46,22 @@ class _FirebaseFunctionsCallableSim
       ..userId.setValue(currentUserId)
       ..body.v = jsonEncode(parameters);
 
-    var result = await simClient.sendRequest<Map>(
+    var resultFuture = simClient.sendRequest<Map>(
       FirebaseFunctionsCallSimServerService.serviceName,
       methodFunctionsCall,
       callRequest.toMap(),
     );
+    var timeout = options?.timeout;
+    var result = await (timeout == null
+        ? resultFuture
+        : resultFuture.timeout(
+            timeout,
+            onTimeout: () => throw HttpsError(
+              HttpsErrorCode.deadlineExceeded,
+              'deadline-exceeded',
+              null,
+            ),
+          ));
     var callSimResult = result.cv<CallSimResult>();
     var error = callSimResult.error.v;
     if (error != null) {

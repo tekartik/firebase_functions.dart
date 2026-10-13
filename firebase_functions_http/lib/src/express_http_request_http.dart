@@ -72,8 +72,11 @@ class CallContextNode with CallContextMixin implements CallContext {
   /// Creates a new [CallContextNode] instance.
   CallContextNode(this.request);
 
+  /// Null when not authenticated.
   @override
-  late final CallContextAuth? auth = CallContextAuthNode(this);
+  late final CallContextAuth? auth = request.uid == null
+      ? null
+      : CallContextAuthNode(this);
 }
 
 /// Call context auth node implementation.

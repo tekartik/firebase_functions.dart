@@ -4,6 +4,7 @@ import 'package:tekartik_firebase_functions_test/constants.dart';
 import 'package:test/test.dart';
 
 import 'constants.dart';
+import 'constants_prv.dart';
 import 'firebase_functions_test_runner.dart';
 
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
@@ -56,26 +57,31 @@ void ffCallTestGroup({
       test('throw', () async {
         try {
           await client.sendThrow();
+          fail('should fail');
         } on HttpsError catch (e) {
-          // ignore: avoid_print
-          print('error: $e');
-          expect(e.code, 'internal');
-        } catch (e) {
-          // ignore: avoid_print
-          print('error: $e (${e.runtimeType})');
-          rethrow;
+          expect(e.code, HttpsErrorCode.internal);
         }
-      }, skip: true);
+      });
 
       test('not-found', () async {
         try {
           await client.sendNotFound();
+          fail('should fail');
         } on HttpsError catch (e) {
           expect(e.code, HttpsErrorCode.notFound);
-        } catch (e) {
-          // ignore: avoid_print
-          print('error: $e (${e.runtimeType})');
-          rethrow;
+        }
+      });
+
+      test('error codes', () async {
+        for (var code in testHttpsErrorCodes) {
+          try {
+            await client.send(
+              FunctionTestInputData(command: testCommandHttpsError, data: code),
+            );
+            fail('should fail');
+          } on HttpsError catch (e) {
+            expect(e.code, code);
+          }
         }
       });
 

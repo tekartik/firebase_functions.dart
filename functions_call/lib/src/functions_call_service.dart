@@ -79,7 +79,7 @@ mixin FirebaseFunctionsCallServiceDefaultMixin
   }) {
     return functionsCall(
       app,
-      options: FirebaseFunctionsCallOptions(region: region),
+      options: FirebaseFunctionsCallOptions(region: region, baseUri: baseUri),
     );
   }
 

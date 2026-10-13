@@ -49,6 +49,21 @@ void testHttp({
 
       setUpAll(() async {
         firebaseFunctions['call'] = firebaseFunctions.https.onCall(callHandler);
+        firebaseFunctions['callhasauth'] = firebaseFunctions.https.onCall(
+          (request) async => {'auth': request.context.auth != null},
+        );
+        firebaseFunctions['callerror'] = firebaseFunctions.https.onCall((
+          request,
+        ) async {
+          var code = (request.data as Map)['code'] as String;
+          throw HttpsError(code, 'error $code', 'details $code');
+        });
+        firebaseFunctions['callslow'] = firebaseFunctions.https.onCall((
+          request,
+        ) async {
+          await Future<void>.delayed(const Duration(seconds: 1));
+          return 'slow';
+        });
 
         server = await firebaseFunctions.serveHttp(port: 0);
 
@@ -86,6 +101,96 @@ void testHttp({
 
         await firebaseAuth.signOut();
         result = await functionsCall.callable('call').call<Map>({});
+        expect(result.data, {'uid': null});
+      });
+
+      test('call auth null when not authenticated', () async {
+        var result = await functionsCall.callable('callhasauth').call<Map>({});
+        expect(result.data, {'auth': false});
+        await firebaseAuth.signInWithEmailAndPassword(
+          email: 'email',
+          password: 'password',
+        );
+        result = await functionsCall.callable('callhasauth').call<Map>({});
+        expect(result.data, {'auth': true});
+        await firebaseAuth.signOut();
+      });
+
+      test('call error codes', () async {
+        for (var code in [
+          HttpsErrorCode.cancelled,
+          HttpsErrorCode.unknown,
+          HttpsErrorCode.invalidArgument,
+          HttpsErrorCode.deadlineExceeded,
+          HttpsErrorCode.notFound,
+          HttpsErrorCode.alreadyExists,
+          HttpsErrorCode.permissionDenied,
+          HttpsErrorCode.resourceExhausted,
+          HttpsErrorCode.failedPrecondition,
+          HttpsErrorCode.aborted,
+          HttpsErrorCode.outOrRange,
+          HttpsErrorCode.unimplemented,
+          HttpsErrorCode.internal,
+          HttpsErrorCode.unavailable,
+          HttpsErrorCode.dataLoss,
+          HttpsErrorCode.unauthenticated,
+        ]) {
+          try {
+            await functionsCall.callable('callerror').call<Object?>({
+              'code': code,
+            });
+            fail('should fail');
+          } on HttpsError catch (e) {
+            expect(e.code, code);
+            expect(e.message, 'error $code');
+            expect(e.details, 'details $code');
+          }
+        }
+      });
+
+      test('call timeout', () async {
+        try {
+          await functionsCall
+              .callable(
+                'callslow',
+                options: FirebaseFunctionsCallableOptions(
+                  timeout: const Duration(milliseconds: 100),
+                ),
+              )
+              .call<Object?>({});
+          fail('should fail');
+        } on HttpsError catch (e) {
+          expect(e.code, HttpsErrorCode.deadlineExceeded);
+        }
+      });
+
+      test('one instance per base uri', () async {
+        var functionsCallService = FirebaseFunctionsCallServiceHttp(
+          httpClientFactory: httpClientFactory,
+        );
+        FirebaseFunctionsCall get(String baseUri) =>
+            functionsCallService.functionsCall(
+              app,
+              options: FirebaseFunctionsCallOptions(
+                region: regionBelgium,
+                baseUri: Uri.parse(baseUri),
+              ),
+            );
+        expect(get('http://a/'), same(get('http://a/')));
+        expect(get('http://a/'), isNot(same(get('http://b/'))));
+      });
+
+      test('functionsCallObsolete base uri', () async {
+        var functionsCallService = FirebaseFunctionsCallServiceHttp(
+          httpClientFactory: httpClientFactory,
+        );
+        // ignore: deprecated_member_use
+        var functionsCall = functionsCallService.functionsCallObsolete(
+          app,
+          region: regionBelgium,
+          baseUri: httpServerGetUri(server!),
+        );
+        var result = await functionsCall.callable('call').call<Map>({});
         expect(result.data, {'uid': null});
       });
 

@@ -1,7 +1,6 @@
 import 'dart:io' as io;
 
 import 'package:tekartik_firebase_functions_http/src/firebase_functions_http.dart'; // ignore: implementation_imports
-import 'package:tekartik_firebase_functions_io/src/express_http_request_io.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:tekartik_http_io/http_server_io.dart';
 
@@ -24,6 +23,17 @@ class FirebaseFunctionsIo extends FirebaseFunctionsHttpBase {
     FirebaseFunctionsServiceHttp firebaseFunctionsService,
     FirebaseApp firebaseApp,
   ) : super(firebaseFunctionsService, firebaseApp, httpServerFactoryIo);
+
+  /// Set by [serve] to also serve the local files (public/).
+  var _serveFiles = false;
+
+  @override
+  Future onFileRequestHttp(HttpRequest request) {
+    if (_serveFiles) {
+      return onFileRequest(request);
+    }
+    return super.onFileRequestHttp(request);
+  }
 }
 
 FirebaseFunctionsIo? _firebaseFunctionsIo;
@@ -61,54 +71,11 @@ Future onFileRequest(HttpRequest request) async {
 
 // For io only
 // To run the server in parallel
+/// Serve [firebaseFunctionsIo] functions (like [FirebaseFunctionsHttp.serveHttp])
+/// and the local files (public/) for the other paths.
 Future<HttpServer> serve({int? port}) async {
-  port ??= 4999;
-  var requestServer = await httpServerFactoryIo.bind(
-    io.InternetAddress.anyIPv4,
-    port,
-  );
-  for (final key in firebaseFunctionsIo.functions.keys) {
-    // ignore: avoid_print
-    print('$key http://localhost:$port/$key');
-  }
-
-  // ignore: avoid_print
-  print('listening on http://localhost:${requestServer.port}');
-  var handled = false;
-  // Launch in background
-  unawaited(
-    Future.sync(() async {
-      await for (HttpRequest request in requestServer) {
-        var uri = request.uri;
-        // /test
-        var functionKey = uri.pathSegments.first;
-        var function = firebaseFunctionsIo.functions[functionKey];
-        if (function is HttpsFunctionHttp) {
-          final rewrittenUri = Uri(
-            pathSegments: uri.pathSegments.sublist(1),
-            query: uri.query,
-            fragment: uri.fragment,
-          );
-          //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
-          ExpressHttpRequest httpRequest = await asExpressHttpRequestIo(
-            request,
-            rewrittenUri,
-          );
-          // Not awaited: the requests are served concurrently.
-          var result = function.handler(httpRequest);
-          if (result is Future) {
-            unawaited(result);
-          }
-          handled = true;
-        }
-
-        if (!handled) {
-          await onFileRequest(request);
-        }
-      }
-    }),
-  );
-  return requestServer;
+  firebaseFunctionsIo._serveFiles = true;
+  return await firebaseFunctionsIo.serveHttp(port: port ?? 4999);
 }
 
 /// The global memory service.

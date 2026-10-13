@@ -323,6 +323,7 @@ void ffTest({
       test('throw', () async {
         try {
           await client.sendThrow();
+          fail('should fail');
         } on HttpClientException catch (e) {
           expect(e.statusCode, httpStatusCodeInternalServerError);
         }
@@ -330,6 +331,7 @@ void ffTest({
       test('not-found', () async {
         try {
           await client.sendNotFound();
+          fail('should fail');
         } on HttpClientException catch (e) {
           expect(e.statusCode, httpStatusCodeNotFound);
         }

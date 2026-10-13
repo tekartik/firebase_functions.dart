@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_functions/utils.dart';
+import 'package:tekartik_firebase_functions_test/src/constants_prv.dart';
 import 'package:tekartik_firebase_functions_test/src/import.dart';
 import 'package:tekartik_firebase_functions_test/src/trigger_fs_functions.dart';
 
@@ -94,8 +95,11 @@ FutureOr<Object?> _testFunctionHandler(FunctionTestInputData input) {
       return input.userId;
     case testCommandProjectId:
       return input.firebaseApp?.options.projectId;
+    case testCommandHttpsError:
+      var code = input.data as String;
+      throw HttpsError(code, 'error $code', 'details $code');
   }
-  return UnsupportedError('unsupported command ${input.command}');
+  throw UnsupportedError('unsupported command ${input.command}');
 }
 
 Map<String, Object?> _outputData(Object? data) {

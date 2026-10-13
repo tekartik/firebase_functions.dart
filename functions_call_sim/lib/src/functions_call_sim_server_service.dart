@@ -55,7 +55,7 @@ class FirebaseFunctionsCallSimServerService
     } catch (e, st) {
       if (isDebug) {
         // ignore: avoid_print
-        print('error $st');
+        print('error $e');
         // ignore: avoid_print
         print(st);
       }

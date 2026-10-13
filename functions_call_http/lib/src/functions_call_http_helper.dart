@@ -42,15 +42,3 @@ Future<FirebaseFunctionsCallableResult<T>> firebaseFunctionsHttpCallUri<T>(
     throw httpsError;
   }
 }
-
-/// Convert to http exception
-HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
-  if (e is HttpsError) {
-    return e;
-  }
-  if (e is HttpClientException) {
-    return e.toHttpsError(stackTrace: stackTrace);
-  }
-
-  return HttpsError(HttpsErrorCode.internal, '$e', stackTrace);
-}

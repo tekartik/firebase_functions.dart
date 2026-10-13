@@ -44,11 +44,11 @@ class _FirebaseFunctionsCallServiceHttp
 
   FirebaseFunctionsCallHttp _getInstance(
     App app,
-    String region,
-
+    FirebaseFunctionsCallOptions options,
     FirebaseFunctionsCallHttp Function() createIfNotFound,
   ) {
-    var key = '${app.name}_$region';
+    // One instance per region and base uri.
+    var key = '${app.name}_${options.region}_${options.baseUri}';
     var instance = _instances[key];
     if (instance == null) {
       var newInstance = instance = createIfNotFound();
@@ -62,7 +62,7 @@ class _FirebaseFunctionsCallServiceHttp
     App app, {
     required FirebaseFunctionsCallOptions options,
   }) {
-    return _getInstance(app, options.region, () {
+    return _getInstance(app, options, () {
       return FirebaseFunctionsCallHttp(this, app, options);
     });
   }
@@ -96,7 +96,7 @@ class FirebaseFunctionsCallHttp
     String name, {
     FirebaseFunctionsCallableOptions? options,
   }) {
-    return _FirebaseFunctionsCallableHttp(this, name);
+    return _FirebaseFunctionsCallableHttp(this, name, options);
   }
 
   @override
@@ -104,7 +104,7 @@ class FirebaseFunctionsCallHttp
     Uri uri, {
     FirebaseFunctionsCallableOptions? options,
   }) {
-    return _FirebaseFunctionsCallableHttpFromUri(this, uri);
+    return _FirebaseFunctionsCallableHttpFromUri(this, uri, options);
   }
 }
 
@@ -120,7 +120,8 @@ class _FirebaseFunctionsCallableHttpFromUri
   _FirebaseFunctionsCallableHttpFromUri(
     FirebaseFunctionsCallHttp functionsCallHttp,
     this.uri,
-  ) : super(functionsCallHttp, uri.toString());
+    FirebaseFunctionsCallableOptions? options,
+  ) : super(functionsCallHttp, uri.toString(), options);
 
   @override
   Future<FirebaseFunctionsCallableResult<T>> call<T>([
@@ -141,8 +142,15 @@ class _FirebaseFunctionsCallableHttp
   /// Functions call Http
   final FirebaseFunctionsCallHttp functionsCallHttp;
 
+  /// Options, the timeout is applied when set.
+  final FirebaseFunctionsCallableOptions? options;
+
   /// Constructor
-  _FirebaseFunctionsCallableHttp(this.functionsCallHttp, this.name);
+  _FirebaseFunctionsCallableHttp(
+    this.functionsCallHttp,
+    this.name,
+    this.options,
+  );
 
   Future<FirebaseFunctionsCallableResult<T>> _callUri<T>(
     Uri uri, {
@@ -161,11 +169,23 @@ class _FirebaseFunctionsCallableHttp
       var headers = <String, String>{
         firebaseFunctionsHttpHeaderUid: ?authUserId,
       };
-      return await firebaseFunctionsHttpCallUri(
+      var resultFuture = firebaseFunctionsHttpCallUri<T>(
         httpClient,
         uri,
         headers: headers,
         parameters: parameters,
+      );
+      var timeout = options?.timeout;
+      if (timeout == null) {
+        return await resultFuture;
+      }
+      return await resultFuture.timeout(
+        timeout,
+        onTimeout: () => throw HttpsError(
+          HttpsErrorCode.deadlineExceeded,
+          'deadline-exceeded',
+          null,
+        ),
       );
     } finally {
       httpClient.close();

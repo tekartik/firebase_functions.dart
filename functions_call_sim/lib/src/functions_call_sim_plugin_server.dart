@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cv/cv.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
+import 'package:tekartik_firebase_auth_sim/auth_sim.dart' show DecodedIdToken;
 import 'package:tekartik_firebase_functions/utils.dart';
 import 'package:tekartik_firebase_functions_call_sim/src/functions_call_sim_plugin.dart';
 import 'package:tekartik_firebase_functions_http/firebase_functions_http_mixin.dart';
@@ -13,12 +14,17 @@ class _CallContextAuthSim with CallContextAuthMixin implements CallContextAuth {
   @override
   final String? uid;
 
+  /// No decoded token in the sim (as for http).
+  @override
+  DecodedIdToken? get token => null;
+
   _CallContextAuthSim({required this.uid});
 }
 
 class _CallContextSim with CallContextMixin implements CallContext {
+  /// Null when not authenticated.
   @override
-  final _CallContextAuthSim auth;
+  final _CallContextAuthSim? auth;
 
   _CallContextSim({required this.auth});
 }
@@ -29,7 +35,9 @@ class _CallRequestSim with CallRequestMixin implements CallRequest {
   @override
   late _CallContextSim context;
   _CallRequestSim(this.data, String? userId) {
-    context = _CallContextSim(auth: _CallContextAuthSim(uid: userId));
+    context = _CallContextSim(
+      auth: userId == null ? null : _CallContextAuthSim(uid: userId),
+    );
   }
 }
 
@@ -53,11 +61,17 @@ class FirebaseFunctionsCallSimPluginServer {
     var name = callRequest.name.v!;
     var userId = callRequest.userId.v;
 
-    var function =
-        firebaseFunctions.functions[name] as HttpsCallableFunctionHttp;
-
-    var data = jsonDecode(callRequest.body.v!);
     try {
+      var function = firebaseFunctions.functions[name];
+      if (function is! HttpsCallableFunctionHttp) {
+        // Like http, an unknown function (or not a callable one) is not found.
+        throw HttpsError(
+          HttpsErrorCode.notFound,
+          'Not found',
+          'callable function $name not found',
+        );
+      }
+      var data = jsonDecode(callRequest.body.v!);
       var callResult = await function.callHandler(
         _CallRequestSim(data, userId),
       );
@@ -65,11 +79,16 @@ class FirebaseFunctionsCallSimPluginServer {
     } catch (e, st) {
       if (isDebug) {
         // ignore: avoid_print
-        print('error $st');
+        print('error $e');
         // ignore: avoid_print
         print(st);
       }
-      var httpsError = anyExceptionToHttpsError(e);
+      // Same as the http callable functions.
+      var httpsError = e is HttpsError
+          ? e
+          : HttpsError(HttpsErrorCode.internal, 'Internal error', {
+              'exception': '$e',
+            });
       return (CallSimResult()..error.v = httpsError.toHttpJson()).toMap();
     }
   }

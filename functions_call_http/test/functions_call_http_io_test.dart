@@ -1,18 +1,14 @@
+@TestOn('vm')
 library;
 
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_http/app_http.dart';
 import 'package:tekartik_firebase_auth_sembast/auth_sembast.dart';
-import 'package:tekartik_firebase_functions_http/src/import.dart';
 import 'package:tekartik_firebase_functions_io/firebase_functions_io.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 import 'package:test/test.dart';
 
 import 'functions_call_http_memory_test.dart';
-
-Future<Object?> callHandler(CallRequest request) async {
-  return {'uid': request.context.auth?.uid};
-}
 
 void main() {
   var dummyProjectId = 'dummyproject';

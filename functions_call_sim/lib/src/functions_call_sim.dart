@@ -51,4 +51,18 @@ class _FirebaseFunctionsCallSim
       options: options,
     );
   }
+
+  /// The sim only knows the function names: the function is the last path
+  /// segment of [uri] (`https://<region>-<project>.cloudfunctions.net/<name>`).
+  @override
+  FirebaseFunctionsCallable callableFromUri(
+    Uri uri, {
+    FirebaseFunctionsCallableOptions? options,
+  }) {
+    var segments = uri.pathSegments.where((segment) => segment.isNotEmpty);
+    if (segments.isEmpty) {
+      throw ArgumentError.value(uri, 'uri', 'no function name');
+    }
+    return callable(segments.last, options: options);
+  }
 }

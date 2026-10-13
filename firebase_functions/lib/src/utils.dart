@@ -36,32 +36,31 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
   /// `application/json` content type.
   ///
   /// On failure, an [HttpsError] (or any other exception, wrapped as an
-  /// internal error) is written as a JSON `{'error': {...}}` body with a
-  /// 500 status code.
+  /// internal error) is written like a callable function error: a JSON
+  /// `{'error': {'status': ..., 'message': ..., 'details': ...}}` body (see
+  /// [HttpsErrorHttpExt.toHttpJson]) with the HTTP status of its code.
   ///
   /// The returned [Future] completes once the response has been sent.
   Future<void> handleWithCallHandler(CallHandler handler) async {
-    var result = await handler(CallRequestFromExpress(request: this));
     try {
+      var result = await handler(CallRequestFromExpress(request: this));
       response.headers.set(httpHeaderContentType, httpContentTypeJson);
       var responseString = result is String ? result : jsonEncode(result);
       await response.send(responseString);
     } catch (e) {
-      var errorCode = HttpsErrorCode.internal;
-      var message = e.toString();
-      Object? details;
-      if (e is HttpsError) {
-        errorCode = e.code;
-        message = e.message;
-        details = e.details;
+      // Same as a callable function error.
+      var httpsError = e is HttpsError
+          ? e
+          : HttpsError(HttpsErrorCode.internal, 'Internal error', {
+              'exception': '$e',
+            });
+      try {
+        response.statusCode = httpsErrorCodeToStatusCode(httpsError.code);
+        response.headers.set(httpHeaderContentType, httpContentTypeJson);
+      } catch (_) {
+        // Headers already sent.
       }
-      response.statusCode = httpStatusCodeInternalServerError;
-
-      await response.send(
-        jsonEncode({
-          'error': {'code': errorCode, 'message': message, 'details': ?details},
-        }),
-      );
+      await response.send(jsonEncode({'error': httpsError.toHttpJson()}));
     }
   }
 }
@@ -76,9 +75,22 @@ class CallRequestFromExpress with CallRequestMixin {
   @override
   late final Object? data;
 
-  /// The string representation of [data], or `null` if [data] is `null`.
+  /// The text of [data] (the request body bytes decoded as utf8), or `null`
+  /// if [data] is `null`.
   @override
-  String? get text => data?.toString();
+  String? get text {
+    var data = this.data;
+    if (data == null) {
+      return null;
+    } else if (data is String) {
+      return data;
+    } else if (data is List<int>) {
+      return utf8.decode(data);
+    } else if (data is Map || data is List) {
+      return jsonEncode(data);
+    }
+    return data.toString();
+  }
 
   /// Creates a [CallRequest] wrapping [request], reading [data] from its
   /// body.
@@ -130,17 +142,80 @@ abstract class HttpsErrorCode {
 }
  */
 
-var _map = {
-  httpStatusCodeNotFound: HttpsErrorCode.notFound,
-  httpStatusCodeUnauthorized: HttpsErrorCode.unauthenticated,
-  httpStatusCodeForbidden: HttpsErrorCode.permissionDenied,
-  httpStatusCodeInternalServerError: HttpsErrorCode.internal,
+/// Every callable error code with its HTTP status and its canonical status
+/// name in the wire format, as Firebase Functions maps them.
+const _errorCodes = <({String code, int httpStatus, String status})>[
+  (code: HttpsErrorCode.ok, httpStatus: 200, status: 'OK'),
+  (code: HttpsErrorCode.cancelled, httpStatus: 499, status: 'CANCELLED'),
+  (code: HttpsErrorCode.unknown, httpStatus: 500, status: 'UNKNOWN'),
+  (
+    code: HttpsErrorCode.invalidArgument,
+    httpStatus: 400,
+    status: 'INVALID_ARGUMENT',
+  ),
+  (
+    code: HttpsErrorCode.deadlineExceeded,
+    httpStatus: 504,
+    status: 'DEADLINE_EXCEEDED',
+  ),
+  (code: HttpsErrorCode.notFound, httpStatus: 404, status: 'NOT_FOUND'),
+  (
+    code: HttpsErrorCode.alreadyExists,
+    httpStatus: 409,
+    status: 'ALREADY_EXISTS',
+  ),
+  (
+    code: HttpsErrorCode.permissionDenied,
+    httpStatus: 403,
+    status: 'PERMISSION_DENIED',
+  ),
+  (
+    code: HttpsErrorCode.resourceExhausted,
+    httpStatus: 429,
+    status: 'RESOURCE_EXHAUSTED',
+  ),
+  (
+    code: HttpsErrorCode.failedPrecondition,
+    httpStatus: 400,
+    status: 'FAILED_PRECONDITION',
+  ),
+  (code: HttpsErrorCode.aborted, httpStatus: 409, status: 'ABORTED'),
+  (code: HttpsErrorCode.outOrRange, httpStatus: 400, status: 'OUT_OF_RANGE'),
+  (
+    code: HttpsErrorCode.unimplemented,
+    httpStatus: 501,
+    status: 'UNIMPLEMENTED',
+  ),
+  (code: HttpsErrorCode.internal, httpStatus: 500, status: 'INTERNAL'),
+  (code: HttpsErrorCode.unavailable, httpStatus: 503, status: 'UNAVAILABLE'),
+  (code: HttpsErrorCode.dataLoss, httpStatus: 500, status: 'DATA_LOSS'),
+  (
+    code: HttpsErrorCode.unauthenticated,
+    httpStatus: 401,
+    status: 'UNAUTHENTICATED',
+  ),
+];
+
+final _httpsErrorCodeMap = {
+  for (var errorCode in _errorCodes) errorCode.code: errorCode.httpStatus,
 };
 
-var _statusCodeMap = Map<int, String>.from(_map)..addAll({});
-var _httpsErrorCodeMap = Map<String, int>.from(
-  _map.map((k, v) => MapEntry(v, k)),
-)..addAll({});
+/// HTTP status to code, as the Firebase clients decode a response without a
+/// status name (several codes share an HTTP status).
+final _statusCodeMap = <int, String>{
+  200: HttpsErrorCode.ok,
+  400: HttpsErrorCode.invalidArgument,
+  401: HttpsErrorCode.unauthenticated,
+  403: HttpsErrorCode.permissionDenied,
+  404: HttpsErrorCode.notFound,
+  409: HttpsErrorCode.aborted,
+  429: HttpsErrorCode.resourceExhausted,
+  499: HttpsErrorCode.cancelled,
+  500: HttpsErrorCode.internal,
+  501: HttpsErrorCode.unimplemented,
+  503: HttpsErrorCode.unavailable,
+  504: HttpsErrorCode.deadlineExceeded,
+};
 
 /// Converts an [HttpsErrorCode] value to an HTTP status code.
 ///
@@ -152,13 +227,11 @@ int httpsErrorCodeToStatusCode(String errorCode) {
   return _httpsErrorCodeMap[errorCode] ?? httpStatusCodeInternalServerError;
 }
 
-var _statusHttpCodeMap = {
-  'NOT_FOUND': HttpsErrorCode.notFound,
-  'UNAUTHENTICATED': HttpsErrorCode.permissionDenied,
-  'INTERNAL': HttpsErrorCode.internal,
+final _statusHttpCodeMap = {
+  for (var errorCode in _errorCodes) errorCode.status: errorCode.code,
 };
-var _statusCodeHttpMap = {
-  for (var e in _statusHttpCodeMap.entries) e.value: e.key,
+final _statusCodeHttpMap = {
+  for (var errorCode in _errorCodes) errorCode.code: errorCode.status,
 };
 
 /// Converts an [HttpsErrorCode] value to the canonical uppercase status
@@ -171,6 +244,8 @@ String statusErrorCodeToHttpStatusCode(String errorCode) {
   return _statusCodeHttpMap[errorCode] ?? 'INTERNAL';
 }
 
+/// Converts a canonical uppercase status name (e.g. `'NOT_FOUND'`) to an
+/// [HttpsErrorCode] value, [HttpsErrorCode.internal] if unknown.
 String httpStatusCodeToStatusErrorCode(String errorCode) {
   return _statusHttpCodeMap[errorCode] ?? HttpsErrorCode.internal;
 }

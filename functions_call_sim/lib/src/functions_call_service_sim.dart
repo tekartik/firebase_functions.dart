@@ -30,11 +30,11 @@ class _FirebaseFunctionsCallServiceSim
   }
   FirebaseFunctionsCallSim _getInstance(
     App app,
-    String region,
-
+    FirebaseFunctionsCallOptions options,
     FirebaseFunctionsCallSim Function() createIfNotFound,
   ) {
-    var key = '${app.name}_$region';
+    // One instance per region and base uri.
+    var key = '${app.name}_${options.region}_${options.baseUri}';
     var instance = _instances[key];
     if (instance == null) {
       var newInstance = instance = createIfNotFound();
@@ -48,7 +48,7 @@ class _FirebaseFunctionsCallServiceSim
     App app, {
     required FirebaseFunctionsCallOptions options,
   }) {
-    return _getInstance(app, options.region, () {
+    return _getInstance(app, options, () {
       assert(app is FirebaseAppSim, 'app not compatible (${app.runtimeType})');
       return FirebaseFunctionsCallSim(
         service: this,
