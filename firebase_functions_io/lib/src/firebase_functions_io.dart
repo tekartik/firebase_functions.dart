@@ -94,7 +94,11 @@ Future<HttpServer> serve({int? port}) async {
             request,
             rewrittenUri,
           );
-          function.handler(httpRequest);
+          // Not awaited: the requests are served concurrently.
+          var result = function.handler(httpRequest);
+          if (result is Future) {
+            unawaited(result);
+          }
           handled = true;
         }
 
