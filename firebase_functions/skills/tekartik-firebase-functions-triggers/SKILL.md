@@ -63,6 +63,18 @@ Firestore document triggers and scheduled (cron) functions on the same
   `FirestoreFunctionsDefaultMixin`, `DocumentBuilderDefaultMixin`,
   `SchedulerFunctionsDefaultMixin` and `SchedulerEventDefaultMixin`.
 
+* Task queues (Cloud Tasks): import
+  `package:tekartik_firebase_functions/firebase_functions_tasks.dart` (not
+  exported by `firebase_functions.dart`). Code enqueues through a
+  `TaskQueueService` (`service.taskQueue(name, region:).enqueue(map,
+  options: TaskQueueEnqueueOptions(id:, scheduleDelay:))`) and handles with a
+  `TaskQueueHandler` (`Future<void> Function(TaskQueueRequest)`, throw to
+  retry). `TaskQueueServiceMemory` runs them in process
+  (`onTaskDispatched(name, handler, maxAttempts:)`, `waitForTasks()`,
+  `taskErrors`); the admin sdk side is `taskQueueServiceAdminSdk(app)` and
+  `firebase.taskQueueHandler(handler)` in
+  `tekartik_firebase_functions_admin_sdk`.
+
 ## Examples
 
 ### Firestore write trigger mirroring a document
