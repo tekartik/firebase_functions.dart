@@ -60,7 +60,12 @@ server so the same functions stay reachable over plain http.
 * The plugin starts the http functions server itself on the first initialized
   app (`httpPort`, `0` for a free port, `null` for 4999), and only once for the
   whole process: read its uri with `simServer.httpFunctionsUri` (same value as
-  `firebaseSimHttpServerUri`) and do not call `serveHttp` yourself.
+  `firebaseSimHttpServerUri`, which throws before an app is initialized)
+  and do not call `serveHttp` yourself. It serves the functions of that
+  first app only: with `initFunctions` for several projects, the
+  `onRequest` functions of the others are not reachable there (their
+  callables are, over the sim channel); it is not closed by
+  `simServer.close()`.
   `simServer.initializeAppAsync(options: FirebaseAppOptions(projectId: ...))`
   creates the app and runs the plugins eagerly; otherwise it happens when the
   first client connects. `FirebaseFunctionsCallSimPlugin.compat(firebaseFunctions:)`
@@ -79,15 +84,19 @@ server so the same functions stay reachable over plain http.
   and rethrown client side (any other exception arrives as
   `HttpsErrorCode.internal`). Only `https.onCall` functions are reachable this
   way - an `onRequest` function must be called over
-  `simServer.httpFunctionsUri`. `callableFromUri` is not implemented by the sim
-  client (it throws `UnimplementedError`), and
-  `FirebaseFunctionsCallableOptions` (timeout, App Check) is ignored.
+  `simServer.httpFunctionsUri`. `callableFromUri(uri)` calls the function
+  named by the last path segment of `uri` (an `ArgumentError` without
+  one). `FirebaseFunctionsCallableOptions.timeout` fails the call with
+  `HttpsErrorCode.deadlineExceeded`; App Check is not simulated. An error
+  whose details are not JSON (`anyExceptionToHttpsError(e, stackTrace:)`)
+  arrives with its details as text.
 * Caller identity: pass the auth sim instance to propagate the signed-in user,
   `FirebaseFunctionsCallServiceSim(firebaseAuthSim: firebaseAuthSim)`
   (`package:tekartik_firebase_auth_sim/auth_sim.dart`). Its current user's uid
   is sent with the request and surfaces as `request.context.auth?.uid` in the
-  handler. Without it the call is anonymous (`uid` is `null`). This is a
-  simulation: no token is verified.
+  handler. Without it the call is anonymous (`uid` is `null`), even when the
+  app has an auth sim: the service reads that one auth for every app it
+  serves. This is a simulation: no token is verified.
 * Tests: run both ends in one process with
   `webSocketChannelServerFactoryMemory` / `webSocketChannelClientFactoryMemory`
   (`package:tekartik_app_web_socket/web_socket.dart`) and the memory functions
@@ -101,8 +110,8 @@ server so the same functions stay reachable over plain http.
   `simServer.close()`.
 * Anti-patterns: importing `functions_call_sim_server.dart` in client/browser
   code; registering functions outside the plugin init callback (the sim server
-  would not see them); expecting `callableFromUri`; reusing the plugin http
-  port across several sim servers in one process.
+  would not see them); reusing the plugin http port across several sim
+  servers in one process.
 
 ## Examples
 

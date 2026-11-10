@@ -89,7 +89,18 @@ class FirebaseFunctionsCallSimPluginServer {
           : HttpsError(HttpsErrorCode.internal, 'Internal error', {
               'exception': '$e',
             });
-      return (CallSimResult()..error.v = httpsError.toHttpJson()).toMap();
+      // Details that are not JSON (a stack trace, from
+      // anyExceptionToHttpsError) are sent as their text: the answer must
+      // go through the json rpc channel, as the http callable functions.
+      var errorJson =
+          jsonDecode(
+                jsonEncode(
+                  httpsError.toHttpJson(),
+                  toEncodable: (object) => object.toString(),
+                ),
+              )
+              as Map;
+      return (CallSimResult()..error.v = errorJson).toMap();
     }
   }
 }
