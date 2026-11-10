@@ -52,9 +52,15 @@ per `FirebaseApp`, from a `FirebaseFunctionsService`. Implementations: io
   `{"result": ...}`. Read the input with `request.dataAsMap`, `dataAsText` or
   `data`, the caller with `request.context.auth?.uid` (`null` when anonymous).
 * Throw `HttpsError(HttpsErrorCode.notFound, 'Not found', details)` for
-  client-visible errors; any other exception becomes `HttpsErrorCode.internal`.
-  Do not return error maps from a callable. Codes are strings
-  (`'not-found'`, `'permission-denied'`, `'unauthenticated'`, ...).
+  client-visible errors (`details` must be JSON: null, a String, a number, a
+  List or a Map of them); any other exception becomes
+  `HttpsErrorCode.internal`. Do not return error maps from a callable. Codes
+  are strings (`'not-found'`, `'permission-denied'`, `'unauthenticated'`,
+  ...). `anyExceptionToHttpsError(e, stackTrace: st)` puts the stack trace in
+  `details`: fine to throw on the client side, not JSON to send.
+  `onCallHandlerAsRequestHandler` sends a details value that is not JSON as
+  its text, and an internal error with the text of the exception in
+  `details` (do not use it where that text is private).
 * `HttpsOptions`/`HttpsCallableOptions` extend `GlobalOptions` (`region` or
   `regions`, `memory` as `'256MiB'`, `timeoutSeconds`, `concurrency`,
   `maxInstances`). Set defaults once with `functions.globalOptions =

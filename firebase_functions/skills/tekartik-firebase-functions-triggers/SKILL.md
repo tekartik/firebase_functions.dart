@@ -71,7 +71,8 @@ Firestore document triggers and scheduled (cron) functions on the same
   `TaskQueueHandler` (`Future<void> Function(TaskQueueRequest)`, throw to
   retry). `TaskQueueServiceMemory` runs them in process
   (`onTaskDispatched(name, handler, maxAttempts:)`, `waitForTasks()`,
-  `taskErrors`); the admin sdk side is `taskQueueServiceAdminSdk(app)` and
+  `taskErrors`; the handler gets the enqueued map itself, no JSON round trip:
+  keep JSON values in it); the admin sdk side is `taskQueueServiceAdminSdk(app)` and
   `firebase.taskQueueHandler(handler)` in
   `tekartik_firebase_functions_admin_sdk`.
 

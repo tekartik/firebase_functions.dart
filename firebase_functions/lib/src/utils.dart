@@ -38,7 +38,8 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
   /// On failure, an [HttpsError] (or any other exception, wrapped as an
   /// internal error) is written like a callable function error: a JSON
   /// `{'error': {'status': ..., 'message': ..., 'details': ...}}` body (see
-  /// [HttpsErrorHttpExt.toHttpJson]) with the HTTP status of its code.
+  /// [HttpsErrorHttpExt.toHttpJson]) with the HTTP status of its code. A
+  /// details value that is not JSON (a [StackTrace]) is sent as its text.
   ///
   /// The returned [Future] completes once the response has been sent.
   Future<void> handleWithCallHandler(CallHandler handler) async {
@@ -60,7 +61,14 @@ extension ExpressHttpRequestFfExt on ExpressHttpRequest {
       } catch (_) {
         // Headers already sent.
       }
-      await response.send(jsonEncode({'error': httpsError.toHttpJson()}));
+      // The details can hold a value that is not JSON (the stack trace of
+      // anyExceptionToHttpsError): sent as its text, so that the error
+      // response is always sent.
+      await response.send(
+        jsonEncode({
+          'error': httpsError.toHttpJson(),
+        }, toEncodable: (object) => object.toString()),
+      );
     }
   }
 }
@@ -321,7 +329,9 @@ extension HttpClientExceptionFirebaseFunctionsExt on HttpClientException {
 /// [HttpClientException], it is converted via
 /// [HttpClientExceptionFirebaseFunctionsExt.toHttpsError]. Otherwise, an
 /// [HttpsError] with [HttpsErrorCode.internal] is returned, using [e]'s
-/// string representation as the message and [stackTrace] as the details.
+/// string representation as the message and [stackTrace] as the details (a
+/// [StackTrace] is not JSON: it is sent as its text by
+/// [ExpressHttpRequestFfExt.handleWithCallHandler]).
 HttpsError anyExceptionToHttpsError(Object e, {StackTrace? stackTrace}) {
   if (e is HttpsError) {
     return e;

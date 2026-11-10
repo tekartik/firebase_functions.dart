@@ -1,3 +1,8 @@
+/// Firebase Cloud Functions written in Dart: register https, callable,
+/// Firestore trigger and scheduled functions on a [FirebaseFunctions] given
+/// by an implementation (io, memory, sim, admin sdk, node).
+library;
+
 export 'package:tekartik_firebase/firebase.dart';
 export 'package:tekartik_firebase_firestore/firestore.dart'
     show DocumentSnapshot;
