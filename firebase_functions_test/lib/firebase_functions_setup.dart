@@ -1,3 +1,7 @@
+/// The server side of the shared functions tests: [initTestFunctions] and
+/// [setupFirebaseFunctionsTestServer] register the standard test functions.
+library;
+
 import 'dart:typed_data';
 
 import 'package:tekartik_firebase_firestore/firestore.dart';

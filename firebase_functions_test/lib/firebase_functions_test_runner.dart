@@ -1,4 +1,8 @@
-// ignore: depend_on_referenced_packages
+/// The client side of the shared functions tests: the contexts
+/// ([FirebaseFunctionsTestClientContext]...), the groups ([ffTest],
+/// [ffFsTest], [ffCallTestGroup], [basicTestGroup]) and the test clients.
+/// The server side is in `firebase_functions_setup.dart`.
+library;
 
 export 'package:tekartik_firebase_functions/firebase_functions.dart';
 export 'package:tekartik_http/http_utils.dart';

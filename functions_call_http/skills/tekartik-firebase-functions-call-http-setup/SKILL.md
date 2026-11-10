@@ -51,7 +51,9 @@ memory variant talks to the in-process memory server with no socket.
   `firebaseFunctionsCallServiceMemory`).
 * `service.functionsCall(app, options: FirebaseFunctionsCallOptions(region:
   regionBelgium, baseUri: httpServerGetUri(server)))` returns a
-  `FirebaseFunctionsCall` cached per app name + region.
+  `FirebaseFunctionsCall` cached per app (the app object: a new app of the
+  same name, after `app.delete()`, gets a new one and its own current user),
+  region and base uri, released by `app.delete()`.
 * `callable('namev1').call<T>(parameters)` posts to
   `<baseUri>/namev1`: `baseUri` is mandatory here, otherwise `call` throws
   `StateError('FirebaseFunctionsCallable.baseUri required')` - this package
@@ -71,9 +73,10 @@ memory variant talks to the in-process memory server with no socket.
   and the server only honours it while
   `debugFirebaseFunctionsHttpAllowCallUidHeader` is true. Local development and
   tests only: against a real Firebase deployment the call is anonymous.
-* `FirebaseFunctionsCallableOptions` (`timeout`, `limitedUseAppCheckToken`) is
-  accepted but currently ignored by this implementation. Each call opens and
-  closes its own http client.
+* `FirebaseFunctionsCallableOptions.timeout` is applied: a call taking
+  longer throws `HttpsError(HttpsErrorCode.deadlineExceeded)` (the request
+  itself is not aborted); `limitedUseAppCheckToken` is ignored. Each call
+  opens and closes its own http client.
 * Typical pairs: `firebaseFunctionsCallServiceMemory` +
   `firebaseFunctionsServiceMemory` (`tekartik_firebase_functions_http`) for a
   pure in-process test; `firebaseFunctionsCallServiceHttp` +
@@ -222,7 +225,6 @@ Future<void> main() async {
 
 ```dart
 import 'package:tekartik_app_http/app_http.dart';
-import 'package:tekartik_firebase_functions_call_http/functions_call_http.dart';
 import 'package:tekartik_firebase_functions_call_http/functions_call_http_mixin.dart';
 
 Future<void> main() async {

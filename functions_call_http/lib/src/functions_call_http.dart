@@ -39,22 +39,31 @@ class _FirebaseFunctionsCallServiceHttp
   /// Constructor
   _FirebaseFunctionsCallServiceHttp({required this.httpClientFactory});
 
-  /// Most implementation need a single instance, keep it in memory!
-  final _instances = <String, FirebaseFunctionsCallHttp>{};
+  /// The instances of each app (the app object, not its name: a new app of
+  /// the same name has its own current user), by region and base uri,
+  /// released when the app is deleted ([close]).
+  final _appInstances = <App, Map<String, FirebaseFunctionsCallHttp>>{};
 
   FirebaseFunctionsCallHttp _getInstance(
     App app,
     FirebaseFunctionsCallOptions options,
     FirebaseFunctionsCallHttp Function() createIfNotFound,
   ) {
-    // One instance per region and base uri.
-    var key = '${app.name}_${options.region}_${options.baseUri}';
-    var instance = _instances[key];
-    if (instance == null) {
-      var newInstance = instance = createIfNotFound();
-      _instances[key] = newInstance;
+    var instances = _appInstances[app];
+    if (instances == null) {
+      _appInstances[app] = instances = <String, FirebaseFunctionsCallHttp>{};
+      // close(app) is called when the app is deleted.
+      app.addService(this);
     }
-    return instance;
+    // One instance per region and base uri.
+    var key = '${options.region}_${options.baseUri}';
+    return instances[key] ??= createIfNotFound();
+  }
+
+  @override
+  Future<void> close(App app) async {
+    _appInstances.remove(app);
+    await super.close(app);
   }
 
   @override

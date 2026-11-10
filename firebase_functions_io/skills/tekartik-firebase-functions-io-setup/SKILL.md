@@ -44,7 +44,7 @@ from the http implementation; this package only picks the server factory.
     `newFirebaseAppLocal()` app: convenient for a quick script, but
     `functions.params.projectId` throws on it, so prefer the service with an
     app created with `FirebaseAppOptions(projectId: ...)`;
-  * the legacy top level `serve({int? port})`.
+  * the legacy top level `serve({int? port, String publicDir = 'public'})`.
 * VM only: the implementation imports `dart:io`. Do not import this library
   from web/browser code (use `tekartik_firebase_functions_http`'s memory
   implementation or `tekartik_firebase_functions_sim` there), and mark vm
@@ -57,10 +57,13 @@ from the http implementation; this package only picks the server factory.
 * Urls are `http://localhost:<port>/<functionName>`; the rest of the path and
   the query reach the handler as `request.uri`. An unknown first segment gives
   a 404.
-* The top level `serve({port})` is the legacy entry point: it always serves the
-  `firebaseFunctionsIo` singleton and falls back to static files under
-  `public/` (`public/index.html` for `/`) instead of a 404. Use it only for
-  that file serving behaviour; `functions.serveHttp(port:)` is the normal path.
+* The top level `serve({port, publicDir})` is the legacy entry point: it
+  always serves the `firebaseFunctionsIo` singleton (default port 4999) and
+  answers the other paths with the files of `publicDir` (`public` relative to
+  the current directory by default; `index.html` for `/` and for a path
+  ending with `/`), sent as `text/html`, 404 when missing; a path leaving the
+  folder (`..`, an encoded separator) is not found. Use it only for that file
+  serving behaviour; `functions.serveHttp(port:)` is the normal path.
 * Everything else is the http implementation's behaviour: `functions['namev1']
   = functions.https.onRequest(handler)` / `onRequestV2` / `onCall`,
   `HttpsOptions(cors: true)`, the `{"data": ...}` / `{"result": ...}` callable

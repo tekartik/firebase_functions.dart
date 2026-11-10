@@ -29,7 +29,6 @@ keeps its own `test/` directory.
       git:
         url: https://github.com/tekartik/firebase_functions.dart
         path: firebase_functions_test
-      version: '>=0.2.1'
   ```
   It brings `tekartik_firebase_functions`, `tekartik_firebase_functions_call`,
   `tekartik_firebase_functions_http`, `tekartik_firebase_firestore`,
@@ -85,7 +84,8 @@ keeps its own `test/` directory.
 * Client side, everything is driven by a context:
   * `FirebaseFunctionsTestClientContext.baseUrl(httpClientFactory:, baseUrl:,
     functionsCall:, functionNameSuffix:)` when the functions are served under
-    one base url; `...urlTemplate(httpClientFactory:, urlTemplate:,
+    one base url (`functionNameSuffix` goes *before* the function name, a
+    prefix despite its name); `...urlTemplate(httpClientFactory:, urlTemplate:,
     functionsCall:)` when each function has its own host, with `{{function}}`
     (or `__function__`) in the template. `context.url('echo')` builds the url,
     `await context.close()` releases it.
@@ -103,11 +103,15 @@ keeps its own `test/` directory.
     the `basic` function.
   * `ffTest(testContext: ..., httpClientFactory: ..., projectId: ...)`: the
     http surface (post, query, fragment, headers, bytes, info, callables).
+    `info` posts to `echoinfo/sub1/sub2`: the function must serve the sub
+    path (answer its method and uri), only a `dart` prefixed function (admin
+    sdk) may answer 404.
   * `ffFsTest(testContext: ..., projectId: ..., version: ...)`: the firestore
     trigger round trip; `version` is a `pub_semver` `Version` (re-exported by
     `package:tekartik_common_utils/version_utils.dart`), usually the
     `packageVersion` of the implementation, and must match the one passed to
-    `initTestFunctions`. It has a 2 minutes timeout, triggers are slow.
+    `initTestFunctions`. It has a 2 minutes timeout, triggers are slow, and
+    fails when the trigger has not written its document after 30 s.
   * `ffCallTestGroup(testContext: ...)`: the callable
     `callableFunctionTestName` through a `functions_call` client.
 * Talking to a test function by hand: `FunctionTestInputData(command:
@@ -259,7 +263,6 @@ void defineTests(FirebaseFunctionsCall functionsCall) {
 ```dart
 import 'package:tekartik_common_utils/version_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
-import 'package:tekartik_firebase_functions/firebase_functions.dart';
 import 'package:tekartik_firebase_functions_test/firebase_functions_setup.dart';
 
 /// Called by a dev server (sim, io, node) once per project app.
@@ -283,7 +286,8 @@ void initServerTestFunctions({
 import 'package:tekartik_firebase_functions_call/functions_call.dart';
 import 'package:tekartik_firebase_functions_test/menu/firebase_functions_call_client_menu.dart';
 
-Future<void> main(List<String> args, FirebaseFunctionsCall functionsCall) async {
+/// Called from the `main(args)` of a tool, with a connected client.
+Future<void> runMenu(List<String> args, FirebaseFunctionsCall functionsCall) async {
   await mainMenu(args, () {
     firebaseFunctionsCallMainMenu(
       context: FirebaseFunctionsCallMainMenuContext(
@@ -298,7 +302,7 @@ Future<void> main(List<String> args, FirebaseFunctionsCall functionsCall) async 
 
 * Running `ffFsTest` without passing `firestore:` and `version:` to
   `initTestFunctions`/`setupFirebaseFunctionsTestServer`: the trigger functions
-  are then never registered.
+  are then never registered and `ffFsTest` fails.
 * Passing a different `version` to the server setup and to `ffFsTest`.
 * Leaving `functionsCall` null on the context: `basicTestGroup` and the
   callable parts of `ffTest` dereference it.

@@ -211,22 +211,24 @@ void ffTest({
     response = await client.post(
       Uri.parse(testContext.url('echoinfo/sub1/sub2?param#fragment')),
     );
-    try {
-      expect(response.statusCode, 200);
-    } catch (_) {
-      if (testContext.functionNamePrefix?.contains('dart') ?? false) {
-        expect(response.statusCode, 404);
-      } else {
-        decoded = jsonDecode(response.body) as Map;
-        try {
-          expect(decoded, {'method': 'POST', 'uri': 'sub1/sub2?param#'});
-        } catch (e) {
-          // On node we have a leading /
-          // On firebase admin sdk we have http://localhost:5001/dartv1echoinfo/?param
-          expect(decoded['method'], 'POST');
-          expect(decoded['uri'], contains('/sub1/sub2?param'));
-        }
+    if (response.statusCode == 200) {
+      decoded = jsonDecode(response.body) as Map;
+      try {
+        expect(decoded, {'method': 'POST', 'uri': 'sub1/sub2?param#'});
+      } catch (e) {
+        // On node we have a leading /
+        // On firebase admin sdk we have http://localhost:5001/dartv1echoinfo/?param
+        expect(decoded['method'], 'POST');
+        expect(decoded['uri'], contains('/sub1/sub2?param'));
       }
+    } else {
+      // Only the dart (admin sdk) functions do not serve a sub path.
+      expect(
+        testContext.functionNamePrefix?.contains('dart') ?? false,
+        isTrue,
+        reason: 'status ${response.statusCode}',
+      );
+      expect(response.statusCode, 404);
     }
 
     client.close();
@@ -455,6 +457,7 @@ void ffFsTest({
         }
         await sleep(100);
       }
+      fail('the trigger did not write $inValue1 in 30 s (last: $body)');
     }, timeout: Timeout(Duration(minutes: 2)));
   });
 }
