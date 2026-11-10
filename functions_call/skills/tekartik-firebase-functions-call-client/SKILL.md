@@ -64,7 +64,11 @@ package (http, memory, sim, Flutter native) provides the service.
   `FirebaseFunctionsCallableResult<T>` whose `data` is the `{"result": ...}`
   payload of the function; the extension `FirebaseFunctionsCallableResultExt`
   adds `dataAsMap`, `dataAsMapOrNull` and `dataAsText` for loosely typed
-  results. Prefer `call<Map>` / `call<String>` over `call<dynamic>`.
+  results: `dataAsMapOrNull` is null for anything but a map (or a json map
+  string), a number or a bool included; `dataAsMap` throws then;
+  `dataAsText` gives a `String` as is, a `Map`/`List` json encoded and throws
+  for a number, a bool or null. Prefer `call<Map>` / `call<String>` over
+  `call<dynamic>`.
 * Errors: implementations throw `HttpsError` (with `HttpsErrorCode` constants
   such as `HttpsErrorCode.notFound`, `unauthenticated`, `permissionDenied`,
   `internal`) from
@@ -125,8 +129,8 @@ class ApiClient {
 ### Wire an implementation (http) and call by name or by uri
 
 ```dart
-// needs tekartik_firebase_functions_call_http (path: functions_call_http)
-import 'package:tekartik_firebase_functions_call/functions_call.dart';
+// needs tekartik_firebase_functions_call_http (path: functions_call_http),
+// whose library exports functions_call.dart.
 import 'package:tekartik_firebase_functions_call_http/functions_call_http.dart';
 import 'package:tekartik_firebase_local/firebase_local.dart';
 

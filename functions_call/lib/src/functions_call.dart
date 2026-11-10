@@ -159,20 +159,27 @@ extension FirebaseFunctionsCallableResultExt
   /// map.
   ///
   /// Throws if [dataAsMapOrNull] is `null`, i.e. if [data] cannot be
-  /// decoded to a JSON map. Use [dataAsMapOrNull] instead when the data
-  /// might legitimately not be a map.
+  /// decoded to a JSON map (never null despite its type). Use
+  /// [dataAsMapOrNull] instead when the data might legitimately not be a map.
   Map<String, Object?>? get dataAsMap => dataAsMapOrNull!;
 
   /// The result [FirebaseFunctionsCallableResult.data] decoded as a JSON
   /// map, or `null` if [data] is `null` or cannot be decoded to a JSON
-  /// map.
-  Map<String, Object?>? get dataAsMapOrNull => requestBodyAsJsonObject(data);
+  /// map (a number or a bool result included).
+  Map<String, Object?>? get dataAsMapOrNull {
+    var data = this.data;
+    if (data is Map || data is String || data is List) {
+      return requestBodyAsJsonObject(data);
+    }
+    return null;
+  }
 
   /// The result [FirebaseFunctionsCallableResult.data] converted to a
   /// `String`.
   ///
   /// [data] is returned as-is if it is already a `String`; a `Map` or
-  /// `List` is JSON-encoded; a byte list is UTF-8 decoded.
+  /// `List` is JSON-encoded; a `Uint8List` is UTF-8 decoded. Throws an
+  /// [UnsupportedError] for anything else (a number, a bool, null).
   String get dataAsText => requestBodyAsText(data);
 }
 
