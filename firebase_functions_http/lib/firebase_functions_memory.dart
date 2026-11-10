@@ -1,3 +1,8 @@
+/// In memory firebase functions: `firebaseFunctionsServiceMemory.functions(app)`
+/// served with `serveHttp(port: 0)` and reached with
+/// `httpClientFactoryMemory` (no socket).
+library;
+
 import 'package:tekartik_firebase_functions_http/src/firebase_functions_memory.dart'
     as memory;
 

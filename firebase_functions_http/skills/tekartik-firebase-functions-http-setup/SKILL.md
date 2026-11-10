@@ -83,6 +83,11 @@ socket, ideal for tests) and the `FirebaseFunctionsHttpBase` class that
   `invalid-argument`; any non-`HttpsError` exception becomes `internal`. Call
   them from Dart with `tekartik_firebase_functions_call_http`
   (`firebaseFunctionsCallServiceMemory` for the memory server).
+* A request handler that throws (sync or async) is logged and answered 500
+  when it sent nothing yet, as Cloud Functions does: the server keeps
+  serving. A callable answers an `internal` error with the exception text in
+  its details (`{'exception': '...'}`): do not throw secrets; details that
+  are not JSON (a stack trace) are sent as text.
 * Caller identity is simulated: `request.context.auth?.uid` is read from the
   `firebaseFunctionsHttpHeaderUid` (`x-tekartik-firebase-call-uid`) header,
   and only while `debugFirebaseFunctionsHttpAllowCallUidHeader` is true

@@ -141,37 +141,8 @@ class FirebaseFunctionsHttpBase
           } else {
             var function = functions[functionKey];
             if (function is HttpsFunctionHttp) {
-              final rewrittenUri = Uri(
-                pathSegments: uri.pathSegments.sublist(1),
-                query: uri.query,
-                fragment: uri.fragment,
-              );
-              //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
-              ExpressHttpRequest httpRequest = await asExpressHttpRequestHttp(
-                request,
-                rewrittenUri,
-              );
-              // cors?
-              var cors = function.options?.cors ?? false;
-              if (cors) {
-                httpRequest.response.headers
-                  ..set('Access-Control-Allow-Origin', '*')
-                  ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
-                var requestHeaders =
-                    request.headers['Access-Control-Request-Headers'];
-                if (requestHeaders != null) {
-                  httpRequest.response.headers.set(
-                    'Access-Control-Allow-Headers',
-                    requestHeaders,
-                  );
-                }
-              }
-
               // Not awaited: the requests are served concurrently.
-              var result = function.handler(httpRequest);
-              if (result is Future) {
-                unawaited(result);
-              }
+              unawaited(_handleFunctionRequest(functionKey, function, request));
               handled = true;
             }
           }
@@ -188,6 +159,62 @@ class FirebaseFunctionsHttpBase
       }),
     );
     return requestServer;
+  }
+
+  /// Serves [request] with [function].
+  ///
+  /// A handler error (sync or async) is logged and answered 500 when
+  /// nothing was sent yet, as Cloud Functions does: it is neither an
+  /// uncaught error (the process would exit) nor the end of the server.
+  Future<void> _handleFunctionRequest(
+    String functionKey,
+    HttpsFunctionHttp function,
+    HttpRequest request,
+  ) async {
+    try {
+      var uri = request.uri;
+      final rewrittenUri = Uri(
+        pathSegments: uri.pathSegments.sublist(1),
+        query: uri.query,
+        fragment: uri.fragment,
+      );
+      //io.HttpRequest commonRequest = new io.HttpRequest(request, url, request.uri.path);
+      ExpressHttpRequest httpRequest = await asExpressHttpRequestHttp(
+        request,
+        rewrittenUri,
+      );
+      // cors?
+      var cors = function.options?.cors ?? false;
+      if (cors) {
+        httpRequest.response.headers
+          ..set('Access-Control-Allow-Origin', '*')
+          ..set('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
+        var requestHeaders = request.headers['Access-Control-Request-Headers'];
+        if (requestHeaders != null) {
+          httpRequest.response.headers.set(
+            'Access-Control-Allow-Headers',
+            requestHeaders,
+          );
+        }
+      }
+      var result = function.handler(httpRequest);
+      if (result is Future) {
+        await result;
+      }
+    } catch (e, st) {
+      // ignore: avoid_print
+      print('$functionKey error: $e\n$st');
+      try {
+        request.response.statusCode = httpStatusCodeInternalServerError;
+      } catch (_) {
+        // Already sent.
+      }
+      try {
+        await request.response.close();
+      } catch (_) {
+        // Already closed.
+      }
+    }
   }
 
   /// No-op.
@@ -334,7 +361,14 @@ class HttpsCallableFunctionHttpImpl extends _HttpsFunctionBase
             // ignore: avoid_print
             print('error setting status code');
           }
-          await response.send(jsonEncode({'error': e.toHttpJson()}));
+          // The details can hold a value that is not JSON (the stack trace
+          // of anyExceptionToHttpsError): sent as its text, as
+          // handleWithCallHandler does, so that the error is always sent.
+          await response.send(
+            jsonEncode({
+              'error': e.toHttpJson(),
+            }, toEncodable: (object) => object.toString()),
+          );
         }
 
         try {
